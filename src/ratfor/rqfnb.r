@@ -64,8 +64,14 @@ call dcopy(n,c,1,s,1)
 call dgemv('T',p,n,mone,a,p,y,1,one,s,1)
 # Initialize remaining variables
 do i=1,n{
-	z(i)=dmax1(s(i),zero)
-	w(i)=dmax1(-s(i),zero)
+	if(dabs(s(i))<eps){
+		z(i)=dmax1(s(i), zero) + eps
+		w(i)=dmax1(-s(i),zero) + eps
+		}
+	else {
+		z(i)=dmax1(s(i), zero) 
+		w(i)=dmax1(-s(i),zero)
+		}
 	s(i)=u(i)-x(i)
 	}
 gap = ddot(n,z,1,x,1)+ddot(n,w,1,s,1)

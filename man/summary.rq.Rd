@@ -8,7 +8,7 @@ Returns a summary list for a quantile regression fit.  A null value
 will be returned if printing is invoked.
 }
 \usage{
-summary.rq(object, se="nid", covariance=TRUE, hs = TRUE, ...)
+summary.rq(object, se="nid", covariance=TRUE, hs = TRUE,  ...)
 }
 \arguments{
   \item{object}{
@@ -39,7 +39,8 @@ summary.rq(object, se="nid", covariance=TRUE, hs = TRUE, ...)
     If false revert to Bofinger bandwidth.
    }
   \item{...}{
-    Optional arguments to summary
+    Optional arguments to summary, e.g. bsmethod to use bootstrapping.
+    see \code{\link{boot.rq}}
    }
 }
 \value{

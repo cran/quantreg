@@ -65,7 +65,7 @@ function (x, nrow = 3, ncol = 2, alpha= .1, ...)
     }
 }
 "latex.table" <-
-function (object, file = as.character(substitute(x)), rowlabel = file, 
+function (x, file = as.character(substitute(x)), rowlabel = file, 
     rowlabel.just = "l", cgroup, n.cgroup, rgroup, n.rgroup = NULL, 
     digits, dec, rdec, cdec, append = FALSE, dcolumn = FALSE, cdot = FALSE, 
     longtable = FALSE, table.env = TRUE, lines.page = 40, caption, caption.lot, 
@@ -372,7 +372,4 @@ function (formula, taus = c(0.25, 0.5, 0.75), method = "br",
     tab <- list(a = a, taus = taus, method = method)
     class(tab) <- "table.rq"
     invisible(tab)
-}
-"latex" <-
-function(object, ...){UseMethod("latex")
 }

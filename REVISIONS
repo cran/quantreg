@@ -112,3 +112,22 @@ to
 
 1.  Added src/Makevars file in accordance with Brian's email request, see R email folder.
 
+3.20 April 27 2003 
+
+1.  Found a bug in the fn family of fortran/ratfor functions.  When the initial
+least squares start produced a residual which was a hard zero, then the
+initial value of Q had a NaN value and this caused the function to return
+with all NaN coef values.  This was altered to make z and w = eps when
+this happens.
+
+2.  When interp=FALSE in rq.fit.br the tcrit flag was broken.
+
+3.  added names to coef return when CI= FALSE in rq.fit.br
+
+
+3.30  August 13 2003
+
+1.  added several bootstrapping methods to summary.rq including the MCMB
+approach of He and Hu based on code by Xuming He and Maria Kocherginsky.
+
+2.  added n choose m subsampling for the xy pair version of the bootstrap.

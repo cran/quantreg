@@ -116,6 +116,5 @@ function (x0, x1, y, score = "wilcoxon",tau=tau)
     Tn <- Tn/ndf
     ddf <- length(y) - ncol(x0)
     pvalue <- 1 - pf(Tn, ndf, ddf)
-    browser()
-    return(Tn, ndf, ddf, pvalue)
+    list(Tn=Tn, ndf=ndf, ddf=ddf, pvalue=pvalue)
 }

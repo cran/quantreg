@@ -1,5 +1,5 @@
 Package:  quantreg
-Version:  3.19
+Version:  3.31
 Author:   Roger Koenker <rkoenker@uiuc.edu>
 	Initial R port by Brian Ripley <ripley@stats.ox.ac.uk>
 Maintainer:  Roger Koenker <rkoenker@uiuc.edu>

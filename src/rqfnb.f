@@ -37,96 +37,102 @@
       call dcopy(n,c,1,s,1)
       call dgemv('T',p,n,mone,a,p,y,1,one,s,1)
       do 23004 i=1,n
-      z(i)=dmax1(s(i),zero)
+      if(.not.(dabs(s(i)).lt.eps))goto 23006
+      z(i)=dmax1(s(i), zero) + eps
+      w(i)=dmax1(-s(i),zero) + eps
+      goto 23007
+23006 continue
+      z(i)=dmax1(s(i), zero)
       w(i)=dmax1(-s(i),zero)
+23007 continue
       s(i)=u(i)-x(i)
 23004 continue
       gap = ddot(n,z,1,x,1)+ddot(n,w,1,s,1)
-23006 if(.not.(gap .gt. eps .and. nit(1).lt.maxit))goto 23007
+23008 if(.not.(gap .gt. eps .and. nit(1).lt.maxit))goto 23009
       nit(1)=nit(1)+1
-      do 23008 i = 1,n
+      do 23010 i = 1,n
       d(i) = one/(z(i)/x(i) + w(i)/s(i))
       ds(i)=z(i)-w(i)
       dz(i)=d(i)*ds(i)
-23008 continue
+23010 continue
       call dcopy(p,b,1,dy,1)
       call dgemv('N',p,n,mone,a,p,x,1,one,dy,1)
       call dgemv('N',p,n,one,a,p,dz,1,one,dy,1)
       call dcopy(p,dy,1,rhs,1)
       call stepy(n,p,a,d,dy,ada,info)
-      if(.not.(info .ne. 0))goto 23010
+      if(.not.(info .ne. 0))goto 23012
       return
-23010 continue
+23012 continue
       call dgemv('T',p,n,one,a,p,dy,1,mone,ds,1)
       deltap=big
       deltad=big
-      do 23012 i=1,n
+      do 23014 i=1,n
       dx(i)=d(i)*ds(i)
       ds(i)=-dx(i)
       dz(i)=-z(i)*(dx(i)/x(i) + one)
       dw(i)=-w(i)*(ds(i)/s(i) + one)
-      if(.not.(dx(i).lt.0))goto 23014
+      if(.not.(dx(i).lt.0))goto 23016
       deltap=dmin1(deltap,-x(i)/dx(i))
-23014 continue
-      if(.not.(ds(i).lt.0))goto 23016
-      deltap=dmin1(deltap,-s(i)/ds(i))
 23016 continue
-      if(.not.(dz(i).lt.0))goto 23018
-      deltad=dmin1(deltad,-z(i)/dz(i))
+      if(.not.(ds(i).lt.0))goto 23018
+      deltap=dmin1(deltap,-s(i)/ds(i))
 23018 continue
-      if(.not.(dw(i).lt.0))goto 23020
-      deltad=dmin1(deltad,-w(i)/dw(i))
+      if(.not.(dz(i).lt.0))goto 23020
+      deltad=dmin1(deltad,-z(i)/dz(i))
 23020 continue
-23012 continue
+      if(.not.(dw(i).lt.0))goto 23022
+      deltad=dmin1(deltad,-w(i)/dw(i))
+23022 continue
+23014 continue
       deltap=dmin1(beta*deltap,one)
       deltad=dmin1(beta*deltad,one)
-      if(.not.(min(deltap,deltad) .lt. one))goto 23022
+      if(.not.(min(deltap,deltad) .lt. one))goto 23024
       nit(2)=nit(2)+1
       mu = ddot(n,x,1,z,1)+ddot(n,s,1,w,1)
       g = mu + deltap*ddot(n,dx,1,z,1)+deltad*ddot(n,dz,1,x,1) +deltap*
 &     deltad*ddot(n,dz,1,dx,1)+deltap*ddot(n,ds,1,w,1)+deltad*ddot(n,dw,
 &     1,s,1) +deltap*deltad*ddot(n,ds,1,dw,1)
       mu = mu * ((g/mu)**3) /dfloat(2*n)
-      do 23024 i=1,n
+      do 23026 i=1,n
       dr(i)=d(i)*(mu*(1/s(i)-1/x(i))+dx(i)*dz(i)/x(i)-ds(i)*dw(i)/s(i))
-23024 continue
+23026 continue
       call dswap(p,rhs,1,dy,1)
       call dgemv('N',p,n,one,a,p,dr,1,one,dy,1)
       call dpotrs('U',p,1,ada,p,dy,p,info)
       call dgemv('T',p,n,one,a,p,dy,1,zero,u,1)
       deltap=big
       deltad=big
-      do 23026 i=1,n
+      do 23028 i=1,n
       dxdz = dx(i)*dz(i)
       dsdw = ds(i)*dw(i)
       dx(i)= d(i)*(u(i)-z(i)+w(i))-dr(i)
       ds(i)= -dx(i)
       dz(i)= -z(i)+(mu - z(i)*dx(i) - dxdz)/x(i)
       dw(i)= -w(i)+(mu - w(i)*ds(i) - dsdw)/s(i)
-      if(.not.(dx(i).lt.0))goto 23028
+      if(.not.(dx(i).lt.0))goto 23030
       deltap=dmin1(deltap,-x(i)/dx(i))
-23028 continue
-      if(.not.(ds(i).lt.0))goto 23030
-      deltap=dmin1(deltap,-s(i)/ds(i))
 23030 continue
-      if(.not.(dz(i).lt.0))goto 23032
-      deltad=dmin1(deltad,-z(i)/dz(i))
+      if(.not.(ds(i).lt.0))goto 23032
+      deltap=dmin1(deltap,-s(i)/ds(i))
 23032 continue
-      if(.not.(dw(i).lt.0))goto 23034
-      deltad=dmin1(deltad,-w(i)/dw(i))
+      if(.not.(dz(i).lt.0))goto 23034
+      deltad=dmin1(deltad,-z(i)/dz(i))
 23034 continue
-23026 continue
+      if(.not.(dw(i).lt.0))goto 23036
+      deltad=dmin1(deltad,-w(i)/dw(i))
+23036 continue
+23028 continue
       deltap=dmin1(beta*deltap,one)
       deltad=dmin1(beta*deltad,one)
-23022 continue
+23024 continue
       call daxpy(n,deltap,dx,1,x,1)
       call daxpy(n,deltap,ds,1,s,1)
       call daxpy(p,deltad,dy,1,y,1)
       call daxpy(n,deltad,dz,1,z,1)
       call daxpy(n,deltad,dw,1,w,1)
       gap = ddot(n,z,1,x,1)+ddot(n,w,1,s,1)
-      goto 23006
-23007 continue
+      goto 23008
+23009 continue
       call daxpy(n,mone,w,1,z,1)
       call dswap(n,z,1,x,1)
       return
@@ -136,14 +142,14 @@
       double precision a(p,n),b(p),d(n),ada(p,p),zero
       data zero/0.0d0/
       pp=p*p
-      do 23036 j=1,p
-      do 23038 k=1,p
+      do 23038 j=1,p
+      do 23040 k=1,p
       ada(j,k)=zero
-23038 continue
-23036 continue
-      do 23040 i=1,n
-      call dsyr('U',p,d(i),a(1,i),1,ada,p)
 23040 continue
+23038 continue
+      do 23042 i=1,n
+      call dsyr('U',p,d(i),a(1,i),1,ada,p)
+23042 continue
       call dposv('U',p,1,ada,p,b,p,info)
       return
       end

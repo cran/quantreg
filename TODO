@@ -16,6 +16,9 @@ and should be organized to do both together.
 
 5.  Write anova function for rq objects. [Done in v 3.09]
 
-Some other items May 27 2002
+6.  Resolve some packaging issues regarding linkages to SparseM
+and to incorporate rqss stuff to akima, tripack, etc.
 
-1.  Sparse matrix versions for rq.fit.fn and rq.fit.fnc, project underway.
+7.  Allow bootstrappping routines to do subsampling. [Done August, 03]
+
+8.  Allow percentile methods for the bootstrap methods.

@@ -1,3 +1,8 @@
+".First.lib" <-
+function(lib, pkg) {
+   library.dynam("quantreg", pkg, lib)
+   print("quantreg library loaded")}
+
 "bandwidth.rq" <-
 function(p, n, hs = TRUE, alpha = 0.05)
 {
@@ -77,7 +82,7 @@ function(v, score = "wilcoxon", tau = 0.5)
 		ranks <- as.vector((0.5 * (v$dsol[, 2:J] + v$dsol[, 1:(J - 1)]) %*%
 			dt) - 0.5)
 		A2 <- 1/12
-		return(ranks, A2)
+		return(list(ranks=ranks, A2=A2))
 	}
 	else if(score == "normal") {
 		J <- ncol(v$sol)
@@ -86,14 +91,14 @@ function(v, score = "wilcoxon", tau = 0.5)
 		dphi <- diff(dphi)
 		ranks <- as.vector((((v$dsol[, 2:J] - v$dsol[, 1:(J - 1)]))) %*%
 			(dphi/dt))
-		return(ranks, A2)
+		return(list(ranks=ranks, A2=A2))
 	}
 	else if(score == "sign") {
 		j.5 <- sum(v$sol[1,  ] < 0.5)
 		w <- (0.5 - v$sol[1, j.5])/(v$sol[1, j.5 + 1] - v$sol[1, j.5])
 		r <- w * v$dsol[, j.5 + 1] + (1 - w) * v$dsol[, j.5]
 		ranks <- 2 * r - 1
-		return(ranks, A2)
+		return(list(ranks=ranks, A2=A2))
 	}
 	else if(score == "tau") {
 		j.tau <- sum(v$sol[1,  ] < tau)
@@ -101,7 +106,7 @@ function(v, score = "wilcoxon", tau = 0.5)
 			1, j.tau])
 		r <- w * v$dsol[, j.tau + 1] + (1 - w) * v$dsol[, j.tau]
 		ranks <- 2 * r - 1
-		return(ranks, A2)
+		return(list(ranks=ranks, A2=A2))
 	}
 	else if(score == "interquartile") {
 		j.25 <- sum(v$sol[1,  ] < 0.25)
@@ -114,7 +119,7 @@ function(v, score = "wilcoxon", tau = 0.5)
 		r.75 <- w * v$dsol[, j.75 + 1] + (1 - w) * v$dsol[, j.75]
 		ranks <- 0.5 + r.75 - r.25
 		A2 <- 1/4
-		return(ranks, A2)
+		return(list(ranks=ranks, A2=A2))
 	}
 	else stop("invalid score function")
 }
@@ -316,12 +321,12 @@ function(x, y, tau = 0.5, alpha = 0.10000000000000001, ci = TRUE,
 		vnames <- dimnames(x)[[2]]
 		dimnames(sol) <- list(c("tau", "Qbar", "Obj.Fun", vnames),
 			NULL)
-		return(sol, dsol)
+		return(list(sol=sol, dsol=dsol))
 	}
 	if(!ci) {
-		coefficients <- z$coef
-		residuals <- z$resid
-		return(coefficients, x, y, residuals)
+		coef <- z$coef
+		names(coef) <- dimnames(x)[[2]]
+		return(list(coefficients=coef, x=x, y=y, residuals=z$resid))
 	}
 	if(interp) {
 		Tn <- matrix(z$tnmat, nrow = 4)
@@ -337,7 +342,8 @@ function(x, y, tau = 0.5, alpha = 0.10000000000000001, ci = TRUE,
 		cnames <- c("coefficients", "lower bd", "upper bd")
 		dimnames(coefficients) <- list(vnames, cnames)
 		residuals <- z$resid
-		return(coefficients, x, y, residuals, assign)
+		return(list(coefficients=coefficients, x=x, y=y, 
+			residuals=residuals, assign=assign))
 	}
 	else {
 		Tci <- matrix(z$ci, nrow = 4)
@@ -350,9 +356,11 @@ function(x, y, tau = 0.5, alpha = 0.10000000000000001, ci = TRUE,
 		c.values <- t(matrix(z$tnmat, nrow = 4))
 		c.values <- c.values[, 4:1]
 		dimnames(c.values) <- list(vnames, cnames[-1])
-		p.values <- matrix(pt(c.values, n - p), ncol = 4)
+		p.values <- if(tcrit) matrix(pt(c.values, n - p), ncol = 4)
+			    else matrix(pnorm(c.values), ncol = 4)
 		dimnames(p.values) <- list(vnames, cnames[-1])
-		return(coefficients, x, y, residuals, c.values, p.values)
+		list(coefficients=coefficients, x=x, y=y, residuals=residuals, 
+			c.values=c.values, p.values=p.values)
 	}
 }
 
@@ -380,7 +388,7 @@ function (x, y, tau = 0.5, beta = 0.99995, eps = 1e-06)
     coefficients <- -z$wp[1:p]
     names(coefficients) <- dimnames(x)[[2]]
     residuals <- y - x %*% coefficients
-    return(coefficients, x, y, tau, residuals)
+    list(coefficients=coefficients, x=x, y=y, tau=tau, residuals=residuals)
 }
 
 "rq.fit.fnb" <-
@@ -407,7 +415,7 @@ function (x, y, tau = 0.5, beta = 0.99995, eps = 1e-06)
     coefficients <- -z$wp[1:p]
     names(coefficients) <- dimnames(x)[[2]]
     residuals <- y - x %*% coefficients
-    return(coefficients, x, y, tau, residuals)
+    list(coefficients=coefficients, x=x, y=y, tau=tau, residuals=residuals)
 }
 
 "rq.fit.fnc" <-
@@ -443,7 +451,7 @@ function (x, y, R, r, tau = 0.5, beta = 0.9995, eps = 1e-08)
     names(coefficients) <- dimnames(x)[[2]]
     residuals <- y - x %*% coefficients
     it.count <- z$it.count
-    return(coefficients, x, y, tau, residuals)
+    list(coefficients=coefficients, x=x, y=y, tau=tau, residuals=residuals)
 }
 
 
@@ -477,7 +485,7 @@ function(x, y, tau = 0.5,  Mm.factor = 0.8,
 			s <- sample(n, m)
 		else {
 			z <- rq.fit.fn(x, y, tau = tau,  eps = eps)
-			return(coef = z$coef)
+			list(coef = z$coef)
 		}
 		xx <- x[s,  ]
 		yy <- y[s]
@@ -532,7 +540,8 @@ function(x, y, tau = 0.5,  Mm.factor = 0.8,
 	coefficients <- b
 	names(coefficients) <- dimnames(x)[[2]]
 	residuals <- y - x %*% b
-	return(coefficients, x, y, tau, residuals)
+	return(list(coefficients=coefficients, x=x, y=y, tau=tau, 
+		residuals=residuals))
 }
 
 "rq.wfit" <-
@@ -571,13 +580,12 @@ function(x0, x1, y, v, score = "wilcoxon")
 	sn <- as.matrix(t(x1hat) %*% r$ranks)
 	sn <- t(sn) %*% solve(crossprod(x1hat)) %*% sn/r$A2
 	ranks <- r$ranks
-	return(sn, ranks)
+	return(list(sn=sn, ranks=ranks))
 }
 
 "summary.rq" <-
-# This is a preliminary method for summarizing the output of the
-# rq command eventually some bootstrapping strategies should be
-# added.  In this instance, "summarizing" means essentially provision
+# This function provides  methods for summarizing the output of the
+# rq command. In this instance, "summarizing" means essentially provision
 # of either standard errors, or confidence intervals for the rq coefficents.
 # Since the preferred method for confidence intervals is currently the
 # rank inversion method available directly from rq() by setting ci=TRUE, with br=TRUE.
@@ -592,7 +600,7 @@ function(x0, x1, y, v, score = "wilcoxon")
 # covariance=TRUE a structure describing the covariance matrix of the coefficients,
 # i.e. the components of the Huber sandwich.
 #
-# There are three options for "se":
+# There are four options for "se":
 #
 #	1.  "iid" which presumes that the errors are iid and computes
 #		an estimate of the asymptotic covariance matrix as in KB(1978).
@@ -601,7 +609,10 @@ function(x0, x1, y, v, score = "wilcoxon")
 #		sandwich estimate using a local estimate of the sparsity.
 #	3.  "ker" which uses a kernel estimate of the sandwich as proposed
 #		by Powell.
-# See the inference chapter of the putative QR book for further details.
+#	4.  "boot" which uses a bootstrap method:
+#		"xy"	uses xy-pair method 
+#		"pwy"	uses the parzen-wei-ying method 
+#		"mcmb"	uses the Markov chain marginal bootstrap method 
 #
 #
 function(object, se = "nid", covariance = TRUE, hs = TRUE, ...)
@@ -667,6 +678,11 @@ function(object, se = "nid", covariance = TRUE, hs = TRUE, ...)
 		cov <- tau * (1 - tau) * fxxinv %*% crossprod(x) %*% fxxinv
 		serr <- sqrt(diag(cov))
 	}
+	else if(se == "boot"){
+		B <- boot.rq(x,y,tau, ...)
+		cov <- cov(B)
+		serr <- sqrt(diag(cov))
+		}
 	coef <- array(coef, c(p, 4))
 	dimnames(coef) <- list(vnames, c("Value", "Std. Error", "t value",
 		"Pr(>|t|)"))
@@ -677,11 +693,14 @@ function(object, se = "nid", covariance = TRUE, hs = TRUE, ...)
 	object <- object[c("call", "terms")]
 	if(covariance == TRUE) {
 		object$cov <- cov
-		if(se != "iid") {
+		if(se %in% c("nid","ker")) {
 			object$Hinv <- fxxinv
 			object$J <- crossprod(x)
+			}
+		else if(se == "boot"){
+			object$B <- B
+			}
 		}
-	}
 	object$coefficients <- coef
 	object$rdf <- rdf
 	object$tau <- tau
@@ -717,7 +736,7 @@ function(x, z = seq(min(x), max(x),  , 2 * length(x)),
         psi <- A$psi
         score <- A$score
         h <- A$h
-        return(dens, psi, score, h)
+        return(list(dens=dens, psi=psi, score=score, h=h))
 }
 "lm.fit.recursive" <-
 function(X, y, int = TRUE)
@@ -781,7 +800,7 @@ function (rqfit, location.scale = TRUE)
             }
         }
     }
-    return(Vhat, vhat)
+    return(list(Vhat=Vhat, vhat=vhat))
 }
 "khmaladzize" <-
 function(tau, atau, Z, location.scale)
@@ -1066,9 +1085,3 @@ trim = c(0.25, 0.75) )
     invisible(x)
 }
 
-# Added function:
-
-".First.lib" <-
-function(lib, pkg) {
-   library.dynam("quantreg", pkg, lib)
-   print("quantreg library loaded")}

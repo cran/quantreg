@@ -105,8 +105,14 @@ call dgemv('T',p,n,mone,a,p,y,1,one,s,1)
 # N.B. x must be initialized on input: for rq as (one-tau) in call coordinates
 do i=1,n{
 	d(i)=one
-	z(i)=dmax1(s(i),zero)
-	w(i)=dmax1(-s(i),zero)
+	if(dabs(s(i)) < eps){
+		z(i) = dmax1( s(i),zero) + eps
+		w(i) = dmax1(-s(i),zero) + eps
+		}
+	else {
+		z(i) = dmax1( s(i),zero)
+		w(i) = dmax1(-s(i),zero) 
+		}
 	s(i)=u(i)-x(i)
 	}
 cx = ddot(n,c,1,x,1)

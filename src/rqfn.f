@@ -46,8 +46,14 @@
       call dgemv('T',p,n,mone,a,p,y,1,one,s,1)
       do 23006 i=1,n
       d(i)=one
-      z(i)=dmax1(s(i),zero)
-      w(i)=dmax1(-s(i),zero)
+      if(.not.(dabs(s(i)) .lt. eps))goto 23008
+      z(i) = dmax1( s(i),zero) + eps
+      w(i) = dmax1(-s(i),zero) + eps
+      goto 23009
+23008 continue
+      z(i) = dmax1( s(i),zero)
+      w(i) = dmax1(-s(i),zero)
+23009 continue
       s(i)=u(i)-x(i)
 23006 continue
       cx = ddot(n,c,1,x,1)
@@ -55,45 +61,45 @@
       uw = dasum(n,w,1)
       uz = dasum(n,z,1)
       rdg = (cx - by + uw)
-23008 if(.not.(rdg .gt. eps))goto 23009
+23010 if(.not.(rdg .gt. eps))goto 23011
       nit(1)=nit(1)+1
-      do 23010 i =1,n
+      do 23012 i =1,n
       d(i) = one/(z(i)/x(i) + w(i)/s(i))
       ds(i)=z(i)-w(i)
       dx(i)=d(i)*ds(i)
-23010 continue
+23012 continue
       call dgemv('N',p,n,one,a,p,dx,1,zero,dy,1)
       call dcopy(p,dy,1,rhs,1)
       call stepy(n,p,a,d,dy,ada,info)
-      if(.not.(info .ne. 0))goto 23012
+      if(.not.(info .ne. 0))goto 23014
       return
-23012 continue
+23014 continue
       call dgemv('T',p,n,one,a,p,dy,1,mone,ds,1)
       deltap=big
       deltad=big
-      do 23014 i=1,n
+      do 23016 i=1,n
       dx(i)=d(i)*ds(i)
       ds(i)=-dx(i)
       dz(i)=-z(i)*(dx(i)/x(i) + one)
       dw(i)=w(i)*(dx(i)/s(i) - one)
       dxdz(i)=dx(i)*dz(i)
       dsdw(i)=ds(i)*dw(i)
-      if(.not.(dx(i).lt.0))goto 23016
+      if(.not.(dx(i).lt.0))goto 23018
       deltap=dmin1(deltap,-x(i)/dx(i))
-23016 continue
-      if(.not.(ds(i).lt.0))goto 23018
-      deltap=dmin1(deltap,-s(i)/ds(i))
 23018 continue
-      if(.not.(dz(i).lt.0))goto 23020
-      deltad=dmin1(deltad,-z(i)/dz(i))
+      if(.not.(ds(i).lt.0))goto 23020
+      deltap=dmin1(deltap,-s(i)/ds(i))
 23020 continue
-      if(.not.(dw(i).lt.0))goto 23022
-      deltad=dmin1(deltad,-w(i)/dw(i))
+      if(.not.(dz(i).lt.0))goto 23022
+      deltad=dmin1(deltad,-z(i)/dz(i))
 23022 continue
-23014 continue
+      if(.not.(dw(i).lt.0))goto 23024
+      deltad=dmin1(deltad,-w(i)/dw(i))
+23024 continue
+23016 continue
       deltap=dmin1(beta*deltap,one)
       deltad=dmin1(beta*deltad,one)
-      if(.not.(deltap*deltad.lt.one))goto 23024
+      if(.not.(deltap*deltad.lt.one))goto 23026
       nit(2)=nit(2)+1
       acomp=ddot(n,x,1,z,1)+ddot(n,s,1,w,1)
       g=acomp+deltap*ddot(n,dx,1,z,1)+deltad*ddot(n,dz,1,x,1)+deltap*
@@ -102,9 +108,9 @@
       mu=acomp/dfloat(2*n)
       mua=g/dfloat(2*n)
       mu=mu*(mua/mu)**3
-      do 23026 i=1,n
+      do 23028 i=1,n
       dz(i)=d(i)*(mu*(1/s(i)-1/x(i))+dx(i)*dz(i)/x(i)-ds(i)*dw(i)/s(i))
-23026 continue
+23028 continue
       call dswap(p,rhs,1,dy,1)
       call dgemv('N',p,n,one,a,p,dz,1,one,dy,1)
       call dpotrs('U',p,1,ada,p,dy,p,info)
@@ -112,27 +118,27 @@
       call dgemv('T',p,n,one,a,p,rhs,1,zero,dw,1)
       deltap=big
       deltad=big
-      do 23028 i=1,n
+      do 23030 i=1,n
       dx(i)=dx(i)-dz(i)-d(i)*dw(i)
       ds(i)=-dx(i)
       dz(i)=mu/x(i) - z(i)*dx(i)/x(i) - z(i) - dxdz(i)/x(i)
       dw(i)=mu/s(i) - w(i)*ds(i)/s(i) - w(i) - dsdw(i)/s(i)
-      if(.not.(dx(i).lt.0))goto 23030
+      if(.not.(dx(i).lt.0))goto 23032
       deltap=dmin1(deltap,-x(i)/dx(i))
-      goto 23031
-23030 continue
-      deltap=dmin1(deltap,-s(i)/ds(i))
-23031 continue
-      if(.not.(dz(i).lt.0))goto 23032
-      deltad=dmin1(deltad,-z(i)/dz(i))
+      goto 23033
 23032 continue
-      if(.not.(dw(i).lt.0))goto 23034
-      deltad=dmin1(deltad,-w(i)/dw(i))
+      deltap=dmin1(deltap,-s(i)/ds(i))
+23033 continue
+      if(.not.(dz(i).lt.0))goto 23034
+      deltad=dmin1(deltad,-z(i)/dz(i))
 23034 continue
-23028 continue
+      if(.not.(dw(i).lt.0))goto 23036
+      deltad=dmin1(deltad,-w(i)/dw(i))
+23036 continue
+23030 continue
       deltap=dmin1(beta*deltap,one)
       deltad=dmin1(beta*deltad,one)
-23024 continue
+23026 continue
       call daxpy(n,deltap,dx,1,x,1)
       call daxpy(n,deltap,ds,1,s,1)
       call daxpy(p,deltad,dy,1,y,1)
@@ -143,8 +149,8 @@
       uw = dasum(n,w,1)
       uz = dasum(n,z,1)
       rdg=(cx-by+uw)
-      goto 23008
-23009 continue
+      goto 23010
+23011 continue
       call daxpy(n,mone,w,1,z,1)
       call dswap(n,z,1,x,1)
       return
