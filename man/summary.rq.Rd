@@ -1,0 +1,72 @@
+\name{summary.rq}
+\alias{summary.rq}
+\title{
+Summary method for Quantile Regression
+}
+\description{
+Returns a summary list for a quantile regression fit.  A null value
+will be returned if printing is invoked.
+}
+\usage{
+summary.rq(object, se="nid", covariance=T)
+}
+\arguments{
+  \item{object}{
+    This is an object of class \code{"rq"} produced by a call to \code{rq()}.
+  }
+  \item{se}{
+    specifies the method used to compute standard standard errors.  There
+    are currently three available methods:  
+    \enumerate{
+      \item \code{"iid"} which presumes that the errors are iid and computes
+      an estimate of the asymptotic covariance matrix as in KB(1978).
+      
+      \item \code{"nid"} which presumes local (in \code{tau})
+      linearity (in \code{x}) of the
+      the conditional quantile functions and computes a Huber
+      sandwich estimate using a local estimate of the sparsity.
+      
+      \item \code{"ker"} which uses a kernel estimate of the sandwich
+      as proposed by Powell(1990).
+    }
+  }
+  \item{covariance}{
+    logical flag to indicate whether the full covariance matrix of the 
+    estimated parameters should be returned. 
+  }
+}
+\value{
+  a list is returned with the following components
+
+\item{coefficients}{
+  a p by 4 matrix consisting of the coefficients, their estimated standard
+  errors, their t-statistics, and their associated p-values.
+}
+\item{cov}{
+  the estimated covariance matrix for the coefficients in the model,
+  provided that \code{cov=T} in the called sequence.
+}
+\item{Hinv}{
+  inverse of the estimated Hessian matrix returned if \code{cov=T} and
+  \code{se != "iid"}.
+}
+\item{J}{
+  Outer product of gradient matrix returned if \code{cov=T} and \code{se
+    != "iid"}. The Huber sandwich is \code{cov = Hinv \%*\% J \%*\% Hinv}.
+}}
+\references{
+  Koenker, R. (2000) \emph{Quantile Regression}.
+}
+\seealso{
+  \code{\link{rq}}
+}
+\examples{
+data(stackloss)
+y <- stack.loss
+x <- stack.x
+summary(rq(y ~ x, method="fn")) # Compute se's for fit using "nid" method.
+summary(rq(y ~ x, ci=F),se="ker")
+# default "br" alg, and compute kernel method se's
+}
+\keyword{regression}
+% Converted by Sd2Rd version 0.3-3.

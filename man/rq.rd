@@ -1,165 +1,137 @@
 \name{rq}
 \alias{rq}
-\alias{rq.formula}
 \title{
-Quantile Regression
+Quantile Regression 
 }
 \description{
-Perform a quantile regression on a design matrix, x, of explanatory variables and a vector, y, of responses. 
+Returns an object of class \code{"rq"} or \code{"rq.process"} that represents 
+a quantile regression fit. 
 }
 \usage{
-rq(x, y, tau=-1, alpha=.1, dual=TRUE, int=TRUE, tol=1e-4, ci = TRUE, 
-         method="score", interpolate=TRUE, tcrit=TRUE, hs=TRUE)
-rq.formula(formula, data=list(), subset, na.action, tau=-1, 
-         alpha = 0.10000000000000001, dual = TRUE, 
-         tol = 0.0001, ci = TRUE, method="score", interpolate = TRUE, 
-         tcrit = TRUE, hs=TRUE)
-
+rq(formula, tau=.5, data, weights, na.action,
+   method="br", contrasts, \dots) 
 }
 \arguments{
-\item{x}{
-vector or matrix of explanatory variables.  If  a  matrix,
-each  column represents a variable and each row represents
-an observation (or case).  This should not contain  column
-of  1s unless the argument intercept is FALSE.  The number
-of rows of x should equal the number of elements of  y,  and
-there  should  be fewer columns than rows.  
-If x is missing, rq() computes the ordinary
-sample quantile(s) of y.
+  \item{formula}{
+    a formula object, with the response on the left of a \code{~} operator, 
+    and the terms, separated by \code{+} operators, on the right. 
+  }
+  \item{tau}{
+    the quantile to be estimated, this is generally a number between 0 and 1, 
+    but if specified outside this range, it is presumed that the solutions 
+    for all values of \code{tau} in (0,1) are desired.  In the former case an
+    object of class \code{"rq"} is returned, in the latter,
+    an object of class \code{"rq.process"} is returned.
+  }
+  \item{data}{
+    a data.frame in which to interpret the variables 
+    named in the formula, or in the subset and the weights argument. 
+    If this is missing, then the variables in the formula should be on the 
+    search list.  This may also be a single number to handle some special  
+    cases -- see below for details.   
+  }
+  \item{weights}{
+    vector of observation weights; if supplied, the algorithm fits
+    to minimize the sum of the weights multiplied into the
+    absolute residuals. The length of weights must be the same as
+    the number of observations.  The weights must be nonnegative
+    and it is strongly recommended that they be strictly positive,
+    since zero weights are ambiguous. 
+  }
+  \item{na.action}{
+    a function to filter missing data. 
+    This is applied to the model.frame after any subset argument has been used. 
+    The default (with \code{na.fail}) is to create an error if any missing values are  
+    found.  A possible alternative is \code{na.omit}, which 
+    deletes observations that contain one or more missing values. 
+  }
+  \item{method}{
+    the algorithmic method used to compute the fit.  There are currently 
+    three options:   The default method is the modified  version of the
+    Barrodale and Roberts algorithm for \eqn{l_1}{l1}-regression,
+    used by \code{l1fit} in S, and is described in detail in 
+    Koenker and d'Orey(1987, 1994),  default = \code{"br"}. 
+    This is quite efficient for problems up to several thousand observations, 
+    and may be used to compute the full quantile regression process.  It 
+    also implements a scheme for computing confidence intervals for 
+    the estimated parameters, based on inversion of a rank test described 
+    in Koenker(1994).  For larger problems it is advantagous to use 
+    the Frisch--Newton interior point method \code{"fn"}. 
+    And very large problems one can use the Frisch-=Newton approach after 
+    preprocessing \code{"pfn"}.  Both of the latter methods are
+    described in detail in Portnoy and Koenker(1997). 
+  }
+  \item{contrasts}{
+    a list giving contrasts for some or all of the factors 
+    default = \code{NULL} appearing in the model formula. 
+    The elements of the list should have the same name as the variable 
+    and should be either a contrast matrix (specifically, any full-rank 
+    matrix with as many rows as there are levels in the factor), 
+    or else a function to compute such a matrix given the number of levels. 
+  }
+  \item{...}{
+    additional arguments for the fitting routines 
+    (see \code{\link{rq.fit.br}} and \code{\link{rq.fit.fn}}
+    and the functions they call). 
+  }
 }
-\item{y}{
-response vector with as many observations as the number of rows of x. 
-}
-\item{tau}{
-desired quantile. If tau is missing or outside the range [0,1]
-then all the regression quantiles are computed and the corresponding primal and dual solutions are returned.
-}
-\item{alpha}{
-level of significance for the confidence intervals; default is set at 10\%.
-}
-\item{dual}{
-return the dual solution if TRUE (default).
-}
-\item{int}{
-flag for intercept; if TRUE (default) an intercept term is included in the regression.
-}
-\item{tol}{
-tolerance parameter for rq computations.
-}
-\item{ci}{
-flag for confidence interval; if TRUE (default) the confidence intervals are 
-returned.
-}
-\item{method}{
-if method="score" (default), ci is computed using regression rank score inversion;
-if method="sparsity", ci is computed using sparsity function.
-}
-\item{interpolate}{
-if TRUE (default), the smoothed confidence intervals are returned.
-}
-\item{tcrit}{
-if tcrit=T (default), a finite sample adjustment of the critical point is
-performed using Student's t quantile, else the standard Gaussian quantile is 
-used.
-}
-\item{hs}{
-logical flag to use Hall-Sheather's sparsity estimator (default); otherwise Bofinger's
-version is used.
-}}
 \value{
-
-
-\item{coef}{
-the estimated parameters of the tau-th conditional quantile function.
+  See \code{\link{rq.object}} and \code{\link{rq.process.object}} for details. 
 }
-\item{resid}{
-the estimated residuals of the tau-th conditional quantile function.
-}
-\item{dual}{
-the dual solution (if dual=T).
-}
-\item{h}{
-the index of observations in the basis.
-}
-\item{ci}{
-confidence intervals (if ci=T).
-}}
-\value{
-
-
-\item{sol}{
-a  (p+2) by m matrix whose first row contains the 'breakpoints'
-tau_1,tau_2,\dots{}tau_m, of the quantile function, 
-i.e. the values in [0,1] at which the
-solution changes, row two contains the corresponding quantiles
-evaluated at the mean design point, i.e. the inner product of
-xbar and b(tau_i), and the last p rows of the matrix give b(tau_i).
-The solution b(tau_i) prevails from tau_i to tau_i+1.
-}
-\item{dsol}{
-the matrix of dual solutions corresponding to the primal solutions in sol.
-This is an n by m matrix whose ij-th entry is 1 if y_i > x_i b(tau_j), 
-is 0 if y_i < x_i b(tau_j),  and is between 0 and 1 otherwise, i.e. if
-the residual is zero.  See Gutenbrunner and Jureckova(1991) for a
-detailed discussion of the statistical interpretation of dsol.
-}
-\item{h}{
-the matrix of observations indices in the basis corresponding to sol or dsol.
-}}
-\author{Roger Koenker, \email{roger@ysidro.econ.uiuc.edu}, 
-        \url{http://www.econ.uiuc.edu/~roger/research/rq/rq.html}. Ported
-        to R, and added rq.formula, by Kjetil Halvorsen.}
 \examples{
 data(stackloss)
-rq(stack.x, stack.loss, .5)  #the l1 estimate for the stackloss data
-rq(stack.x, stack.loss, tau=.5, ci=T, method="score")  #same as above with 
-	#regression rank score inversion confidence interval
-rq(stack.x, stack.loss, .25)  #the 1st quartile, 
-	#note that 8 of the 21 points lie exactly 
-	#on this plane in 4-space
-rq(stack.x, stack.loss, -1)   #this gives all of the rq solutions
-rq(y=rnorm(10), method="sparsity")	#ordinary sample quantiles
-\dontrun{data(Patacamaya)}               # an example with formula
-\dontrun{ z0.1 <- rq.formula(y ~ a+tipo, data=Patacamaya, na.action=na.omit, tau=0.1)}
-\dontrun{z0.1$coef}
-\dontrun{z0.1$ci}
+rq(stack.loss ~ stack.x,.5)  #median (l1) regression  fit for the stackloss data. 
+rq(stack.loss ~ stack.x,.25)  #the 1st quartile, 
+        #note that 8 of the 21 points lie exactly on this plane in 4-space 
+rq(stack.loss ~ stack.x, tau=-1)   #this returns the full rq process
+rq(rnorm(50) ~ 1, ci=F)    #ordinary sample median --no rank inversion ci
+rq(rnorm(50) ~ 1, weights=runif(50),ci=F)  #weighted sample median 
 }
-\section{METHOD}{
-The algorithm used is a modification of the Barrodale and Roberts
-algorithm for l1-regression, l1fit in S, and is described in detail
-in Koenker and d"Orey(1987).
+\section{Method}{
+The function computes an estimate on the tau-th conditional quantile
+function of the response, given the covariates, as specified by the
+formula argument.  Like \code{lm()}, the function presumes a linear
+specification for the quantile regression model, i.e. that the formula
+defines a model that is linear in parameters.  For non-linear quantile
+regression see the function \code{nlrq()}.  [To appear real soon now on
+a screen near you.]  The function minimizes a weighted sum of absolute
+residuals that can be formulated as a linear programming problem.  As
+noted above, there are three different algorithms that can be chosen
+depending on problem size and other characteristics.  For moderate sized
+problems (\eqn{n \ll 5,000, p \ll 20}{n << 5,000, p << 20}) it is recommended that the default
+\code{"br"} method be used. There are several choices of methods for
+computing confidence intervals and associated test statistics.  Using
+\code{"br"} the default approach produces confidence intervals for each
+of the estimated model parameters based on inversion of a rank test.
+See the documentation for \code{\link{rq.fit.br}} for further details
+and options.  For larger problems, the \code{"fn"} and \code{"pfn"} are
+preferred, and there are several methods of computing standard errors
+and associated test statistics described in the help files for
+\code{\link{rq.fit.fn}}, and \code{\link{summary.rq}}.
 }
+
 \keyword{regression}
 \references{
-[1] Koenker, R.W. and Bassett, G.W. (1978). Regression quantiles, Econometrica, 46, 33-50.
+[1] Koenker, R. W. and Bassett, G. W. (1978). Regression quantiles, 
+\emph{Econometrica}, \bold{46}, 33--50. 
 
-
-
-[2] Koenker, R.W. and d'Orey (1987). Computing Regression Quantiles. Applied Statistics, 36, 383-393.
-
-
+[2] Koenker, R.W. and d'Orey (1987, 1994). Computing regression quantiles. 
+\emph{Applied Statistics}, \bold{36}, 383--393, and \bold{43}, 410--414. 
 
 [3] Gutenbrunner, C. Jureckova, J. (1991). 
 Regression quantile and regression rank score process in the 
-linear model and derived statistics, Annals of Statistics, 20, 305-330.
+linear model and derived statistics, \emph{Annals of Statistics},
+\bold{20}, 305--330.
 
+[4] Koenker, R. W. (1994). Confidence Intervals for regression quantiles, in 
+P. Mandl and M. Huskova (eds.), \emph{Asymptotic Statistics}, 349--359,  
+Springer-Verlag, New York.   
 
-
-[4] Koenker, R.W. and d'Orey (1994).  Remark on Alg. AS 229: Computing Dual
-Regression Quantiles and Regression Rank Scores, Applied Statistics, 43, 410-414.
-
-
-
-[5] Koenker, R.W. (1994). Confidence Intervals for Regression Quantiles, in
-P. Mandl and M. Huskova (eds.), Asymptotic Statistics, 349-359, Springer-Verlag,
-New York.
-
-
-
+There is also recent information available at the URL:
+\url{http://www.econ.uiuc.edu}.
 }
-\section{SEE ALSO}{
-trq and qrq for further details and references.
-
-
+\seealso{
+  \code{\link{summary.rq}}, \code{\link{rq.object}},
+  \code{\link{rq.process.object}}
 }
-% Converted by Sd2Rd version 0.3-2.
+% Converted by Sd2Rd version 0.3-3.
