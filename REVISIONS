@@ -58,3 +58,16 @@ is an interior point method for fitting rq problems subject to inequality
 constraints on the coefficients.  The algorithm is a modified version
 of the interior point method used for unconstrained problems and should
 be described in detail (eventually) in a paper with Pin Ng.
+
+3.10 July 4 2002
+
+1.  Revised slightly the rq.fit.fnb function and the related ratfor/fortran
+code to enable it to start at a (dual) point  that doesn't satisfy the
+equality constraints.  And attempted to fix the many places that used T/F
+rather than TRUE/FALSE in preparation for R-1.6.0 (at the suggestion of
+Kurt Hornik.)
+
+3.11 July 10 2002
+
+1.  Fixed a few more T/F's at Kurt's behest, and changed some _ to <- in
+the examples.  And added PACKAGE = "quantreg") to the .Fortran calls.

@@ -5,7 +5,7 @@
  function to compute bandwidth for sparsity estimation 
 }
 \usage{
-bandwidth.rq(p, n, hs=T, alpha=0.05)
+bandwidth.rq(p, n, hs=TRUE, alpha=0.05)
 }
 \arguments{
   \item{p}{ quantile(s) of interest }
@@ -13,8 +13,8 @@ bandwidth.rq(p, n, hs=T, alpha=0.05)
   \item{hs}{ flag for hall-sheather method }
   \item{alpha}{ alpha level for intended confidence intervals }
 }
-\details{ If hs=T (default) then the Hall-Sheather(1988) rule \eqn{O(n^{-1/3})}
-is used, if hs=F then the Bofinger \eqn{O(n^{-1/5})} is used.
+\details{ If hs=TRUE (default) then the Hall-Sheather(1988) rule \eqn{O(n^{-1/3})}
+is used, if hs=FALSE then the Bofinger \eqn{O(n^{-1/5})} is used.
 }
 \value{
 returns a vector of bandwidths corresponding to the argument p.

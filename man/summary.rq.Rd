@@ -8,7 +8,7 @@ Returns a summary list for a quantile regression fit.  A null value
 will be returned if printing is invoked.
 }
 \usage{
-summary.rq(object, se="nid", covariance=T, hs = T, ...)
+summary.rq(object, se="nid", covariance=TRUE, hs = TRUE, ...)
 }
 \arguments{
   \item{object}{
@@ -51,14 +51,14 @@ summary.rq(object, se="nid", covariance=T, hs = T, ...)
 }
 \item{cov}{
   the estimated covariance matrix for the coefficients in the model,
-  provided that \code{cov=T} in the called sequence.
+  provided that \code{cov=TRUE} in the called sequence.
 }
 \item{Hinv}{
-  inverse of the estimated Hessian matrix returned if \code{cov=T} and
+  inverse of the estimated Hessian matrix returned if \code{cov=TRUE} and
   \code{se != "iid"}.
 }
 \item{J}{
-  Outer product of gradient matrix returned if \code{cov=T} and \code{se
+  Outer product of gradient matrix returned if \code{cov=TRUE} and \code{se
     != "iid"}. The Huber sandwich is \code{cov = Hinv \%*\% J \%*\% Hinv}.
 }}
 \references{
@@ -73,7 +73,7 @@ data(stackloss)
 y <- stack.loss
 x <- stack.x
 summary(rq(y ~ x, method="fn")) # Compute se's for fit using "nid" method.
-summary(rq(y ~ x, ci=F),se="ker")
+summary(rq(y ~ x, ci=FALSE),se="ker")
 # default "br" alg, and compute kernel method se's
 }
 \keyword{regression}

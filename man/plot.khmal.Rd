@@ -63,7 +63,7 @@ plot(fit.Lonly, var.list=c(2,4))
 }
 \keyword{htest}
 \references{
-  Koenker, Roger and Zhijie Xiao (2000),
-  ``Inference on the Quantile Regression Process'', unpublished.
-  \url{http://www.econ.uiuc.edu/~roger/research/inference/inference.html}
+Koenker, Roger and Zhijie Xiao (2000), "Inference on the Quantile
+Regression Process'', unpublished.
+\url{http://www.econ.uiuc.edu/~roger/research/inference/inference.html}
 }

@@ -49,7 +49,9 @@
       ds(i)=z(i)-w(i)
       dz(i)=d(i)*ds(i)
 23008 continue
-      call dgemv('N',p,n,one,a,p,dz,1,zero,dy,1)
+      call dcopy(p,b,1,dy,1)
+      call dgemv('N',p,n,mone,a,p,x,1,one,dy,1)
+      call dgemv('N',p,n,one,a,p,dz,1,one,dy,1)
       call dcopy(p,dy,1,rhs,1)
       call stepy(n,p,a,d,dy,ada,info)
       if(.not.(info .ne. 0))goto 23010

@@ -30,7 +30,7 @@ double precision dx(n),ds(n),dy(p),dz(n),dw(n),dr(n)
 
 data zero /0.0d0/
 data one  /1.0d0/
-data mone  /-1.0d0/
+data mone /-1.0d0/
 data big /1.0d+20/
 data maxit /50/
 
@@ -76,7 +76,9 @@ while(gap > eps && nit(1)<maxit) {
 		ds(i)=z(i)-w(i)
 		dz(i)=d(i)*ds(i)
 		}
-	call dgemv('N',p,n,one,a,p,dz,1,zero,dy,1) #ADr
+	call dcopy(p,b,1,dy,1)#save rhs
+	call dgemv('N',p,n,mone,a,p,x,1,one,dy,1) 
+	call dgemv('N',p,n,one,a,p,dz,1,one,dy,1) 
 	call dcopy(p,dy,1,rhs,1)#save rhs
 	call stepy(n,p,a,d,dy,ada,info)
 	if(info != 0) return

@@ -89,8 +89,8 @@ rq(stack.loss ~ stack.x,.5)  #median (l1) regression  fit for the stackloss data
 rq(stack.loss ~ stack.x,.25)  #the 1st quartile, 
         #note that 8 of the 21 points lie exactly on this plane in 4-space! 
 rq(stack.loss ~ stack.x, tau=-1)   #this returns the full rq process
-rq(rnorm(50) ~ 1, ci=F)    #ordinary sample median --no rank inversion ci
-rq(rnorm(50) ~ 1, weights=runif(50),ci=F)  #weighted sample median 
+rq(rnorm(50) ~ 1, ci=FALSE)    #ordinary sample median --no rank inversion ci
+rq(rnorm(50) ~ 1, weights=runif(50),ci=FALSE)  #weighted sample median 
 #Example to illustrate inequality constrained fitting
 n <- 100
 p <- 5

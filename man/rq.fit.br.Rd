@@ -11,7 +11,7 @@ Quantile Regression Fitting by Exterior Point Methods
   via the \code{\dots{}} argument of \code{rq()}.
 }
 \usage{
-rq.fit.br(x, y, tau=0.5, alpha=0.1, ci=T, iid=T, interp=T, tcrit=T)
+rq.fit.br(x, y, tau=0.5, alpha=0.1, ci=TRUE, iid=TRUE, interp=TRUE, tcrit=TRUE)
 }
 \arguments{
 \item{x}{
@@ -31,7 +31,7 @@ rq.fit.br(x, y, tau=0.5, alpha=0.1, ci=T, iid=T, interp=T, tcrit=T)
   logical flag if T then compute confidence intervals for the parameters
   using the rank inversion method of Koenker (1994).  See \code{rq()} for more
   details.  If F then return only the estimated coefficients.  Note that
-  for large problems the default option ci = T can be rather slow.
+  for large problems the default option ci = TRUE can be rather slow.
   Note also that rank inversion only works for p>1, an error message is
   printed in the case that ci=T and p=1.
 }
@@ -83,7 +83,7 @@ processes for quantile regression,
 }
 \examples{
 data(stackloss)
-rq.fit.br(stack.x, stack.loss, tau=.73 ,interp=F)
+rq.fit.br(stack.x, stack.loss, tau=.73 ,interp=FALSE)
 }
 \keyword{regression}
 % Converted by Sd2Rd version 0.3-3.

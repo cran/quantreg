@@ -7,7 +7,7 @@
 	of the model and columns for each quantile estimated.
 }
 \usage{
-latex.table.rq(object, transpose = F, caption="caption goes here.", 
+latex.table.rq(object, transpose = FALSE, caption="caption goes here.", 
 	digits=3, file="a")
 }
 %- maybe also `usage' for other objects documented here.

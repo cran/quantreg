@@ -5,12 +5,12 @@
 Standardize the rq process prior to Khmaladze transformation.
 }
 \usage{
-standardize(rqfit, location.scale=T)
+standardize(rqfit, location.scale=TRUE)
 }
 %- maybe also `usage' for other objects documented here.
 \arguments{
   \item{rqfit}{ Object produced by rq.test.khmal rq fitting}
-  \item{location.scale}{ If T location-scale test, if F location test}
+  \item{location.scale}{ If TRUE location-scale test, if FALSE location test}
 }
 \details{
 Compute standardized rq process.

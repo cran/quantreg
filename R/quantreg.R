@@ -1,14 +1,14 @@
 "bandwidth.rq" <-
-function(p, n, hs = T, alpha = 0.05)
+function(p, n, hs = TRUE, alpha = 0.05)
 {
 	# Bandwidth selection for sparsity estimation two flavors:
 	#	Hall and Sheather(1988, JRSS(B)) rate = O(n^{-1/3})
 	#	Bofinger (1975, Aus. J. Stat)  -- rate = O(n^{-1/5})
-	# Generally speaking, default method, hs=T is preferred.
+	# Generally speaking, default method, hs=TRUE is preferred.
 	PI <- pi
 	x0 <- qnorm(p)
 	f0 <- (1/sqrt(2 * PI)) * exp( - ((x0^2/2)))
-	if(hs == T)
+	if(hs == TRUE)
 		n^(-1/3) * qnorm(1 - alpha/2)^(2/3) * ((1.5 * f0^2)/(2 * x0^
 			2 + 1))^(1/3)
 	else n^-0.2 * ((4.5 * f0^4)/(2 * x0^2 + 1)^2)^ 0.2
@@ -63,7 +63,7 @@ function(x, digits = max(5, .Options$digits - 2), ...)
 	rdf <- x$rdf
 	tau <- x$tau
 	cat("\nCoefficients:\n")
-	print(format(round(coef, digits = digits)), quote = F, ...)
+	print(format(round(coef, digits = digits)), quote = FALSE, ...)
 	invisible(x)
 }
 
@@ -124,7 +124,7 @@ function(formula, tau = 0.5, data, weights, na.action, method = "br", contrasts
 	 = NULL, ...)
 {
 	call <- match.call()
-	m <- match.call(expand = F)
+	m <- match.call(expand = FALSE)
 	m$method <- m$model <- m$x <- m$y <- m$contrasts <- m$tau <- m$... <-
 		NULL
 	m[[1]] <- as.name("model.frame")
@@ -184,32 +184,32 @@ function(x, y, tau = 0.5, method = "br", ...)
 #
 #       if tau is between 0 and 1 then only one quantile solution is computed.
 #
-#       if ci = F  then just the point estimate and residuals are returned
-#		If the column dimension of x is 1 then ci is set to F since
+#       if ci = FALSE  then just the point estimate and residuals are returned
+#		If the column dimension of x is 1 then ci is set to FALSE since
 #		since the rank inversion method has no proper null model.
-#       if ci = T  then there are two options for confidence intervals:
+#       if ci = TRUE  then there are two options for confidence intervals:
 #
-#               1.  if iid = T we get the original version of the rank
+#               1.  if iid = TRUE we get the original version of the rank
 #                       inversion intervals as in Koenker (1994)
-#               2.  if iid = F we get the new version of the rank inversion
+#               2.  if iid = FALSE we get the new version of the rank inversion
 #                       intervals which accounts for heterogeneity across
 #                       observations in the conditional density of the response.#                       The theory of this is described in Koenker-Machado(1999)#
 #               Both approaches involve solving a parametric linear programming
 #               problem, the difference is only in the factor qn which
 #               determines how far the PP goes.  In either case one can
 #               specify two other options:
-#                       1. interp = F returns two intervals an upper and a
+#                       1. interp = FALSE returns two intervals an upper and a
 #                               lower corresponding to a level slightly
 #                               above and slightly below the one specified
 #                               by the parameter alpha and dictated by the
 #                               essential discreteness in the test statistic.
-#				interp = T  returns a single interval based on
+#				interp = TRUE  returns a single interval based on
 #                               linear interpolation of the two intervals
 #                               returned:  c.values and p.values which give
 #                               the critical values and p.values of the
-#                               upper and lower intervals. Default: interp = T.
-#                       2.  tcrit = T uses Student t critical values while
-#                               tcrit = F uses normal theory ones.
+#                               upper and lower intervals. Default: interp = TRUE.
+#                       2.  tcrit = TRUE uses Student t critical values while
+#                               tcrit = FALSE uses normal theory ones.
 # 2. For Multiple Quantiles:
 #
 #       if tau < 0 or tau >1 then it is presumed that the user wants to find
@@ -223,8 +223,8 @@ function(x, y, tau = 0.5, method = "br", ...)
 #	not recommended for problems with n > 10,000.
 #	In large problems a grid of solutions is probably sufficient.
 #
-function(x, y, tau = 0.5, alpha = 0.10000000000000001, ci = T, 
-	iid = T, interp = T, tcrit = T)
+function(x, y, tau = 0.5, alpha = 0.10000000000000001, ci = TRUE, 
+	iid = TRUE, interp = TRUE, tcrit = TRUE)
 {
 	tol <- .Machine$double.eps^(2/3)
 	eps <- tol
@@ -237,23 +237,23 @@ function(x, y, tau = 0.5, alpha = 0.10000000000000001, ci = T,
 	if(tau < 0 || tau > 1) {
 		nsol <- 3 * n
 		ndsol <- 3 * n
-		lci1 <- F
+		lci1 <- FALSE
 		qn <- rep(0, p)
 		cutoff <- 0
 		tau <- -1
 	}
 	else {
-		if(p==1) ci <- F
+		if(p==1) ci <- FALSE
 		if(ci) {
-			lci1 <- T
+			lci1 <- TRUE
 			if(tcrit)
 				cutoff <- qt(1 - alpha/2, n - p)
 			else cutoff <- qnorm(1 - alpha/2)
 			if(!iid) {
-				h <- bandwidth.rq(tau, n, hs = T)
-				bhi <- rq.fit.br(x, y, tau + h, ci = F)
+				h <- bandwidth.rq(tau, n, hs = TRUE)
+				bhi <- rq.fit.br(x, y, tau + h, ci = FALSE)
 				bhi <- coefficients(bhi)
-				blo <- rq.fit.br(x, y, tau - h, ci = F)
+				blo <- rq.fit.br(x, y, tau - h, ci = FALSE)
 				blo <- coefficients(blo)
 				dyhat <- x %*% (bhi - blo)
 				if(any(dyhat <= 0)) {
@@ -271,7 +271,7 @@ function(x, y, tau = 0.5, alpha = 0.10000000000000001, ci = T,
 			else qn <- 1/diag(solve(crossprod(x)))
 		}
 		else {
-			lci1 <- F
+			lci1 <- FALSE
 			qn <- rep(0, p)
 			cutoff <- 0
 		}
@@ -304,7 +304,8 @@ function(x, y, tau = 0.5, alpha = 0.10000000000000001, ci = T,
 		ci = double(4 * p),
 		tnmat = double(4 * p),
 		as.double(big),
-		as.logical(lci1))
+		as.logical(lci1),
+		PACKAGE = "quantreg")
 	if(z$flag != 0)
 		warning(switch(z$flag,
 			"Solution may be nonunique",
@@ -373,7 +374,7 @@ function (x, y, tau = 0.5, beta = 0.99995, eps = 1e-06)
         c = as.double(-y), rhs = as.double(rhs), d = as.double(d),as.double(u),
         beta = as.double(beta), eps = as.double(eps), 
         wn = as.double(wn), wp = double((p + 3) * p), aa = double(p *
-            p), it.count = integer(2), info = integer(1))
+            p), it.count = integer(2), info = integer(1),PACKAGE= "quantreg")
     if (z$info != 0)
         stop(paste("Error info = ", z$info, "in stepy: singular design"))
     coefficients <- -z$wp[1:p]
@@ -399,8 +400,8 @@ function (x, y, tau = 0.5, beta = 0.99995, eps = 1e-06)
     z <- .Fortran("rqfnb", as.integer(n), as.integer(p), a = as.double(t(as.matrix(x))),
         c = as.double(-y), rhs = as.double(rhs), d = as.double(d),as.double(u),
         beta = as.double(beta), eps = as.double(eps), 
-        wn = as.double(wn), wp = double((p + 3) * p), aa = double(p *
-            p), it.count = integer(2), info = integer(1))
+        wn = as.double(wn), wp = double((p + 3) * p), 
+        it.count = integer(2), info = integer(1),PACKAGE= "quantreg")
     if (z$info != 0)
         stop(paste("Error info = ", z$info, "in stepy: singular design"))
     coefficients <- -z$wp[1:p]
@@ -435,7 +436,7 @@ function (x, y, R, r, tau = 0.5, beta = 0.9995, eps = 1e-08)
 	rhs = as.double(rhs), d1 = double(n1), d2 = double(n2),
 	as.double(u), beta = as.double(beta), eps = as.double(eps), 
 	wn1 = as.double(wn1), wn2 = as.double(wn2), wp = double((p + 3) * p), 
-	it.count = integer(2), info = integer(1))
+	it.count = integer(2), info = integer(1),PACKAGE= "quantreg")
     if (z$info != 0) 
         stop(paste("Error info = ", z$info, "in stepy2: singular design"))
     coefficients <- -z$wp[1:p]
@@ -470,7 +471,7 @@ function(x, y, tau = 0.5,  Mm.factor = 0.8,
 		stop("tau outside (0,1)")
 	p <- ncol(x)
 	m <- round(((p + 1) * n)^(2/3))
-	not.optimal <- T
+	not.optimal <- TRUE
 	while(not.optimal) {
 		if(m < n)
 			s <- sample(n, m)
@@ -496,14 +497,14 @@ function(x, y, tau = 0.5,  Mm.factor = 0.8,
 			xx <- x[!su & !sl,  ]
 			yy <- y[!su & !sl]
 			if(any(sl)) {
-				glob.x <- c(t(x[sl,  , drop = F]) %*% rep(
+				glob.x <- c(t(x[sl,  , drop = FALSE]) %*% rep(
 					1, sum(sl)))
 				glob.y <- sum(y[sl])
 				xx <- rbind(xx, glob.x)
 				yy <- c(yy, glob.y)
 			}
 			if(any(su)) {
-				ghib.x <- c(t(x[su,  , drop = F]) %*% rep(
+				ghib.x <- c(t(x[su,  , drop = FALSE]) %*% rep(
 					1, sum(su)))
 				ghib.y <- sum(y[su])
 				xx <- rbind(xx, ghib.x)
@@ -525,7 +526,7 @@ function(x, y, tau = 0.5,  Mm.factor = 0.8,
 				sl <- sl & !sl.bad
 				bad.fixup <- bad.fixup + 1
 			}
-			else not.optimal <- F
+			else not.optimal <- FALSE
 		}
 	}
 	coefficients <- b
@@ -579,7 +580,7 @@ function(x0, x1, y, v, score = "wilcoxon")
 # added.  In this instance, "summarizing" means essentially provision
 # of either standard errors, or confidence intervals for the rq coefficents.
 # Since the preferred method for confidence intervals is currently the
-# rank inversion method available directly from rq() by setting ci=T, with br=T.
+# rank inversion method available directly from rq() by setting ci=TRUE, with br=TRUE.
 # these summary methods are intended primarily for comparison purposes
 # and for use on large problems where the parametric programming methods
 # of rank inversion are prohibitively memory/time consuming.  Eventually
@@ -588,7 +589,7 @@ function(x0, x1, y, v, score = "wilcoxon")
 #
 # Object is the result of a call to rq(), and the function returns a
 # table of coefficients, standard errors, "t-statistics", and p-values, and, if
-# covariance=T a structure describing the covariance matrix of the coefficients,
+# covariance=TRUE a structure describing the covariance matrix of the coefficients,
 # i.e. the components of the Huber sandwich.
 #
 # There are three options for "se":
@@ -603,7 +604,7 @@ function(x0, x1, y, v, score = "wilcoxon")
 # See the inference chapter of the putative QR book for further details.
 #
 #
-function(object, se = "nid", covariance = T, hs = T, ...)
+function(object, se = "nid", covariance = TRUE, hs = TRUE, ...)
 {
 	x <- object$x
 	y <- object$y
@@ -674,7 +675,7 @@ function(object, se = "nid", covariance = T, hs = T, ...)
 	coef[, 4] <- if(rdf > 0) 2 * (1 - pt(abs(coef[, 3]), rdf)) else NA
 #	object <- object[c("call", "terms", "assign")]
 	object <- object[c("call", "terms")]
-	if(covariance == T) {
+	if(covariance == TRUE) {
 		object$cov <- cov
 		if(se != "iid") {
 			object$Hinv <- fxxinv
@@ -710,7 +711,8 @@ function(x, z = seq(min(x), max(x),  , 2 * length(x)),
                 h = as.double(h),
                 as.double(alpha),
                 as.double(kappa),
-                double(nx))
+                double(nx),
+		PACKAGE = "quantreg")
         dens <- A$dens
         psi <- A$psi
         score <- A$score
@@ -718,7 +720,7 @@ function(x, z = seq(min(x), max(x),  , 2 * length(x)),
         return(dens, psi, score, h)
 }
 "lm.fit.recursive" <-
-function(X, y, int = T)
+function(X, y, int = TRUE)
 {
 	if(int)
 		X <- cbind(1, X)
@@ -739,17 +741,18 @@ function(X, y, int = T)
 		as.double(y),
 		b = as.double(b),
 		as.double(A),
-		as.double(Ax) )
+		as.double(Ax), 
+		PACKAGE = "quantreg")
 	bhat <- matrix(z$b, p, n)
 	return(bhat)
 }
 "standardize" <-
-function (rqfit, location.scale = T) 
+function (rqfit, location.scale = TRUE) 
 {
     Vhat <- rqfit$fit
     vhat <- rqfit$fit
     b <- rqfit$b
-    if (location.scale == T) {
+    if (location.scale == TRUE) {
         for (j in 1:length(rqfit$taus)) {
             V <- rqfit$Hfit[, , j] %*% rqfit$Jn %*% rqfit$Hfit[, , j]
             v <- V[-1, -1] + V[1, 1] * outer(b[2, -1], b[2, -1]) - 
@@ -806,7 +809,7 @@ function(tau, atau, Z, location.scale)
 		x1 <- gdot*sqrt(dtau)
 		x1 <- x1[L:1,]
 		y1 <- rev(dv/sqrt(dtau))
-		bhat <- lm.fit.recursive(x1,y1,int=F)
+		bhat <- lm.fit.recursive(x1,y1,int=FALSE)
 		bhat <- bhat[,L:1]
 		dvhat <- diag(gdot%*%bhat)*dtau
 		vhat <- cumsum(dvhat)
@@ -858,7 +861,7 @@ function (x, nrow = ceiling(length(x$var.list)/2), ncol = 2,
 		{
 			plot(x$taus,x$fit[i,], type="l",
 				ylab=var.names[i], xlab="")
-			if(location.scale==T)
+			if(location.scale==TRUE)
 			{
 				lines(x$taus,cbind(1,x$fit[1,])%*%
 					x$b[,i],lty=2)
@@ -921,7 +924,7 @@ function (x, nrow = ceiling(length(x$var.list)/2), ncol = 2,
 		par( mfrow=c(nrow, ncol) )
 		for(i in var.list)
 		{
-			if(location.scale==T)
+			if(location.scale==TRUE)
 			{
 				plot(x$taus, x$Tvtilde[i,], type="l",
 					ylab=var.names[i], xlab="")
@@ -936,7 +939,7 @@ function (x, nrow = ceiling(length(x$var.list)/2), ncol = 2,
 	}	
 }
 "rq.test.khmal" <- 
-function(formula, data, taus=seq(0.2,0.8,by=0.002), location.scale = T, 
+function(formula, data, taus=seq(0.2,0.8,by=0.002), location.scale = TRUE, 
 trim = c(0.25, 0.75) ) 
 {
 	if(!is.data.frame(data))
@@ -962,7 +965,7 @@ trim = c(0.25, 0.75) )
 	for(i in 1:Jt)
 	{
 		cat(taus[i]," ")
-		z <- summary(rq(formula,tau=taus[i],method="fn", data=x), hs=F)
+		z <- summary(rq(formula,tau=taus[i],method="fn", data=x), hs=FALSE)
 		fit[,i] <- z$coefficients[,1]
 		Hfit[,,i] <- z$Hinv
 	}
@@ -977,7 +980,7 @@ trim = c(0.25, 0.75) )
     #
     b <- matrix(0,2,dim(Jn)[1])
     ER <- fit
-    if(location.scale==F)
+    if(location.scale==FALSE)
     {
         b <- apply(fit,1,mean)
         ER <- fit - b
@@ -1009,7 +1012,7 @@ trim = c(0.25, 0.75) )
 				J$Vhat, location.scale)
     vtilde <- khmaladzize(fit.t.out$taus, fit.t.out$fit[1,], 
 				J$vhat, location.scale)
-	if(location.scale==T)
+	if(location.scale==TRUE)
     {
         Tvtilde <- (vtilde-vtilde[,2])/ 
 				sqrt(max(fit.t.out$taus)-min(fit.t.out$taus))
@@ -1019,7 +1022,7 @@ trim = c(0.25, 0.75) )
 	# and location hypotheses.
 	#
 	trim <- ( fit.t.out$taus >= trim[1] & fit.t.out$taus <= trim[2] )	
-    if(location.scale==T)
+    if(location.scale==TRUE)
     {
         #Compute joint test of location scale hypothesis.
         Kn <- max( apply(abs(Vtilde-Vtilde[2])/
@@ -1041,7 +1044,7 @@ trim = c(0.25, 0.75) )
 	#
 	# Class stuff
 	#
-    if( location.scale == T)
+    if( location.scale == TRUE)
     {
         x <- list(location.scale = location.scale, 
 		b = b, J = J, Vtilde = Vtilde, vtilde = vtilde, 

@@ -1,5 +1,5 @@
 "latex.table.rq" <-
-function (object, transpose = F, caption = "caption goes here.", digits = 3,
+function (object, transpose = FALSE, caption = "caption goes here.", digits = 3,
     file = as.character(substitute(object)))
 {
     a <- format(round(object$a, digits))
@@ -67,16 +67,16 @@ function (x, nrow = 3, ncol = 2, alpha= .1, ...)
 "latex.table" <-
 function (x, file = as.character(substitute(x)), rowlabel = file, 
     rowlabel.just = "l", cgroup, n.cgroup, rgroup, n.rgroup = NULL, 
-    digits, dec, rdec, cdec, append = F, dcolumn = F, cdot = F, 
-    longtable = F, table.env = T, lines.page = 40, caption, caption.lot, 
-    label = file, double.slash = F) 
+    digits, dec, rdec, cdec, append = FALSE, dcolumn = FALSE, cdot = FALSE, 
+    longtable = FALSE, table.env = TRUE, lines.page = 40, caption, caption.lot, 
+    label = file, double.slash = FALSE) 
 {
     nc <- ncol(x)
     nr <- nrow(x)
     if (missing(caption) & !missing(caption.lot)) 
         warning("caption.lot is ignored unless caption is specified")
     if (!longtable & !table.env & !missing(caption)) 
-        stop("you must have table.env=T if caption is given")
+        stop("you must have table.env=TRUE if caption is given")
     if (!missing(digits)) 
         .Options$digits <- digits
     sl <- if (double.slash) 
@@ -119,7 +119,7 @@ function (x, file = as.character(substitute(x)), rowlabel = file,
         #cx <- translate(cx, " ", "~")
         cx <- matrix(chartr(" ", "~", cx), nrow=nr)
         if (cdot) {
-            #cx <- translate(cx, "[.]", "\\\\cdot", multichar = T)
+            #cx <- translate(cx, "[.]", "\\\\cdot", multichar = TRUE)
             cx <- gsub("[.]", "\\\\cdot", cx)
             cx <- matrix(paste("$", cx, "$", sep = ""), nrow = nr)
             cx[is.na(x)] <- ""
@@ -144,10 +144,10 @@ function (x, file = as.character(substitute(x)), rowlabel = file,
     #start new file
     if (!append) 
         cat("", file = fi)
-    cat("%", deparse(match.call()), "\n%\n", file = fi, append = T)
+    cat("%", deparse(match.call()), "\n%\n", file = fi, append = TRUE)
     if (dcolumn) 
         cat(sl, "newcolumn{.}{D{.}{", sl, "cdot}{-1}}\n", file = fi, 
-            append = T)
+            append = TRUE)
     if (!is.null(rowlabel)) 
         form <- paste("|", rowlabel.just, "|", sep = "")
     else form <- ""
@@ -179,17 +179,17 @@ function (x, file = as.character(substitute(x)), rowlabel = file,
     if (!longtable) {
         if (table.env) 
             cat(sl, "begin{table}[hptb]\n", sep = "", file = fi, 
-                append = T)
-        cat(sl, "begin{center}\n", file = fi, sep = "", append = T)
+                append = TRUE)
+        cat(sl, "begin{center}\n", file = fi, sep = "", append = TRUE)
         cat(sl, "begin{tabular}{", form, "} ", sl, "hline", hline, 
-            "\n", sep = "", file = fi, append = T)
+            "\n", sep = "", file = fi, append = TRUE)
     }
     else {
         cat(paste(sl, "setlongtables", sep = ""), paste(sl, "begin{longtable}{", 
-            form, "}", sep = ""), sep = "\n", file = fi, append = T)
+            form, "}", sep = ""), sep = "\n", file = fi, append = TRUE)
         if (!missing(caption)) 
-            cat(caption, sl, sl, "\n", sep = "", file = fi, append = T)
-        cat(sl, "hline", hline, "\n", sep = "", file = fi, append = T)
+            cat(caption, sl, sl, "\n", sep = "", file = fi, append = TRUE)
+        cat(sl, "hline", hline, "\n", sep = "", file = fi, append = TRUE)
     }
     if (!missing(cgroup)) {
         cgroup <- paste(sl, "bf ", cgroup, sep = "")
@@ -211,8 +211,8 @@ function (x, file = as.character(substitute(x)), rowlabel = file,
                   cgroup[k], "}", sep = ""))
             g <- paste(sl, "cline{2-", nc + 1, "}", sep = "")
         }
-        cat(labs, file = fi, sep = "&", append = T)
-        cat(sl, sl, " ", g, "\n", sep = "", file = fi, append = T)
+        cat(labs, file = fi, sep = "&", append = TRUE)
+        cat(sl, sl, " ", g, "\n", sep = "", file = fi, append = TRUE)
         if (!is.null(rowlabel)) 
             rowlabel <- ""
     }
@@ -267,26 +267,26 @@ function (x, file = as.character(substitute(x)), rowlabel = file,
         }
     }
     labs <- paste(pre, labs, "}", sep = "")
-    cat(labs, file = fi, sep = "&", append = T)
+    cat(labs, file = fi, sep = "&", append = TRUE)
     cat(sl, sl, " ", sl, "hline", hline, "\n", sep = "", file = fi, 
-        append = T)
+        append = TRUE)
     if (longtable) {
         if (missing(caption)) 
             cat(sl, "endhead\n", sl, "hline", sl, "endfoot\n", 
-                sep = "", file = fi, append = T)
+                sep = "", file = fi, append = TRUE)
         else {
-            cat(sl, "endfirsthead\n", sep = "", file = fi, append = T)
+            cat(sl, "endfirsthead\n", sep = "", file = fi, append = TRUE)
             if (!missing(caption)) 
                 cat(sl, "caption[]{\\em (continued)} ", sl, sl, 
-                  "\n", sep = "", file = fi, append = T)
+                  "\n", sep = "", file = fi, append = TRUE)
             cat(sl, "hline", hline, "\n", sep = "", file = fi, 
-                append = T)
-            cat(labs, file = fi, sep = "&", append = T)
+                append = TRUE)
+            cat(labs, file = fi, sep = "&", append = TRUE)
             cat(sl, sl, " ", sl, "hline", hline, "\n", sl, "endhead", 
                 sl, "hline", sl, "endfoot\n", sep = "", file = fi, 
-                append = T)
+                append = TRUE)
             cat(sl, "label{", label, "}\n", sep = "", file = fi, 
-                append = T)
+                append = TRUE)
         }
     }
     if (is.null(n.rgroup)) 
@@ -306,14 +306,14 @@ function (x, file = as.character(substitute(x)), rowlabel = file,
                 j <- (1:length(n.rgroup))[k]
                 if (longtable && linecnt > 0 && (linecnt + n.rgroup[j] + 
                   (n.rgroup[j] > 1)) > lines.page) {
-                  cat(sl, "newpage\n", sep = "", file = fi, append = T)
+                  cat(sl, "newpage\n", sep = "", file = fi, append = TRUE)
                   linecnt <- 0
                 }
                 if (n.rgroup[j] > 1) {
                   cat(rgroup[j], rep("", nc), file = fi, sep = "&", 
-                    append = T)
+                    append = TRUE)
                   linecnt <- linecnt + 1
-                  cat(sl, sl, "\n", sep = "", file = fi, append = T)
+                  cat(sl, sl, "\n", sep = "", file = fi, append = TRUE)
                 }
                 l <- rg.start[j]:rg.end[j]
                 if (length(l) > 1) 
@@ -323,27 +323,27 @@ function (x, file = as.character(substitute(x)), rowlabel = file,
             }
         }
         else if (longtable && linecnt > 0 && (linecnt + 1 > lines.page)) {
-            cat(sl, "newpage\n", sep = "", file = fi, append = T)
+            cat(sl, "newpage\n", sep = "", file = fi, append = TRUE)
             linecnt <- 0
         }
-        cat(c(rowname[i], cx[i, ]), file = fi, sep = "&", append = T)
+        cat(c(rowname[i], cx[i, ]), file = fi, sep = "&", append = TRUE)
         linecnt <- linecnt + 1
         if (i < nr && any(rg.end == i)) 
             g <- paste(sl, "hline", sep = "")
         else g <- ""
-        cat(sl, sl, " ", g, "\n", sep = "", file = fi, append = T)
+        cat(sl, sl, " ", g, "\n", sep = "", file = fi, append = TRUE)
     }
-    cat(sl, "hline", hline, "\n", sep = "", file = fi, append = T)
+    cat(sl, "hline", hline, "\n", sep = "", file = fi, append = TRUE)
     if (longtable) 
-        cat(sl, "end{longtable}\n", sep = "", file = fi, append = T)
+        cat(sl, "end{longtable}\n", sep = "", file = fi, append = TRUE)
     else {
-        cat(sl, "end{tabular}\n", sep = "", file = fi, append = T)
+        cat(sl, "end{tabular}\n", sep = "", file = fi, append = TRUE)
         if (!missing(caption)) 
-            cat(sl, "vspace{3mm}\n", sep = "", file = fi, append = T)
-        cat(caption, "\n", file = fi, append = T)
-        cat(sl, "end{center}\n", sep = "", file = fi, append = T)
+            cat(sl, "vspace{3mm}\n", sep = "", file = fi, append = TRUE)
+        cat(caption, "\n", file = fi, append = TRUE)
+        cat(sl, "end{center}\n", sep = "", file = fi, append = TRUE)
         if (table.env) 
-            cat(sl, "end{table}\n", sep = "", file = fi, append = T)
+            cat(sl, "end{table}\n", sep = "", file = fi, append = TRUE)
     }
     invisible()
 }

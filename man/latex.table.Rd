@@ -7,7 +7,7 @@
 	Controls rounding, alignment, etc, etc
 }
 \usage{
-latex.table(x, file=as.character(substitute(x)), rowlabel=file, rowlabel.just="l", cgroup, n.cgroup, rgroup, n.rgroup=NULL, digits, dec, rdec, cdec, append=F, dcolumn=F, cdot=F, longtable=F, table.env=T, lines.page=40, caption, caption.lot, label=file, double.slash=F)
+latex.table(x, file=as.character(substitute(x)), rowlabel=file, rowlabel.just="l", cgroup, n.cgroup, rgroup, n.rgroup=NULL, digits, dec, rdec, cdec, append=FALSE, dcolumn=FALSE, cdot=FALSE, longtable=FALSE, table.env=TRUE, lines.page=40, caption, caption.lot, label=file, double.slash=FALSE)
 }
 %- maybe also `usage' for other objects documented here.
 \arguments{
@@ -65,10 +65,10 @@ latex.table(x, file=as.character(substitute(x)), rowlabel=file, rowlabel.just="l
   \item{longtable}{ Set to `T' to use David Carlisles LaTeX `longtable' style, 
 	allowing long tables to be split over multiple pages with headers 
 	repeated on each page.}
-  \item{table.env}{Set `table.env=F' to suppress enclosing the table
+  \item{table.env}{Set `table.env=FALSE' to suppress enclosing the table
 	in a LaTeX `table' environment.  `table.env' only applies when 
-	`longtable=F'.  You may not specify a `caption' if `table.env=F'.  }
-  \item{lines.page}{ Applies if `longtable=T'. No more than `lines.page' 
+	`longtable=FALSE'.  You may not specify a `caption' if `table.env=FALSE'.  }
+  \item{lines.page}{ Applies if `longtable=TRUE'. No more than `lines.page' 
 	lines in the body of a table will be placed on a single page. 
 	Page breaks will only occur at `rgroup' boundaries. }
   \item{caption}{ a text string to use as a caption to print at the top of the 
