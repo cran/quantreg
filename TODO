@@ -1,0 +1,15 @@
+This is quick list of some possible fixes for the next revision of quantreg
+Version:  June 25, 2001
+
+1.  Adapt khmaladze stuff to handle "br" output.
+
+2.  refine the choice of eps parameter in rq.fit.fn  (this has been a
+perennial problem.  As several examples show, it is sometimes possible
+to get into trouble with the current 1e-6 tolerance with rq.fit.fn
+returning NaN's while a  more relaxed tolerance say 1e-4 produces a
+good answer, verifiable from "br".
+
+3.  The trim object in rq.test.khmal could be improved.
+
+4.  Now location-scale and location tests need to be done independently
+and could be organized to do both together.

@@ -590,7 +590,7 @@ function(object, se = "nid", covariance = T, hs = T)
 		xxinv <- backsolve(qr(x)$qr[1:p, 1:p], xxinv)
 		xxinv <- xxinv %*% t(xxinv)
 		pz <- sum(abs(resid) < eps)
-		h <- max(p + 1, ceiling(n * bandwidth.rq(tau, n, hs = T)))
+		h <- max(p + 1, ceiling(n * bandwidth.rq(tau, n, hs = hs)))
 		ir <- (pz + 1):(h + pz + 1)
 		ord.resid <- sort(resid[order(abs(resid))][ir])
 		sparsity <- l1fit(ir/(n - p), ord.resid)$coef[2]
@@ -598,7 +598,7 @@ function(object, se = "nid", covariance = T, hs = T)
 		serr <- sqrt(diag(cov))
 	}
 	else if(se == "nid") {
-		h <- bandwidth.rq(tau, n, hs = T)
+		h <- bandwidth.rq(tau, n, hs = hs)
 		bhi <- rq.fit.fn(x, y, tau = tau + h, int = F)$coef
 		blo <- rq.fit.fn(x, y, tau = tau - h, int = F)$coef
 		dyhat <- x %*% (bhi - blo)
@@ -612,7 +612,7 @@ function(object, se = "nid", covariance = T, hs = T)
 		serr <- sqrt(diag(cov))
 	}
 	else if(se == "ker") {
-		h <- bandwidth.rq(tau, n, hs = T)
+		h <- bandwidth.rq(tau, n, hs = hs)
 		h <- qnorm(tau + h) -  qnorm(tau - h)
 		uhat <- c(y - x %*% coef)
 		f <- dnorm(uhat/h)/h
@@ -815,7 +815,6 @@ function (khmal.out, var.list = khmal.out$var.list,
             	khmal.out$Jn %*% khmal.out$Hfit[, , j]))
     	}
 		var.listc <- c(1,var.list)
-		nrow <- ceiling(length(var.listc)/ncol)
     	par(mfrow = c(nrow, ncol))
     	#par(mai = c(0.35, 0.55, 0.10, 0.35))
     	for (i in var.listc) {
