@@ -8,7 +8,7 @@
   of specified quantiles.
 }
 \usage{
-table.rq(formula, taus=c(0.05, 0.25, 0.5, 0.75, 0.95), method="br", \dots)
+table.rq(formula, taus=c(0.25, 0.5, 0.75), method="br", \dots)
 }
 \arguments{
   \item{formula}{

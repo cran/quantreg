@@ -1,5 +1,5 @@
       subroutine rqbr(m,nn,m5,n3,n4,a,b,t,toler,ift,x,e,s,wa,wb,nsol,
-     &ndsol,sol,dsol,lsol,h,qn,cutoff,ci,tnmat,big,lci1)
+&     ndsol,sol,dsol,lsol,h,qn,cutoff,ci,tnmat,big,lci1)
       integer i,j,k,kl,kount,kr,l,lsol,m,m1,m2,m3,m4,m5,ift
       integer n,n1,n2,n3,nsol,ndsol,out,s(m),h(nn,nsol)
       integer nn,n4,idxcf
@@ -50,7 +50,7 @@
       e(i) = zero
 23012 continue
       if(.not.(t.lt.zero.or.t.gt.one))goto 23014
-      t0 = one/float(m)-toler
+      t0 = one/(two*float(m))
       t1 = one-t0
       t = t0
       iend = .false.
@@ -409,6 +409,7 @@
       tnmat(4,idxcf) = tn
       lup = .false.
       go to 70
+      goto 23195
 23194 continue
       ci(1,idxcf) = tnew + toler
       tnmat(1,idxcf) = tn

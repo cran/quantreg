@@ -5,9 +5,8 @@
 # For the sake of brevity we will call it a Frisch-Newton algorithm.
 # The primary difference between this code and the previous version fna.r is
 # that we assume a feasible starting point so p,d,b feasibility gaps = 0.
-# Note also that all variables are assumed to have upper bounds of one.
 # Problem:
-# 	min c'x s.t. Ax=b, 0<=x<=1
+# 	min c'x s.t. Ax=b, 0<=x<=u
 # 
 # The linear system we are trying to solve at each interation is:
 # 		 Adx = 0
@@ -31,45 +30,36 @@
 # On input:
 # 	a is the p by n matrix X'
 # 	y is the n-vector of responses
+# 	u is the n-vector of upper bounds 
+#       d is an n-vector of ones
+#       wn is an n-vector of ones in the first n elements
 # 	beta is a scaling constant, conventionally .99995
 # 	eps is a convergence tolerance, conventionally 1d-07
-# 	tau is the desired quantile
 # On output:
 # 	a,y are unaltered
-# 	wp contains the vector betahat(tau) in the first p elements
+# 	wp contains the solution  coefficient vector in the first p elements
 # 	wn contains the residual vector in the first n elements
 # 
 # 
-subroutine rqfn(n,p,a,y,rhs,d,beta,eps,tau,wn,wp,aa,nit,info)
+subroutine rqfn(n,p,a,y,rhs,d,u,beta,eps,wn,wp,aa,nit,info)
 integer n,p,info,nit(3)
-double precision a(p,n),y(n),rhs(p),d(n),beta,eps,wn(n,10),wp(p,p+3),aa(p,p)
-double precision mone,one,tau,ddot
+double precision a(p,n),y(n),rhs(p),d(n),u(n),wn(n,10),wp(p,p+3),aa(p,p)
+double precision one,beta,eps
 data one/1.0d0/
-data mone/-1.0d0/
-do i=1,n{
-	d(i)=one
-	wn(i,1)=one-tau
-	}
-do i=1,p
-	rhs(i)=(one-tau)*ddot(n,d,1,a(i,1),p)
-call dscal(n,mone,y,1)
-call fna(n,p,a,y,rhs,d,beta,eps,wn(1,1),wn(1,2),
+call fna(n,p,a,y,rhs,d,u,beta,eps,wn(1,1),wn(1,2),
 	wp(1,1),wn(1,3),wn(1,4),wn(1,5), wn(1,6),
 	wp(1,2),wn(1,7),wn(1,8),wn(1,9),wn(1,10),wp(1,3), wp(1,4),aa,nit,info)
-call dscal(p,mone,wp,1)
-call dscal(n,mone,wn,1)
-call dscal(n,mone,y,1)
 return
 end
-subroutine fna(n,p,a,c,b,d,beta,eps,x,s,y,z,w,
+subroutine fna(n,p,a,c,b,d,u,beta,eps,x,s,y,z,w,
 		dx,ds,dy,dz,dw,dsdw,dxdz,rhs,ada,aa,nit,info)
 
 integer n,p,pp,i,info,nit(3)
 double precision a(p,n),c(n),b(p)
 double precision zero,one,mone,big,ddot,dmax1,dmin1,dasum
 double precision deltap,deltad,beta,eps,cx,by,uw,uz,mu,mua,acomp,rdg,g
-double precision x(n),s(n),y(p),z(n),w(n),d(n),rhs(p),ada(p,p),aa(p,p)
-double precision dx(n),ds(n),dy(p),dz(n),dw(n),dxdz(n),dsdw(n)
+double precision x(n),u(n),s(n),y(p),z(n),w(n),d(n),rhs(p),ada(p,p)
+double precision aa(p,p),dx(n),ds(n),dy(p),dz(n),dw(n),dxdz(n),dsdw(n)
 
 data zero /0.0d0/
 data half /0.5d0/
@@ -83,6 +73,7 @@ data big /1.0d+20/
 # 	c = n-vector of marginal costs (-y in the rq problem)
 # 	a = p by n matrix of linear constraints (x' in rq)
 # 	b = p-vector of rhs ((1-tau)x'e in rq)
+#       u = upper bound vector ( e in rq)
 # 	beta = barrier parameter, LMS recommend .99995
 # 	eps = convergence tolerance, LMS recommend 10d-8
 # 	
@@ -116,7 +107,7 @@ do i=1,n{
 	d(i)=one
 	z(i)=dmax1(s(i),zero)
 	w(i)=dmax1(-s(i),zero)
-	s(i)=one-x(i)
+	s(i)=u(i)-x(i)
 	}
 cx = ddot(n,c,1,x,1)
 by = ddot(p,b,1,y,1)
@@ -207,21 +198,5 @@ while(rdg > eps) {
 # return residuals in the vector x
 call daxpy(n,mone,w,1,z,1)
 call dswap(n,z,1,x,1)
-return
-end
-subroutine stepy(n,p,a,d,b,ada,info)
-integer n,p,pp,i,info
-double precision a(p,n),b(p),d(n),ada(p,p),zero
-data zero/0.0d0/
-# Solve linear system ada'x=b by Choleski -- d is diagonal
-# Note that a isn't altered, and on output ada is the 
-# upper triangle Choleski factor, which can be reused, eg with blas dtrtrs
-pp=p*p
-do j=1,p
-	do k=1,p
-		ada(j,k)=zero
-do i=1,n
-	call dsyr('U',p,d(i),a(1,i),1,ada,p)
-call dposv('U',p,1,ada,p,b,p,info)
 return
 end

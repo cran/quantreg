@@ -30,26 +30,6 @@ function(x, nrow = 3, ncol = 2, ...)
 	}
 }
 
-"plot.table.rq" <-
-# Function to plot estimated quantile regression parameters in table.rq
-function(x, nrow = 3, ncol = 2, ...)
-{
-	tdim <- dim(x$a)
-	p <- tdim[1]
-	m <- tdim[2]
-	k <- tdim[3]
-	par(mfrow = c(nrow, ncol))
-	xx <- x$taus
-	for(i in 1:p) {
-		ylab <- dimnames(x$a)[[1]]
-		plot(rep(xx, 2), x$a[i,  , 2:3], xlab = "tau", ylab = ylab[
-			i], type = "n")
-		points(xx, x$a[i,  , 1], pch = "o")
-		lines(xx, x$a[i,  , 1])
-		lines(xx, x$a[i,  , 2], lty = 2)
-		lines(xx, x$a[i,  , 3], lty = 2)
-	}
-}
 
 "print.rq" <-
 function(x, ...)
@@ -81,6 +61,7 @@ function(x, digits = max(5, .Options$digits - 2), ...)
 	coef <- x$coef
 	df <- x$df
 	rdf <- x$rdf
+	tau <- x$tau
 	cat("\nCoefficients:\n")
 	print(format(round(coef, digits = digits)), quote = F, ...)
 	invisible(x)
@@ -175,6 +156,8 @@ function(x, y, tau = 0.5, method = "br", ...)
 	#if(!is.numeric(y)) stop("response must be numeric")
 	fit <- switch(method,
 		fn = rq.fit.fn(x, y, tau = tau, ...),
+		fnb = rq.fit.fnb(x, y, tau = tau, ...),
+		fnc = rq.fit.fnc(x, y, tau = tau, ...),
 		pfn = rq.fit.pfn(x, y, tau = tau, ...),
 		br = rq.fit.br(x, y, tau = tau, ...),
 		{
@@ -373,39 +356,95 @@ function(x, y, tau = 0.5, alpha = 0.10000000000000001, ci = T,
 }
 
 "rq.fit.fn" <-
-function(x, y, tau = 0.5, int = F, beta = 0.99995, eps = 1e-6)
+function (x, y, tau = 0.5, beta = 0.99995, eps = 1e-06)
 {
-	#rq function using Frisch-Newton interior point algorithm
-	n <- length(y)
-	if(int)
-		x <- cbind(1, x)
-	p <- ncol(x)
-	if(n != nrow(x))
-		stop("x and y don't match n")
-	if(tau < eps || tau > 1 - eps)
-		stop("No parametric Frisch-Newton method.  Set tau in (0,1)")
-	z <- .Fortran("rqfn",
-		as.integer(n),
-		as.integer(p),
-		a = as.double(t(as.matrix(x))),
-		c = as.double(y),
-		rhs = double(p),
-		d = double(n),
-		beta = as.double(beta),
-		eps = as.double(eps),
-		tau = as.double(tau),
-		wn = double(10 * n),
-		wp = double((p + 3) * p),
-		aa = double(p * p),
-		it.count = integer(2),
-		info = integer(1))
-	if(z$info != 0)
-		stop(paste("Error", z$info, "in stepy: singular design"))
-	coefficients <- z$wp[1:p]
-	names(coefficients) <- dimnames(x)[[2]]
-	residuals <- y - x %*% coefficients
-	return(coefficients, x, y, tau, residuals)
+    n <- length(y)
+    p <- ncol(x)
+    if (n != nrow(x))
+        stop("x and y don't match n")
+    if (tau < eps || tau > 1 - eps)
+        stop("No parametric Frisch-Newton method.  Set tau in (0,1)")
+    rhs <- (1 - tau) * apply(x, 2, sum)
+    d   <- rep(1,n)
+    u   <- rep(1,n)
+    wn <- rep(0,10*n)
+    wn[1:n] <- (1-tau) #initial value of dual solution
+    z <- .Fortran("rqfn", as.integer(n), as.integer(p), a = as.double(t(as.matrix(x))),
+        c = as.double(-y), rhs = as.double(rhs), d = as.double(d),as.double(u),
+        beta = as.double(beta), eps = as.double(eps), 
+        wn = as.double(wn), wp = double((p + 3) * p), aa = double(p *
+            p), it.count = integer(2), info = integer(1))
+    if (z$info != 0)
+        stop(paste("Error info = ", z$info, "in stepy: singular design"))
+    coefficients <- -z$wp[1:p]
+    names(coefficients) <- dimnames(x)[[2]]
+    residuals <- y - x %*% coefficients
+    return(coefficients, x, y, tau, residuals)
 }
+
+"rq.fit.fnb" <-
+function (x, y, tau = 0.5, beta = 0.99995, eps = 1e-06)
+{
+    n <- length(y)
+    p <- ncol(x)
+    if (n != nrow(x))
+        stop("x and y don't match n")
+    if (tau < eps || tau > 1 - eps)
+        stop("No parametric Frisch-Newton method.  Set tau in (0,1)")
+    rhs <- (1 - tau) * apply(x, 2, sum)
+    d   <- rep(1,n)
+    u   <- rep(1,n)
+    wn <- rep(0,10*n)
+    wn[1:n] <- (1-tau) #initial value of dual solution
+    z <- .Fortran("rqfnb", as.integer(n), as.integer(p), a = as.double(t(as.matrix(x))),
+        c = as.double(-y), rhs = as.double(rhs), d = as.double(d),as.double(u),
+        beta = as.double(beta), eps = as.double(eps), 
+        wn = as.double(wn), wp = double((p + 3) * p), aa = double(p *
+            p), it.count = integer(2), info = integer(1))
+    if (z$info != 0)
+        stop(paste("Error info = ", z$info, "in stepy: singular design"))
+    coefficients <- -z$wp[1:p]
+    names(coefficients) <- dimnames(x)[[2]]
+    residuals <- y - x %*% coefficients
+    return(coefficients, x, y, tau, residuals)
+}
+
+"rq.fit.fnc" <-
+function (x, y, R, r, tau = 0.5, beta = 0.9995, eps = 1e-08) 
+{
+    n1 <- length(y)
+    n2 <- length(r)
+    p <- ncol(x)
+    if (n1 != nrow(x)) 
+        stop("x and y don't match n1")
+    if (n2 != nrow(R)) 
+        stop("R and r don't match n2")
+    if (p != ncol(R)) 
+        stop("R and x don't match p")
+    if (tau < eps || tau > 1 - eps) 
+        stop("No parametric Frisch-Newton method.  Set tau in (0,1)")
+    rhs <- (1 - tau) * apply(x, 2, sum)
+    u <- rep(1, n1) #upper bound vector
+    wn1 <- rep(0, 9 * n1)
+    wn1[1:n1] <- (1 - tau) #store the values of x1
+    wn2 <- rep(0, 6 * n2) 
+    wn2[1:n2] <- 1 #store the values of x2
+    z <- .Fortran("rqfnc", as.integer(n1), as.integer(n2), as.integer(p), 
+	a1 = as.double(t(as.matrix(x))), c1 = as.double(-y), 
+	a2 = as.double(t(as.matrix(R))), c2 = as.double(-r), 
+	rhs = as.double(rhs), d1 = double(n1), d2 = double(n2),
+	as.double(u), beta = as.double(beta), eps = as.double(eps), 
+	wn1 = as.double(wn1), wn2 = as.double(wn2), wp = double((p + 3) * p), 
+	it.count = integer(2), info = integer(1))
+    if (z$info != 0) 
+        stop(paste("Error info = ", z$info, "in stepy2: singular design"))
+    coefficients <- -z$wp[1:p]
+    names(coefficients) <- dimnames(x)[[2]]
+    residuals <- y - x %*% coefficients
+    it.count <- z$it.count
+    return(coefficients, x, y, tau, residuals)
+}
+
 
 "rq.fit.pfn" <-
 # This is an implementation (purely in R) of the preprocessing phase
@@ -420,13 +459,11 @@ function(x, y, tau = 0.5, int = F, beta = 0.99995, eps = 1e-6)
 # seem to make a huge difference in this case since most of the work
 # is already done in the rq.fit.fn calls.
 #
-function(x, y, tau = 0.5, int = F, Mm.factor = 0.8,
+function(x, y, tau = 0.5,  Mm.factor = 0.8,
 	max.bad.fixup = 3, eps = 1e-6)
 {
 	#rq function for n large --
 	n <- length(y)
-	if(int)
-		x <- cbind(1, x)
 	if(nrow(x) != n)
 		stop("x and y don't match n")
 	if(tau < 0 | tau > 1)
@@ -438,12 +475,12 @@ function(x, y, tau = 0.5, int = F, Mm.factor = 0.8,
 		if(m < n)
 			s <- sample(n, m)
 		else {
-			z <- rq.fit.fn(x, y, tau = tau, int = F, eps = eps)
+			z <- rq.fit.fn(x, y, tau = tau,  eps = eps)
 			return(coef = z$coef)
 		}
 		xx <- x[s,  ]
 		yy <- y[s]
-		z <- rq.fit.fn(xx, yy, tau = tau, int = F, eps = eps)
+		z <- rq.fit.fn(xx, yy, tau = tau,  eps = eps)
 		xxinv <- solve(chol(crossprod(xx)))
 		band <- sqrt(((x %*% xxinv)^2) %*% rep(1, p))
 		#sqrt(h<-ii)
@@ -472,7 +509,7 @@ function(x, y, tau = 0.5, int = F, Mm.factor = 0.8,
 				xx <- rbind(xx, ghib.x)
 				yy <- c(yy, ghib.y)
 			}
-			z <- rq.fit.fn(xx, yy, tau = tau, int = F, eps = eps)
+			z <- rq.fit.fn(xx, yy, tau = tau,  eps = eps)
 			b <- z$coef
 			r <- y - x %*% b
 			su.bad <- (r < 0) & su
@@ -602,8 +639,10 @@ function(object, se = "nid", covariance = T, hs = T, ...)
 	}
 	else if(se == "nid") {
 		h <- bandwidth.rq(tau, n, hs = hs)
-		bhi <- rq.fit.fn(x, y, tau = tau + h, int = F)$coef
-		blo <- rq.fit.fn(x, y, tau = tau - h, int = F)$coef
+		if(tau+h>1)stop("tau + h > 1:  error in summary.rq")
+        	if(tau-h<0)stop("tau - h < 0:  error in summary.rq")
+		bhi <- rq.fit.fn(x, y, tau = tau + h)$coef
+		blo <- rq.fit.fn(x, y, tau = tau - h)$coef
 		dyhat <- x %*% (bhi - blo)
 		if(any(dyhat <= 0))
 			warning(paste(sum(dyhat <= 0), "non-positive fis"))
@@ -616,6 +655,8 @@ function(object, se = "nid", covariance = T, hs = T, ...)
 	}
 	else if(se == "ker") {
 		h <- bandwidth.rq(tau, n, hs = hs)
+		if(tau+h>1)stop("tau + h > 1:  error in summary.rq")
+        	if(tau-h<0)stop("tau - h < 0:  error in summary.rq")
 		h <- qnorm(tau + h) -  qnorm(tau - h)
 		uhat <- c(y - x %*% coef)
 		f <- dnorm(uhat/h)/h
@@ -642,37 +683,11 @@ function(object, se = "nid", covariance = T, hs = T, ...)
 	}
 	object$coefficients <- coef
 	object$rdf <- rdf
+	object$tau <- tau
 	class(object) <- "summary.rq"
 	object
 }
 
-"table.rq" <-
-# This is a function to produce a table of estimated coefficients
-# for a quantile regression problem.  The default method
-# is "br", i.e. simplex, with confidence intervals for the coefficients
-# estimated by the rank inversion method.  For large problems it may be
-# prudent to adopt an alternative strategy.  The function returns an
-# array of dimension (p,m,3) where p is the dimension of betahat, m is
-# the length of the vector of taus, and 3 accounts for coefs,upper,lower
-# or coefs,se,t-stat depending on the method invoked.
-#
-function(formula, taus = c(0.25, 0.5, 0.75), method = "br", ...)
-{
-	m <- length(taus)
-	tab <- NULL
-	for(i in 1:m) {
-		fit <- rq(formula, taus[i], method = method)
-		tab <- rbind(tab, coefficients(fit))
-	}
-	p <- nrow(tab)/m
-	a <- array(tab, dim = c(p, m, 3))
-	vnames <- dimnames(coefficients(fit))[[1]]
-	ctypes <- c("coefs", "lower ci limit", "upper ci limit")
-	dimnames(a) <- list(vnames, paste("tau=", taus), ctypes)
-	tab <- list(a = a, taus = taus)
-	class(tab) <- "table.rq"
-	invisible(tab)
-}
 
 "akj" <-
 function(x, z = seq(min(x), max(x),  , 2 * length(x)), 

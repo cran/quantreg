@@ -47,7 +47,7 @@ rq(formula, tau=.5, data, weights, na.action,
   }
   \item{method}{
     the algorithmic method used to compute the fit.  There are currently 
-    three options:   The default method is the modified  version of the
+    four options:   The default method is the modified  version of the
     Barrodale and Roberts algorithm for \eqn{l_1}{l1}-regression,
     used by \code{l1fit} in S, and is described in detail in 
     Koenker and d'Orey(1987, 1994),  default = \code{"br"}. 
@@ -57,9 +57,14 @@ rq(formula, tau=.5, data, weights, na.action,
     the estimated parameters, based on inversion of a rank test described 
     in Koenker(1994).  For larger problems it is advantagous to use 
     the Frisch--Newton interior point method \code{"fn"}. 
-    And very large problems one can use the Frisch-=Newton approach after 
+    And very large problems one can use the Frisch--Newton approach after 
     preprocessing \code{"pfn"}.  Both of the latter methods are
-    described in detail in Portnoy and Koenker(1997). 
+    described in detail in Portnoy and Koenker(1997).   Finally, there
+    is a fourth option \code{"fnc"} that enables the user to specify
+    linear inequality constraints on the fitted coefficients; in this
+    case one needs to specify the matrix \code{R} and the vector \code{r}
+    representing the constraints in the form $Rb \geq r$.  See the
+    examples 
   }
   \item{contrasts}{
     a list giving contrasts for some or all of the factors 
@@ -82,19 +87,28 @@ rq(formula, tau=.5, data, weights, na.action,
 data(stackloss)
 rq(stack.loss ~ stack.x,.5)  #median (l1) regression  fit for the stackloss data. 
 rq(stack.loss ~ stack.x,.25)  #the 1st quartile, 
-        #note that 8 of the 21 points lie exactly on this plane in 4-space 
+        #note that 8 of the 21 points lie exactly on this plane in 4-space! 
 rq(stack.loss ~ stack.x, tau=-1)   #this returns the full rq process
 rq(rnorm(50) ~ 1, ci=F)    #ordinary sample median --no rank inversion ci
 rq(rnorm(50) ~ 1, weights=runif(50),ci=F)  #weighted sample median 
+#Example to illustrate inequality constrained fitting
+n <- 100
+p <- 5
+X <- matrix(rnorm(n*p),n,p)
+y <- .95*apply(X,1,sum)+rnorm(n)
+#constrain slope coefficients to lie between zero and one
+R <- cbind(0,rbind(diag(p),-diag(p)))
+r <- c(rep(0,p),-rep(1,p))
+rq(y~X,R=R,r=r,method="fnc")
 }
 \section{Method}{
 The function computes an estimate on the tau-th conditional quantile
 function of the response, given the covariates, as specified by the
 formula argument.  Like \code{lm()}, the function presumes a linear
-specification for the quantile regression model, i.e. that the formula
+pecification for the quantile regression model, i.e. that the formula
 defines a model that is linear in parameters.  For non-linear quantile
-regression see the function \code{nlrq()}.  [To appear real soon now on
-a screen near you.]  The function minimizes a weighted sum of absolute
+regression see the package \code{nlrq()}.  
+The function minimizes a weighted sum of absolute
 residuals that can be formulated as a linear programming problem.  As
 noted above, there are three different algorithms that can be chosen
 depending on problem size and other characteristics.  For moderate sized
@@ -126,6 +140,10 @@ linear model and derived statistics, \emph{Annals of Statistics},
 [4] Koenker, R. W. (1994). Confidence Intervals for regression quantiles, in 
 P. Mandl and M. Huskova (eds.), \emph{Asymptotic Statistics}, 349--359,  
 Springer-Verlag, New York.   
+
+[5] Koenker, R. and S. Portnoy (1997) The Gaussian Hare and the Laplacean 
+Tortoise:  Computability of Squared-error vs Absolute Error Estimators, 
+(with discussion).  \emph{Statistical Science,} \bold{12}, 279-300.
 
 There is also recent information available at the URL:
 \url{http://www.econ.uiuc.edu}.

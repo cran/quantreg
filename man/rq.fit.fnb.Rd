@@ -1,5 +1,5 @@
-\name{rq.fit.fn}
-\alias{rq.fit.fn}
+\name{rq.fit.fnb}
+\alias{rq.fit.fnb}
 \title{
 Quantile Regression Fitting via Interior Point Methods
 }
@@ -8,7 +8,7 @@ This is a lower level routine called by \code{rq()} to compute quantile
 regression methods using the Frisch-Newton algorithm.
 }
 \usage{
-rq.fit.fn(x, y, tau=0.5, beta=0.99995, eps=1e-06)
+rq.fit.fnb(x, y, tau=0.5, beta=0.99995, eps=1e-06)
 }
 \arguments{
 \item{x}{
@@ -41,8 +41,8 @@ technical step length parameter -- alter at your own risk!
   Frisch in the 1950's for constrained optimization.  But the current
   implementation is based on proposals by Mehrotra and others in the
   recent (explosive) literature on interior point methods for solving linear 
-  programming problems.  This version of the algorithm is designed for
-  fairly large problems, for very large problems see \code{rq.fit.pfn}.
+  programming problems.  This is a slightly modified version of \code{rq.fit.fn}
+  currently to be regarded as under betatest.
 }
 \references{
 Koenker, R. and S. Portnoy (1997).
@@ -55,4 +55,3 @@ Computability of squared-error vs. absolute-error estimators, with discussion,
   \code{\link{rq.fit.pfn}}
 }
 \keyword{regression}
-% Converted by Sd2Rd version 0.3-3.

@@ -12,7 +12,7 @@ plotted against the taus specified in the \code{table.rq} command with
 a confidence band as produced by \code{rq()}.
 }
 \usage{
-plot.table.rq(x,nrow=3,ncol=2, ...)
+plot.table.rq(x,nrow=3,ncol=2, alpha=.1, ...)
 }
 \arguments{
 \item{x}{
@@ -23,6 +23,9 @@ plot.table.rq(x,nrow=3,ncol=2, ...)
 }
 \item{ncol}{
   number of columns per page of plots
+}
+\item{alpha}{
+  alpha level of the confidence band
 }
 \item{...}{
   optional arguments to plot

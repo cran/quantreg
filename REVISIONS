@@ -10,3 +10,51 @@ Recent Revision History
 2. documentation and consistency checking updates to conform with R1.4.0
 
 
+3.06 March 5 2002  
+
+1.  Added LEGAL directory to clarify the licensing arrangement with Splus/
+Insightful Corp.
+
+3.07 March  2002
+
+1.  Expanded table.rq to use method="fn", and adapted plot.table.rq to
+use the polygon strategy of recent papers for the confidence band.
+
+2.  Adapted the old version of latex.table and latex.table.rq to use
+output of table.rq to make latex tables from the output array.  This
+eventually could be updated to fit better into the expected R version
+of Frank Harrell's Hmisc.  (The function latex.table is a slightly
+hacked version of Frank's old latex.table function for Splus.)
+
+3.  Added argument transpose to allow the tables to be flipped so that
+row dimension is quantiles rather than coefs.
+
+4.  Added error checking for tau+/-h outside (0,1) in summary.rq 
+
+5.  Revised rq.fit.fn and rqfn.[rf] to simplify the calling sequence
+basically to move the initialization into the R function.  (This is
+in preparation for a new version that will incorporate inequality constraints.)
+
+6.  Also relaxed upper bound constraints so that they could be specified
+in rq.fit.fn rather than assumed to take the value one.
+
+7.  Added a (long awaited) anova function for rq to do F test like inference
+for both nested models for a single quantile and tests of equality of slope
+coefficients across identical models estimated at several quantiles.
+These new functions are (for the moment) in the R directory as anova.R.
+
+3.08 May 22 2002
+
+1.  Fixed a bug in anova.rqlist ndf = (p-1)*(m-1) not p*(m-1).
+
+3.09 May 27 2002
+
+1.  Added new functions rq.fit.fnb and rq.fit.fnc and associated fortran
+and ratfor code.  The former is a slightly revised version of rq.fit.fn
+the interior point algorithm for computing rq;  it should have exactly
+the same functionality as the prior version, but _might_ work somewhat
+more efficiently on some problems.  The new function rq.fit.fnc
+is an interior point method for fitting rq problems subject to inequality
+constraints on the coefficients.  The algorithm is a modified version
+of the interior point method used for unconstrained problems and should
+be described in detail (eventually) in a paper with Pin Ng.

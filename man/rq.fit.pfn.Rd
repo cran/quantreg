@@ -6,13 +6,12 @@ A preprocessing algorithm for the Frisch Newton algorithm
 for quantile regression. This is one possible method for rq().}
 }
 \usage{
-rq.fit.pfn(x, y, tau=0.5, int=F, Mm.factor=0.8, max.bad.fixup=3, eps=1e-06)
+rq.fit.pfn(x, y, tau=0.5, Mm.factor=0.8, max.bad.fixup=3, eps=1e-06)
 }
 \arguments{
   \item{x}{design matrix usually supplied via rq() }
   \item{y}{ response vector usually supplied via rq() }
   \item{tau}{ quantile of interest }
-  \item{int}{ include intercept? }
   \item{Mm.factor}{  constant to determine sub sample size m}
   \item{max.bad.fixup}{ number of allowed mispredicted signs of residuals }
   \item{eps}{ convergence tolerance }

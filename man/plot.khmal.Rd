@@ -56,14 +56,14 @@ Generates plots of object of class `khmal'. Please refer to
 }
 \examples{
 data(barro)
-fit.Lonly _ rq.test.khmal(y.net ~  lgdp2 + fse2 + gedy2 + Iy2 + gcony2, 
+fit.Lonly <- rq.test.khmal(y.net ~  lgdp2 + fse2 + gedy2 + Iy2 + gcony2, 
 data = barro, location.scale = FALSE)
 par(ask=interactive())
 plot(fit.Lonly, var.list=c(2,4)) 
 }
 \keyword{htest}
 \references{
-Koenker, Roger and Zhijie Xiao (2000), "Inference on the Quantile
-Regression Process'', unpublished.
-\url{http://www.econ.uiuc.edu/~roger/research/inference/inference.html}
+  Koenker, Roger and Zhijie Xiao (2000),
+  ``Inference on the Quantile Regression Process'', unpublished.
+  \url{http://www.econ.uiuc.edu/~roger/research/inference/inference.html}
 }

@@ -102,7 +102,7 @@ if (ift<=two) {
   do i = 1,m
     e(i) = zero
   if (t<zero||t>one) {
-    t0 = one/float(m)-toler
+    t0 = one/(two*float(m))
     t1 = one-t0
     t = t0
     iend = .false.

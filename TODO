@@ -13,3 +13,9 @@ good answer, verifiable from "br".
 
 4.  Now location-scale and location tests need to be done independently
 and should be organized to do both together.
+
+5.  Write anova function for rq objects. [Done in v 3.09]
+
+Some other items May 27 2002
+
+1.  Sparse matrix versions for rq.fit.fn and rq.fit.fnc, project underway.
