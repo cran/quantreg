@@ -87,7 +87,7 @@ function(v, score = "wilcoxon", tau = 0.5)
 	else if(score == "normal") {
 		J <- ncol(v$sol)
 		dt <- v$sol[1, 2:J] - v$sol[1, 1:(J - 1)]
-		dphi <- c(0, phi(qnorm(v$sol[1, 2:(J - 1)])), 0)
+		dphi <- c(0, dnorm(qnorm(v$sol[1, 2:(J - 1)])), 0)
 		dphi <- diff(dphi)
 		ranks <- as.vector((((v$dsol[, 2:J] - v$dsol[, 1:(J - 1)]))) %*%
 			(dphi/dt))
@@ -147,6 +147,7 @@ function(formula, tau = 0.5, data, weights, na.action, method = "br", contrasts
 			rq.wfit(X, Y, tau = tau, weights, method, ...)
 		else rq.fit(X, Y, tau = tau, method, ...)
 	}
+	fit$formula <- formula
 	fit$terms <- Terms
 	fit$call <- call
 	fit$tau <- tau
@@ -186,7 +187,7 @@ function(x, y, tau = 0.5, method = "br", ...)
 # "large" ones.  Obviously, these terms are conditioned by available hardware.
 #
 # Basically there are two modes of use:
-# For Single Quantiles:
+# 1.  For Single Quantiles:
 #
 #       if tau is between 0 and 1 then only one quantile solution is computed.
 #
@@ -199,7 +200,8 @@ function(x, y, tau = 0.5, method = "br", ...)
 #                       inversion intervals as in Koenker (1994)
 #               2.  if iid = FALSE we get the new version of the rank inversion
 #                       intervals which accounts for heterogeneity across
-#                       observations in the conditional density of the response.#                       The theory of this is described in Koenker-Machado(1999)#
+#                       observations in the conditional density of the response.
+#                       The theory of this is described in Koenker-Machado(1999)
 #               Both approaches involve solving a parametric linear programming
 #               problem, the difference is only in the factor qn which
 #               determines how far the PP goes.  In either case one can
@@ -229,7 +231,7 @@ function(x, y, tau = 0.5, method = "br", ...)
 #	not recommended for problems with n > 10,000.
 #	In large problems a grid of solutions is probably sufficient.
 #
-function(x, y, tau = 0.5, alpha = 0.10000000000000001, ci = TRUE, 
+function(x, y, tau = 0.5, alpha = 0.10000000000000001, ci = FALSE, 
 	iid = TRUE, interp = TRUE, tcrit = TRUE)
 {
 	tol <- .Machine$double.eps^(2/3)
@@ -601,16 +603,20 @@ function(x0, x1, y, v, score = "wilcoxon")
 # covariance=TRUE a structure describing the covariance matrix of the coefficients,
 # i.e. the components of the Huber sandwich.
 #
-# There are four options for "se":
+# There are five options for "se":
 #
-#	1.  "iid" which presumes that the errors are iid and computes
+#	1.  "rank" strictly speaking this doesn't produce a "standard error"
+#		at all instead it produces a coefficient table with confidence
+#		intervals for the coefficients based on inversion of the
+#		rank test described in GJKP and Koenker (1994).  
+#	2.  "iid" which presumes that the errors are iid and computes
 #		an estimate of the asymptotic covariance matrix as in KB(1978).
-#	2.  "nid" which presumes local (in tau) linearity (in x) of the
+#	3.  "nid" which presumes local (in tau) linearity (in x) of the
 #		the conditional quantile functions and computes a Huber
 #		sandwich estimate using a local estimate of the sparsity.
-#	3.  "ker" which uses a kernel estimate of the sandwich as proposed
+#	4.  "ker" which uses a kernel estimate of the sandwich as proposed
 #		by Powell.
-#	4.  "boot" which uses a bootstrap method:
+#	5.  "boot" which uses a bootstrap method:
 #		"xy"	uses xy-pair method 
 #		"pwy"	uses the parzen-wei-ying method 
 #		"mcmb"	uses the Markov chain marginal bootstrap method 
@@ -621,6 +627,7 @@ function(object, se = "nid", covariance = TRUE, hs = TRUE, ...)
 	x <- object$x
 	y <- object$y
 	tau <- object$tau
+	formula <- object$formula
 	eps <- .Machine$double.eps^(2/3)
 	wt <- object$weights
 	coef <- coefficients(object)
@@ -636,6 +643,14 @@ function(object, se = "nid", covariance = TRUE, hs = TRUE, ...)
 		x <- x * wt
 		y <- y * wt
 	}
+	if(missing(se)){
+		if(n < 1001) se <- "rank"
+		else  se <- "nid"
+		}
+	if(se == "rank"){
+		f <- rq(formula, tau = tau, ci = TRUE, ...)
+		return(f)
+		}
 	#quick and dirty se's in three flavors: iid, nid, and ker
 	if(se == "iid") {
 		xxinv <- diag(p)
@@ -766,323 +781,3 @@ function(X, y, int = TRUE)
 	bhat <- matrix(z$b, p, n)
 	return(bhat)
 }
-"standardize" <-
-function (rqfit, location.scale = TRUE) 
-{
-    Vhat <- rqfit$fit
-    vhat <- rqfit$fit
-    b <- rqfit$b
-    if (location.scale == TRUE) {
-        for (j in 1:length(rqfit$taus)) {
-            V <- rqfit$Hfit[, , j] %*% rqfit$Jn %*% rqfit$Hfit[, , j]
-            v <- V[-1, -1] + V[1, 1] * outer(b[2, -1], b[2, -1]) - 
-                outer(V[-1, 1], b[2, -1]) - t(outer(V[-1, 1], 
-                b[2, -1]))
-            v <- solve(v)
-            v <- chol(0.5 * (v + t(v)))
-            Vhat[-1, j] <- v %*% rqfit$ER[-1, j]
-            for (i in 2:dim(V)[1]) {
-                v <- V[i, i] + V[1, 1] * b[2, i]^2 - 2 * V[i, 
-                  1] * b[2, i]
-                vhat[i, j] <- rqfit$ER[i, j]/sqrt(v)
-            }
-        }
-    }
-    else {
-        for (j in 1:length(rqfit$taus)) {
-            V <- rqfit$Hfit[, , j] %*% rqfit$Jn %*% rqfit$Hfit[, , j]
-            v <- V[-1, -1]
-            v <- solve(v)
-            v <- chol(0.5 * (v + t(v)))
-            Vhat[-1, j] <- v %*% rqfit$ER[-1, j]
-            for (i in 2:dim(rqfit$Hfit)[1]) {
-                v <- V[i, i]
-                vhat[i, j] <- rqfit$ER[i, j]/sqrt(v)
-            }
-        }
-    }
-    return(list(Vhat=Vhat, vhat=vhat))
-}
-"khmaladzize" <-
-function(tau, atau, Z, location.scale)
-{
-	p <- diff( tau )
-	p <- c( p[1], p )
-	score <- akj(atau, atau, p)  
-	L <- length(tau)
-	gdot2 <- -score$psi
-	gdot <- cbind(rep(1,L),gdot2)
-	if(location.scale)
-	{
-		gdot3 <- gdot2 * atau
-		gdot <- cbind(gdot, gdot3)
-	}
-	kmin <- 0
-	p <- nrow(Z)
-	# the v process 
-	for (i in 1:p) 
-	{
-		v <- Z[i,]
-		dtau <- diff(tau)
-		dtau <- c(dtau[1], dtau)
-		dv <- c(0,diff(v))
-		x1 <- gdot*sqrt(dtau)
-		x1 <- x1[L:1,]
-		y1 <- rev(dv/sqrt(dtau))
-		bhat <- lm.fit.recursive(x1,y1,int=FALSE)
-		bhat <- bhat[,L:1]
-		dvhat <- diag(gdot%*%bhat)*dtau
-		vhat <- cumsum(dvhat)
-		v <- v[kmin:L-kmin]
-		vhat <- vhat[kmin:L-kmin]
-		Z[i,] <- v-vhat
-	}
-	return(Z)
-}
-"plot.khmal" <-
-function (x, nrow = ceiling(length(x$var.list)/2), ncol = 2, 
-		plotn = 1:6, bcolor="gray", ...) 
-{
-	var.list <- x$var.list
-	location.scale <- x$location.scale
-    	var.names <- x$vars
-	if( any(plotn == 1) )
-	{
-    	se <- x$fit
-    	for (j in 1:length(x$taus)) 
-		{
-        	vtau <- x$taus[j] * (1 - x$taus[j])
-        	se[, j] <- sqrt(vtau * diag(x$Hfit[, , j] %*% 
-            	x$Jn %*% x$Hfit[, , j]))
-    	}
-		var.listc <- c(1,var.list)
-    	par(mfrow = c(nrow, ncol))
-    	#par(mai = c(0.35, 0.55, 0.10, 0.35))
-    	for (i in var.listc) {
-        	b <- x$fit[i, ]
-        	b.p <- b + qnorm(0.95) * se[i, ]
-        	b.m <- b - qnorm(0.95) * se[i, ]
-        	plot(0:1, range(c(b.m, b.p)), type = "n", ylab = var.names[i],
-                xlab="")
-        	polygon(c(x$taus, rev(x$taus)), c(b.p, 
-           	 rev(b.m)), col = bcolor, density = -1)
-        	lines(x$taus, b)
-        	abline(h = 0)
-			abline(h = x$ols[i], lty=2 )
-    	}
-    }
-	#
-	# Plot regressions of slopes on intercept
-	#
-	if( any(plotn == 2) )
-	{
-		par(mfrow=c(nrow, ncol))
-		for(i in var.list)
-		{
-			plot(x$taus,x$fit[i,], type="l",
-				ylab=var.names[i], xlab="")
-			if(location.scale==TRUE)
-			{
-				lines(x$taus,cbind(1,x$fit[1,])%*%
-					x$b[,i],lty=2)
-			}
-			else
-			{
-				abline(h=x$b[i],lty=2)
-			}
-			abline(h=0)
-		}
-	}
-	#
-	# Now plot the standardized residual process for the joint
-	# hypothesis testing.
-	#
-	if( any(plotn == 3 ) )
-	{
-		par(mfrow=c(nrow, ncol))
-		for(i in var.list)
-		{
-			plot(x$taus,x$J$Vhat[i,],type="l",
-				ylab=var.names[i], xlab="")
-			abline(h=0)
-		}
-	}
-	#
-	# Now plot the standardized residual process for the individual
-	# hypotheses testing.
-	#
-	if( any(plotn == 4) )
-	{
-		par(mfrow=c(nrow, ncol))
-		for(i in var.list)
-		{
-			plot(x$taus,x$J$vhat[i,],type="l",
-					ylab=var.names[i], xlab="")
-			abline(h=0)
-		}
-	}
-	#
-	# Now plot the khmaladzized residual process for the joint
-	# hypothesis testing.
-	#
-	if( any(plotn == 5) )
-	{
-		par(mfrow=c(nrow, ncol))
-		for(i in var.list)
-		{
-			plot(x$taus, x$Vtilde[i,],type="l",
-				ylab=var.names[i], xlab="")
-			abline(h=0)
-		}
-	}
-	#
-	# Now plot the khmaladzized residual process for the coefficient
-	# by coeffficient hypotheses testing.
-	#
-	if( any(plotn == 6) )
-	{
-		par( mfrow=c(nrow, ncol) )
-		for(i in var.list)
-		{
-			if(location.scale==TRUE)
-			{
-				plot(x$taus, x$Tvtilde[i,], type="l",
-					ylab=var.names[i], xlab="")
-			}
-			else
-			{
-				plot(x$taus, x$vtilde[i,], type="l",
-					ylab=var.names[i], xlab="")
-			}
-			abline(h=0)
-		}
-	}	
-}
-"rq.test.khmal" <- 
-function(formula, data, taus=seq(0.2,0.8,by=0.002), location.scale = TRUE, 
-trim = c(0.25, 0.75) ) 
-{
-	if(!is.data.frame(data))
-		x <- as.data.frame(data)
-	else
-		x <- data
-	n <- dim(x)[1]
-	#
-	# LS part
-	#
-	z <- summary(lm(formula, data=x))
-	ols <- z$coef
-	vars <- names(z$coef[,1])
-	p <- length(z$coefficients[,1])
-	Jn <- solve(z$cov.unscaled)
-	#
-	# RQ part
-	#
-	Jt <- length( taus )
-	fit <- matrix( 0, p, Jt )
-	Hfit <- array( 0, c(p, p, Jt) )
-	cat("taus: ")
-	for(i in 1:Jt)
-	{
-		cat(taus[i]," ")
-		z <- summary(rq(formula,tau=taus[i],method="fn", data=x), hs=FALSE)
-		fit[,i] <- z$coefficients[,1]
-		Hfit[,,i] <- z$Hinv
-	}
-	#
-	# Class stuff
-	#
-	var.list <- c(2:p)
-    #class(fit.t.out) <- "khmal"
-    #invisible(fit.t.out)
-    #
-    # regress "slopes" on "intercept" and plot
-    #
-    b <- matrix(0,2,dim(Jn)[1])
-    ER <- fit
-    if(location.scale==FALSE)
-    {
-        b <- apply(fit,1,mean)
-        ER <- fit - b
-    }
-    else
-    {
-        for( i in 2:dim(b)[2] )
-        {
-            # regresses QR slopes on QR intercept
-            er <- lm(fit[i,] ~ fit[1,])
-            b[,i] <- er$coef
-            er <- er$resid
-            ER[i,] <- er  #matrix of "errors" from above regression
-        }
-    }
-    fit.t.out <- list(formula = formula, taus = taus, Jn = Jn, 
-                fit = fit, Hfit = Hfit, vars = vars, 
-		var.list = var.list, ols = ols, b = b, ER = ER)
-    #
-    # Now compute standardized residual process for both joint and
-    # individual test. There will be plots for each case -- joint and
-    # individual
-    #
-    J <- standardize(fit.t.out, location.scale)
-    #
-    #Now do the Khmaladze transformation
-    #
-    Vtilde <- khmaladzize(fit.t.out$taus, fit.t.out$fit[1,], 
-				J$Vhat, location.scale)
-    vtilde <- khmaladzize(fit.t.out$taus, fit.t.out$fit[1,], 
-				J$vhat, location.scale)
-	if(location.scale==TRUE)
-    {
-        Tvtilde <- (vtilde-vtilde[,2])/ 
-				sqrt(max(fit.t.out$taus)-min(fit.t.out$taus))
-	}
-	#
-	# Compute test statistic -- joint and individual; location-shift
-	# and location hypotheses.
-	#
-	trim <- ( fit.t.out$taus >= trim[1] & fit.t.out$taus <= trim[2] )	
-    if(location.scale==TRUE)
-    {
-        #Compute joint test of location scale hypothesis.
-        Kn <- max( apply(abs(Vtilde-Vtilde[2])/
-                sqrt(max(fit.t.out$taus)-min(fit.t.out$taus)),
-				2,"sum")[trim] )
-        #now compute test statistics
-        KHn <- apply(abs(Tvtilde[,trim]),1,max)
-    }
-    else
-    {
-        #compute joint test statistic using sup of l1 norms (trimming)
-        Tn <- max( apply( abs(Vtilde-Vtilde[2])/
-                sqrt(max(fit.t.out$taus)-min(fit.t.out$taus)),
-				2,"sum")[trim] )
-        #table of test statistics for coordinatewise
-        THn <- apply(abs((vtilde[,trim]-vtilde[,2])/
-                sqrt(max(fit.t.out$taus)-min(fit.t.out$taus))),1,max)
-    }
-	#
-	# Class stuff
-	#
-    if( location.scale == TRUE)
-    {
-        x <- list(location.scale = location.scale, 
-		b = b, J = J, Vtilde = Vtilde, vtilde = vtilde, 
-		Tvtilde = Tvtilde, trim = trim, Kn = Kn, KHn = KHn, 
-		formula = formula, taus = taus, Jn = Jn, fit = fit, 
-		Hfit = Hfit, vars = vars, var.list = var.list, 
-		ols = ols)
-    }
-    else
-    {
-        x <- list(location.scale = location.scale, 
-		b = b, J = J, Vtilde = Vtilde, vtilde = vtilde, 
-		trim = trim, Tn = Tn, THn = THn, 
-                formula = formula, taus = taus, Jn = Jn, fit = fit, 
-                Hfit = Hfit, vars = vars, var.list = var.list, 
-                ols = ols)
-        }
-    class(x) <- "khmal"
-    invisible(x)
-}
-

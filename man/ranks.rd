@@ -18,6 +18,7 @@ ranks(v, score="wilcoxon", tau=0.5)
   are \code{"wilcoxon"}, \code{"normal"}, and \code{"sign"}
   which are asymptotically optimal  for  
   the  logistic,  Gaussian  and Laplace location shift models respectively.
+  The "normal" score  function is also sometimes called van der Waerden scores.
   Also implemented are the \code{"tau"} which generalizes sign scores to an
   arbitrary quantile, and \code{"interquartile"} which is appropriate
   for tests of scale shift.
@@ -39,7 +40,7 @@ function.  All score functions should be normalized to have mean zero.
   rank scores, \emph{Journal of  Nonparametric  Statistics},  (2), 307--331.
 }
 \seealso{
-  \code{\link{rq}}, \code{\link{rrs.test}}
+  \code{\link{rq}}, \code{\link{rq.test.rank}} \code{\link{anova.rq}}
 }
 \examples{
 data(stackloss)

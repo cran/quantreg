@@ -141,3 +141,15 @@ found by Juan de la Garza.
 
 1.  Fixed a bug in ranks() found by Brian Cade involving the tau score function.
 
+3.35  March 12  2004
+
+1.  Changed the default behavior of rq to produce only the point estimates and
+residuals when 0 < tau < 1, instead of automatically producing the rank inversion
+confidence interval table.  The latter is now available from summary.rq by 
+specifying se="rank".  (This is the default option in summary.rq when
+the sample size is less than 1001.)
+
+2.  Altered anova.rq slightly to accomodate its use for two sample rank tests --
+this task was simplified somewhat by (1.).
+
+3.  Withdrew the Khmaladze functions for a thorough reworking.

@@ -1,5 +1,4 @@
 This is quick list of some possible fixes for the next revision of quantreg
-Version:  June 25, 2001
 
 1.  Adapt Khmaladze stuff to handle "br" output.
 
@@ -24,3 +23,5 @@ and to incorporate rqss stuff to akima, tripack, etc.
 8.  Allow percentile methods for the bootstrap methods.
 
 9.  Add predict methods
+
+10. Revise the Khmaladze code which was withdrawn for renovation on March 12, 2004.

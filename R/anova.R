@@ -7,7 +7,7 @@ function (object, ...)
     stop("Anova is only defined (yet) for sequences of rq objects")
 }
 "anova.rqlist" <-
-function (object, ..., test = "Wald", score="tau") 
+function (object, ..., test = "Wald", score = "tau") 
 {
     objects <- list(object, ...)
     responses <- as.character(lapply(objects, function(x) formula(x)[[2]]))
@@ -16,15 +16,14 @@ function (object, ..., test = "Wald", score="tau")
         stop("Models don't all have the same response variable")
     n <- length(objects[[1]]$y)
     models <- as.character(lapply(objects, function(x) formula(x)))
-    if (test == "Wald") 
-        objects <- lapply(objects, function(x) summary(x))
     nobjects <- length(objects)
-    dimp <- lapply(objects, function(x) length(x$coef[, 1]))
+    dimp <- lapply(objects, function(x) length(coef(x)))
     objects <- objects[order(-unlist(dimp))]
     models <- as.character(lapply(objects, function(x) formula(x)))
     taus <- unlist(lapply(objects, function(x) x$tau))
-    names <- lapply(objects, function(x) names(x$coefficients[, 
-        1]))
+    names <- lapply(objects, function(x) names(coef(x)))
+    if (test == "Wald") 
+        objects <- lapply(objects, function(x) summary(x,se="nid"))
     sametaus <- taus == taus[[1]]
     if (all(sametaus)) {
         Tn <- rep(0, nobjects - 1)
@@ -33,7 +32,7 @@ function (object, ..., test = "Wald", score="tau")
         pvalue <- Tn
         topnote <- paste("Model ", format(1:nobjects), ": ", 
             models, sep = "", collapse = "\n")
-        if (test == "Hajek") {
+        if (test == "rank") {
             x1 <- as.matrix(objects[[1]]$x)
             y <- objects[[1]]$y
             for (i in 2:nobjects) {
@@ -42,22 +41,23 @@ function (object, ..., test = "Wald", score="tau")
                 nullH <- is.na(match(names[[1]], names[[i]]))
                 X1 <- as.matrix(x1[, nullH])
                 X0 <- as.matrix(objects[[i]]$x)
-                Htest <- rq.test.Hajek(X0, X1, y, score = score ,taus[[1]])
+                Htest <- rq.test.rank(X0, X1, y, score = score, 
+                  taus[[1]])
                 ndf[i - 1] <- Htest$ndf
-                Tn[i - 1] <- Htest$Tn/ndf[i-1]
+                Tn[i - 1] <- Htest$Tn/ndf[i - 1]
                 ddf[i - 1] <- Htest$ddf
                 pvalue[i - 1] <- Htest$pvalue
             }
         }
         else if (test == "Wald") {
             V <- lapply(objects, function(x) x$cov)
-            coef <- lapply(objects, function(x) x$coefficients[, 
-                1])
+            coef <- lapply(objects, function(x) coef(x)[,1])
             for (i in 2:nobjects) {
                 if (!all(names[[i]] %in% names[[1]])) 
                   stop("Models aren't nested")
                 nullH <- is.na(match(names[[1]], names[[i]]))
                 ndf[i - 1] <- sum(nullH)
+		browser()
                 Tn[i - 1] <- t((coef[[1]])[nullH]) %*% solve((V[[1]])[nullH, 
                   nullH], (coef[[1]])[nullH])/ndf[i - 1]
                 ddf[i - 1] <- n - length(names[[1]])
@@ -65,7 +65,7 @@ function (object, ..., test = "Wald", score="tau")
                   ddf[i - 1])
             }
         }
-        else stop("Mode test only defined for Wald and Hajek")
+        else stop("Mode test only defined for Wald and rank")
     }
     else {
         m <- length(taus)
@@ -83,10 +83,9 @@ function (object, ..., test = "Wald", score="tau")
         H <- matrix(aperm(H, c(1, 3, 2)), p * m, p) %*% t(chol(J))
         W <- (H %*% t(H)) * (kronecker(Omega, outer(rep(1, p), 
             rep(1, p))))
-        coef <- unlist(lapply(objects, function(x) x$coefficients[, 
-            1]))
+        coef <- unlist(lapply(objects, function(x) coef(x)[,1]))
         D <- kronecker(diff(diag(m)), cbind(0, diag(p - 1)))
-        ndf <- (p-1) * (m - 1)
+        ndf <- (p - 1) * (m - 1)
         Tn <- t(D %*% coef) %*% solve(D %*% W %*% t(D), D %*% 
             coef)/ndf
         ddf <- n * m - p * (m - 1)
@@ -104,7 +103,7 @@ function (object, ..., test = "Wald", score="tau")
         "data.frame"))
     print(a)
 }
-"rq.test.Hajek" <-
+"rq.test.rank" <-
 function (x0, x1, y, score = "wilcoxon",tau=tau) 
 {
     v <- rq(y ~ x0 - 1, tau = -1)

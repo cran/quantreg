@@ -98,7 +98,7 @@ plot(x,y,xlab="household income",ylab="food expenditure",cex=.5)
 taus <- c(.05,.1,.25,.75,.9,.95)
 xx <- seq(min(x),max(x),100)
 for(tau in taus){
-        f <- rq((y)~(x),tau=tau)$coef[,1]
+        f <- coef(rq((y)~(x),tau=tau))
         yy <- (f[1]+f[2]*(xx))
         lines(xx,yy)
         }
@@ -116,23 +116,18 @@ rq(y~X,R=R,r=r,method="fnc")
 The function computes an estimate on the tau-th conditional quantile
 function of the response, given the covariates, as specified by the
 formula argument.  Like \code{lm()}, the function presumes a linear
-pecification for the quantile regression model, i.e. that the formula
+specification for the quantile regression model, i.e. that the formula
 defines a model that is linear in parameters.  For non-linear quantile
 regression see the package \code{nlrq()}.  
 The function minimizes a weighted sum of absolute
 residuals that can be formulated as a linear programming problem.  As
 noted above, there are three different algorithms that can be chosen
 depending on problem size and other characteristics.  For moderate sized
-problems (\eqn{n \ll 5,000, p \ll 20}{n << 5,000, p << 20}) it is recommended that the default
-\code{"br"} method be used. There are several choices of methods for
-computing confidence intervals and associated test statistics.  Using
-\code{"br"} the default approach produces confidence intervals for each
-of the estimated model parameters based on inversion of a rank test.
-See the documentation for \code{\link{rq.fit.br}} for further details
-and options.  For larger problems, the \code{"fn"} and \code{"pfn"} are
-preferred, and there are several methods of computing standard errors
-and associated test statistics described in the help files for
-\code{\link{rq.fit.fn}}, and \code{\link{summary.rq}}.
+problems (\eqn{n \ll 5,000, p \ll 20}{n << 5,000, p << 20}) it is recommended 
+that the default \code{"br"} method be used. There are several choices of methods for
+computing confidence intervals and associated test statistics.  
+See the documentation for \code{\link{summary.rq}} for further details
+and options.  
 }
 
 \keyword{regression}

@@ -2,9 +2,7 @@
 \alias{lm.fit.recursive}
 \title{ Recursive Least Squares }
 \description{
-This function fits a linear model by recursive least squares.  It is
-a utility routine for the rq.test.khmal function of the quantile regression
-package.
+This function fits a linear model by recursive least squares.  
 }
 \usage{
 lm.fit.recursive(X, y, int=TRUE)
@@ -21,6 +19,5 @@ ith column gives the solution up to "time" i.
 }
 \references{ A. Harvey, (1993) Time Series Models, MIT }
 \author{ R. Koenker }
-\seealso{khmaladzize }
 
 \keyword{methods}

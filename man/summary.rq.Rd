@@ -16,8 +16,14 @@ summary.rq(object, se="nid", covariance=TRUE, hs = TRUE,  ...)
   }
   \item{se}{
     specifies the method used to compute standard standard errors.  There
-    are currently three available methods:  
+    are currently five available methods:  
     \enumerate{
+      \item \code{"rank"} which produces confidence intervals for the
+      estimated parameters by inverting a rank test as described in
+      Koenker (1994).  The default option assumes that the errors are
+      iid, while the option iid = FALSE implements the proposal of Koenker
+      Machado (1999).
+
       \item \code{"iid"} which presumes that the errors are iid and computes
       an estimate of the asymptotic covariance matrix as in KB(1978).
       
@@ -28,6 +34,9 @@ summary.rq(object, se="nid", covariance=TRUE, hs = TRUE,  ...)
       
       \item \code{"ker"} which uses a kernel estimate of the sandwich
       as proposed by Powell(1990).
+
+      \item \code{"boot"} which implements one of several possible bootstrapping
+      alternatives for estimating standard errors.
     }
   }
   \item{covariance}{

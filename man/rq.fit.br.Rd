@@ -11,7 +11,7 @@ Quantile Regression Fitting by Exterior Point Methods
   via the \code{\dots{}} argument of \code{rq()}.
 }
 \usage{
-rq.fit.br(x, y, tau=0.5, alpha=0.1, ci=TRUE, iid=TRUE, interp=TRUE, tcrit=TRUE)
+rq.fit.br(x, y, tau=0.5, alpha=0.1, ci=FALSE, iid=TRUE, interp=TRUE, tcrit=TRUE)
 }
 \arguments{
 \item{x}{
