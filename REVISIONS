@@ -97,3 +97,18 @@ in the devel version of 1.7.0 installed today.
 3.17 February 17 2003 
 
 1.  Removed the last of the _ assignments in the example files.
+
+3.18 March 4 2003 
+
+1.  Fixed a documentation bug in rq.fit.br the entry for alpha was changed from:
+
+ alpha: the nominal coverage probability for the confidence intervals            
+
+to
+
+ alpha: the nominal noncoverage probability for the confidence intervals            
+
+3.19 March 25 2003 
+
+1.  Added src/Makevars file in accordance with Brian's email request, see R email folder.
+

@@ -25,7 +25,8 @@ rq.fit.br(x, y, tau=0.5, alpha=0.1, ci=TRUE, iid=TRUE, interp=TRUE, tcrit=TRUE)
   is estimated.
 }
 \item{alpha}{
-  the nominal coverage probability for the confidence intervals 
+  the nominal noncoverage probability for the confidence intervals, i.e. 1-alpha
+  is the nominal coverage probability of the intervals. 
 }
 \item{ci}{
   logical flag if T then compute confidence intervals for the parameters
