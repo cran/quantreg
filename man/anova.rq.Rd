@@ -90,8 +90,10 @@ can be rather slow and memory intensive on problems with more than
 several thousand observations.
 } 
 
-\seealso{ The model fitting function  \code{\link{rq}}.
-For further details on the rank tests see \code{\link{ranks}}}. 
+\seealso{ The model fitting function  \code{\link{rq}}, 
+and the functions for testing hypothesis on the entire quantile
+regression process \code{\link{khmaladze.test}}.  For further details
+on the rank tests see \code{\link{ranks}}}. 
 
 \examples{
 data(barro)

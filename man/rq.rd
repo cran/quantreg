@@ -9,7 +9,7 @@ a quantile regression fit.
 }
 \usage{
 rq(formula, tau=.5, data, weights, na.action,
-   method="br", contrasts, \dots) 
+   method="br", model = TRUE, contrasts, \dots) 
 }
 \arguments{
   \item{formula}{
@@ -44,6 +44,9 @@ rq(formula, tau=.5, data, weights, na.action,
     The default (with \code{na.fail}) is to create an error if any missing values are  
     found.  A possible alternative is \code{na.omit}, which 
     deletes observations that contain one or more missing values. 
+  }
+  \item{model}{if TRUE then the model frame is returned.  This is
+    essential if one wants to call summary subsequently.
   }
   \item{method}{
     the algorithmic method used to compute the fit.  There are currently 

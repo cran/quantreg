@@ -348,12 +348,14 @@ function (x, file = as.character(substitute(x)), rowlabel = file,
     invisible()
 }
 "table.rq" <-
-function (formula, taus = c(0.25, 0.5, 0.75), method = "br", ...) 
+function (formula, taus = c(0.25, 0.5, 0.75), method = "br", 
+    ...) 
 {
     m <- length(taus)
     tab <- NULL
     for (i in 1:m) {
-        fit <- summary(rq(formula, taus[i], method = method), ...)
+        fit <- rq(formula, taus[i], method = method)
+	if(method=="fn") fit <- summary(fit)
         tab <- rbind(tab, coefficients(fit))
     }
     p <- nrow(tab)/m

@@ -57,7 +57,6 @@ function (object, ..., test = "Wald", score = "tau")
                   stop("Models aren't nested")
                 nullH <- is.na(match(names[[1]], names[[i]]))
                 ndf[i - 1] <- sum(nullH)
-		browser()
                 Tn[i - 1] <- t((coef[[1]])[nullH]) %*% solve((V[[1]])[nullH, 
                   nullH], (coef[[1]])[nullH])/ndf[i - 1]
                 ddf[i - 1] <- n - length(names[[1]])

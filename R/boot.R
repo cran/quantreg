@@ -5,6 +5,7 @@ function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y), ...)
     x <- as.matrix(x)
     p <- ncol(x) 
     B <- matrix(0, R, p)
+    if(tau <= 0 || tau >= 1) stop("tau outside (0,1) not allowed")
     if (bsmethod == "xy") {
 	if(mofn < p || mofn > n) stop("mofn is out of range")
         s <- matrix(sample(n, mofn * R, replace = TRUE), mofn, R)

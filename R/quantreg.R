@@ -126,36 +126,36 @@ function(v, score = "wilcoxon", tau = 0.5)
 }
 
 "rq" <-
-function(formula, tau = 0.5, data, weights, na.action, method = "br", contrasts
-	 = NULL, ...)
+function (formula, tau = 0.5, data, weights, na.action, method = "br", 
+    model = TRUE, contrasts = NULL, ...) 
 {
-	call <- match.call()
-	m <- match.call(expand = FALSE)
-	m$method <- m$model <- m$x <- m$y <- m$contrasts <- m$tau <- m$... <-
-		NULL
-	m[[1]] <- as.name("model.frame")
-	m <- eval(m, sys.frame(sys.parent()))
-	if(method == "model.frame")
-		return(m)
-	Terms <- attr(m, "terms")
-	weights <- model.extract(m, weights)
-	Y <- model.extract(m, response)
-	X <- model.matrix(Terms, m, contrasts)
-	process <- (tau < 0 || tau > 1)
-	fit <- {
-		if(length(weights))
-			rq.wfit(X, Y, tau = tau, weights, method, ...)
-		else rq.fit(X, Y, tau = tau, method, ...)
-	}
-	fit$formula <- formula
-	fit$terms <- Terms
-	fit$call <- call
-	fit$tau <- tau
-	attr(fit, "na.message") <- attr(m, "na.message")
-	class(fit) <- ifelse(process, "rq.process", "rq")
-	fit
+    call <- match.call()
+    mf <- match.call(expand.dots = FALSE)
+    m <- match(c("formula", "data", "weights", "na.action"), names(mf), 0)
+    mf <- mf[c(1,m)]
+    mf$drop.unused.levels <- TRUE
+    mf[[1]] <- as.name("model.frame")
+    mf <- eval.parent(mf)
+    if(method == "model.frame")return(mf)
+    mt <- attr(mf, "terms")
+    weights <- model.weights(mf)
+    Y <- model.response(mf)
+    X <- model.matrix(mt, mf, contrasts)
+    process <- (tau < 0 || tau > 1)
+    fit <- {
+        if (length(weights)) 
+            rq.wfit(X, Y, tau = tau, weights, method, ...)
+        else rq.fit(X, Y, tau = tau, method, ...)
+    }
+    fit$formula <- formula
+    fit$terms <- mt
+    fit$call <- call
+    fit$tau <- tau
+    attr(fit, "na.message") <- attr(m, "na.message")
+    class(fit) <- ifelse(process, "rq.process", "rq")
+    if(model) fit$model <- mf
+    fit
 }
-
 "rq.fit" <-
 function(x, y, tau = 0.5, method = "br", ...)
 {
@@ -178,7 +178,6 @@ function(x, y, tau = 0.5, method = "br", ...)
 	fit
 }
 
-"rq.fit.br" <-
 # Function to compute regression quantiles using original simplex approach
 # of Barrodale-Roberts/Koenker-d'Orey.  There are several options.
 # The options are somewhat different than those available for the Frisch-
@@ -231,142 +230,120 @@ function(x, y, tau = 0.5, method = "br", ...)
 #	not recommended for problems with n > 10,000.
 #	In large problems a grid of solutions is probably sufficient.
 #
-function(x, y, tau = 0.5, alpha = 0.10000000000000001, ci = FALSE, 
-	iid = TRUE, interp = TRUE, tcrit = TRUE)
+rq.fit.br <- 
+function (x, y, tau = 0.5, alpha = 0.1, ci = FALSE, iid = TRUE, interp = TRUE, tcrit = TRUE) 
 {
-	tol <- .Machine$double.eps^(2/3)
-	eps <- tol
-	big <- .Machine$double.xmax
-	x <- as.matrix(x)
-	p <- ncol(x)
-	n <- nrow(x)
-	nsol <- 2
-	ndsol <- 2
-	if(tau < 0 || tau > 1) {
-		nsol <- 3 * n
-		ndsol <- 3 * n
-		lci1 <- FALSE
-		qn <- rep(0, p)
-		cutoff <- 0
-		tau <- -1
-	}
-	else {
-		if(p==1) ci <- FALSE
-		if(ci) {
-			lci1 <- TRUE
-			if(tcrit)
-				cutoff <- qt(1 - alpha/2, n - p)
-			else cutoff <- qnorm(1 - alpha/2)
-			if(!iid) {
-				h <- bandwidth.rq(tau, n, hs = TRUE)
-				bhi <- rq.fit.br(x, y, tau + h, ci = FALSE)
-				bhi <- coefficients(bhi)
-				blo <- rq.fit.br(x, y, tau - h, ci = FALSE)
-				blo <- coefficients(blo)
-				dyhat <- x %*% (bhi - blo)
-				if(any(dyhat <= 0)) {
-					pfis <- (100 * sum(dyhat <= 0))/n
-					warning(paste(pfis, "percent fis <=0"))
-				}
-				f <- pmax(eps, (2 * h)/(dyhat - eps))
-				qn <- rep(0, p)
-				for(j in 1:p) {
-					qnj <- lm(x[, j] ~ x[,  - j] - 1,
-						weights = f)$resid
-					qn[j] <- sum(qnj * qnj)
-				}
-			}
-			else qn <- 1/diag(solve(crossprod(x)))
-		}
-		else {
-			lci1 <- FALSE
-			qn <- rep(0, p)
-			cutoff <- 0
-		}
-	}
-	assign <- attr(x, "assign")
-	z <- .Fortran("rqbr",
-		as.integer(n),
-		as.integer(p),
-		as.integer(n + 5),
-		as.integer(p + 3),
-		as.integer(p + 4),
-		as.double(x),
-		as.double(y),
-		as.double(tau),
-		as.double(tol),
-		flag = as.integer(1),
-		coef = double(p),
-		resid = double(n),
-		integer(n),
-		double((n + 5) * (p + 4)),
-		double(n),
-		as.integer(nsol),
-		as.integer(ndsol),
-		sol = double((p + 3) * nsol),
-		dsol = double(n * ndsol),
-		lsol = as.integer(0),
-		h = integer(p * nsol),
-		qn = as.double(qn),
-		cutoff = as.double(cutoff),
-		ci = double(4 * p),
-		tnmat = double(4 * p),
-		as.double(big),
-		as.logical(lci1),
-		PACKAGE = "quantreg")
-	if(z$flag != 0)
-		warning(switch(z$flag,
-			"Solution may be nonunique",
-			"Premature end - possible conditioning problem in x"))
-	if(tau < 0 || tau > 1) {
-		sol <- matrix(z$sol[1:((p + 3) * z$lsol)], p + 3)
-		dsol <- matrix(z$dsol[1:(n * z$lsol)], n)
-		vnames <- dimnames(x)[[2]]
-		dimnames(sol) <- list(c("tau", "Qbar", "Obj.Fun", vnames),
-			NULL)
-		return(list(sol=sol, dsol=dsol))
-	}
-	if(!ci) {
-		coef <- z$coef
-		names(coef) <- dimnames(x)[[2]]
-		return(list(coefficients=coef, x=x, y=y, residuals=z$resid))
-	}
-	if(interp) {
-		Tn <- matrix(z$tnmat, nrow = 4)
-		Tci <- matrix(z$ci, nrow = 4)
-		Tci[3,  ] <- Tci[3,  ] + (abs(Tci[4,  ] - Tci[3,  ]) * (cutoff -
-			abs(Tn[3,  ])))/abs(Tn[4,  ] - Tn[3,  ])
-		Tci[2,  ] <- Tci[2,  ] - (abs(Tci[1,  ] - Tci[2,  ]) * (cutoff -
-			abs(Tn[2,  ])))/abs(Tn[1,  ] - Tn[2,  ])
-		Tci[2,  ][is.na(Tci[2,  ])] <-  - big
-		Tci[3,  ][is.na(Tci[3,  ])] <- big
-		coefficients <- cbind(z$coef, t(Tci[2:3,  ]))
-		vnames <- dimnames(x)[[2]]
-		cnames <- c("coefficients", "lower bd", "upper bd")
-		dimnames(coefficients) <- list(vnames, cnames)
-		residuals <- z$resid
-		return(list(coefficients=coefficients, x=x, y=y, 
-			residuals=residuals, assign=assign))
-	}
-	else {
-		Tci <- matrix(z$ci, nrow = 4)
-		coefficients <- cbind(z$coef, t(Tci))
-		residuals <- z$resid
-		vnames <- dimnames(x)[[2]]
-		cnames <- c("coefficients", "lower bound", "Lower Bound",
-			"upper bd", "Upper Bound")
-		dimnames(coefficients) <- list(vnames, cnames)
-		c.values <- t(matrix(z$tnmat, nrow = 4))
-		c.values <- c.values[, 4:1]
-		dimnames(c.values) <- list(vnames, cnames[-1])
-		p.values <- if(tcrit) matrix(pt(c.values, n - p), ncol = 4)
-			    else matrix(pnorm(c.values), ncol = 4)
-		dimnames(p.values) <- list(vnames, cnames[-1])
-		list(coefficients=coefficients, x=x, y=y, residuals=residuals, 
-			c.values=c.values, p.values=p.values)
-	}
+    tol <- .Machine$double.eps^(2/3)
+    eps <- tol
+    big <- .Machine$double.xmax
+    x <- as.matrix(x)
+    p <- ncol(x)
+    n <- nrow(x)
+    nsol <- 2
+    ndsol <- 2
+    if (tau < 0 || tau > 1) {
+        nsol <- 3 * n
+        ndsol <- 3 * n
+        lci1 <- FALSE
+        qn <- rep(0, p)
+        cutoff <- 0
+        tau <- -1
+    }
+    else {
+        if (p == 1) 
+            ci <- FALSE
+        if (ci) {
+            lci1 <- TRUE
+            if (tcrit) 
+                cutoff <- qt(1 - alpha/2, n - p)
+            else cutoff <- qnorm(1 - alpha/2)
+            if (!iid) {
+                h <- bandwidth.rq(tau, n, hs = TRUE)
+                bhi <- rq.fit.br(x, y, tau + h, ci = FALSE)
+                bhi <- coefficients(bhi)
+                blo <- rq.fit.br(x, y, tau - h, ci = FALSE)
+                blo <- coefficients(blo)
+                dyhat <- x %*% (bhi - blo)
+                if (any(dyhat <= 0)) {
+                  pfis <- (100 * sum(dyhat <= 0))/n
+                  warning(paste(pfis, "percent fis <=0"))
+                }
+                f <- pmax(eps, (2 * h)/(dyhat - eps))
+                qn <- rep(0, p)
+                for (j in 1:p) {
+                  qnj <- lm(x[, j] ~ x[, -j] - 1, weights = f)$resid
+                  qn[j] <- sum(qnj * qnj)
+                }
+            }
+            else qn <- 1/diag(solve(crossprod(x)))
+        }
+        else {
+            lci1 <- FALSE
+            qn <- rep(0, p)
+            cutoff <- 0
+        }
+    }
+    assign <- attr(x, "assign")
+    z <- .Fortran("rqbr", as.integer(n), as.integer(p), as.integer(n + 
+        5), as.integer(p + 3), as.integer(p + 4), as.double(x), 
+        as.double(y), as.double(tau), as.double(tol), flag = as.integer(1), 
+        coef = double(p), resid = double(n), integer(n), double((n + 
+            5) * (p + 4)), double(n), as.integer(nsol), as.integer(ndsol), 
+        sol = double((p + 3) * nsol), dsol = double(n * ndsol), 
+        lsol = as.integer(0), h = integer(p * nsol), qn = as.double(qn), 
+        cutoff = as.double(cutoff), ci = double(4 * p), tnmat = double(4 * 
+            p), as.double(big), as.logical(lci1), PACKAGE = "quantreg")
+    if (z$flag != 0) 
+        warning(switch(z$flag, "Solution may be nonunique", "Premature end - possible conditioning problem in x"))
+    if (tau < 0 || tau > 1) {
+        sol <- matrix(z$sol[1:((p + 3) * z$lsol)], p + 3)
+        dsol <- matrix(z$dsol[1:(n * z$lsol)], n)
+        vnames <- dimnames(x)[[2]]
+        dimnames(sol) <- list(c("tau", "Qbar", "Obj.Fun", vnames), 
+            NULL)
+        return(list(sol = sol, dsol = dsol))
+    }
+    if (!ci) {
+        coef <- z$coef
+        names(coef) <- dimnames(x)[[2]]
+        return(list(coefficients = coef, x = x, y = y, residuals = z$resid))
+    }
+    if (interp) {
+        Tn <- matrix(z$tnmat, nrow = 4)
+        Tci <- matrix(z$ci, nrow = 4)
+        Tci[3, ] <- Tci[3, ] + (abs(Tci[4, ] - Tci[3, ]) * (cutoff - 
+            abs(Tn[3, ])))/abs(Tn[4, ] - Tn[3, ])
+        Tci[2, ] <- Tci[2, ] - (abs(Tci[1, ] - Tci[2, ]) * (cutoff - 
+            abs(Tn[2, ])))/abs(Tn[1, ] - Tn[2, ])
+        Tci[2, ][is.na(Tci[2, ])] <- -big
+        Tci[3, ][is.na(Tci[3, ])] <- big
+        coefficients <- cbind(z$coef, t(Tci[2:3, ]))
+        vnames <- dimnames(x)[[2]]
+        cnames <- c("coefficients", "lower bd", "upper bd")
+        dimnames(coefficients) <- list(vnames, cnames)
+        residuals <- z$resid
+        return(list(coefficients = coefficients, 
+            residuals = residuals, assign = assign))
+    }
+    else {
+        Tci <- matrix(z$ci, nrow = 4)
+        coefficients <- cbind(z$coef, t(Tci))
+        residuals <- z$resid
+        vnames <- dimnames(x)[[2]]
+        cnames <- c("coefficients", "lower bound", "Lower Bound", 
+            "upper bd", "Upper Bound")
+        dimnames(coefficients) <- list(vnames, cnames)
+        c.values <- t(matrix(z$tnmat, nrow = 4))
+        c.values <- c.values[, 4:1]
+        dimnames(c.values) <- list(vnames, cnames[-1])
+        p.values <- if (tcrit) 
+            matrix(pt(c.values, n - p), ncol = 4)
+        else matrix(pnorm(c.values), ncol = 4)
+        dimnames(p.values) <- list(vnames, cnames[-1])
+        list(coefficients = coefficients, residuals = residuals, 
+            c.values = c.values, p.values = p.values)
+    }
 }
-
 "rq.fit.fn" <-
 function (x, y, tau = 0.5, beta = 0.99995, eps = 1e-06)
 {
@@ -391,7 +368,7 @@ function (x, y, tau = 0.5, beta = 0.99995, eps = 1e-06)
     coefficients <- -z$wp[1:p]
     names(coefficients) <- dimnames(x)[[2]]
     residuals <- y - x %*% coefficients
-    list(coefficients=coefficients, x=x, y=y, tau=tau, residuals=residuals)
+    list(coefficients=coefficients, tau=tau, residuals=residuals)
 }
 
 "rq.fit.fnb" <-
@@ -418,7 +395,7 @@ function (x, y, tau = 0.5, beta = 0.99995, eps = 1e-06)
     coefficients <- -z$wp[1:p]
     names(coefficients) <- dimnames(x)[[2]]
     residuals <- y - x %*% coefficients
-    list(coefficients=coefficients, x=x, y=y, tau=tau, residuals=residuals)
+    list(coefficients=coefficients, tau=tau, residuals=residuals)
 }
 
 "rq.fit.fnc" <-
@@ -454,7 +431,7 @@ function (x, y, R, r, tau = 0.5, beta = 0.9995, eps = 1e-06)
     names(coefficients) <- dimnames(x)[[2]]
     residuals <- y - x %*% coefficients
     it.count <- z$it.count
-    list(coefficients=coefficients, x=x, y=y, tau=tau, residuals=residuals)
+    list(coefficients=coefficients, tau=tau, residuals=residuals)
 }
 
 
@@ -543,7 +520,7 @@ function(x, y, tau = 0.5,  Mm.factor = 0.8,
 	coefficients <- b
 	names(coefficients) <- dimnames(x)[[2]]
 	residuals <- y - x %*% b
-	return(list(coefficients=coefficients, x=x, y=y, tau=tau, 
+	return(list(coefficients=coefficients, tau=tau, 
 		residuals=residuals))
 }
 
@@ -622,108 +599,115 @@ function(x0, x1, y, v, score = "wilcoxon")
 #		"mcmb"	uses the Markov chain marginal bootstrap method 
 #
 #
-function(object, se = "nid", covariance = TRUE, hs = TRUE, ...)
+function (object, se = "nid", covariance = TRUE, hs = TRUE, ...) 
 {
-	x <- object$x
-	y <- object$y
-	tau <- object$tau
-	formula <- object$formula
-	eps <- .Machine$double.eps^(2/3)
-	wt <- object$weights
-	coef <- coefficients(object)
-	if(is.matrix(coef))
-		coef <- coef[, 1]
-	vnames <- dimnames(x)[[2]]
-	resid <- object$residuals
-	n <- length(resid)
-	p <- length(coef)
-	rdf <- n - p
-	if(!is.null(wt)) {
-		resid <- resid * wt
-		x <- x * wt
-		y <- y * wt
-	}
-	if(missing(se)){
-		if(n < 1001) se <- "rank"
-		else  se <- "nid"
-		}
-	if(se == "rank"){
-		f <- rq(formula, tau = tau, ci = TRUE, ...)
-		return(f)
-		}
-	#quick and dirty se's in three flavors: iid, nid, and ker
-	if(se == "iid") {
-		xxinv <- diag(p)
-		xxinv <- backsolve(qr(x)$qr[1:p, 1:p], xxinv)
-		xxinv <- xxinv %*% t(xxinv)
-		pz <- sum(abs(resid) < eps)
-		h <- max(p + 1, ceiling(n * bandwidth.rq(tau, n, hs = hs)))
-		ir <- (pz + 1):(h + pz + 1)
-		ord.resid <- sort(resid[order(abs(resid))][ir])
-		xt <- ir/(n-p)
-		sparsity <- rq(ord.resid~xt)$coef[2,1]
-		cov <- sparsity^2 * xxinv * tau * (1 - tau)
-		serr <- sqrt(diag(cov))
-	}
-	else if(se == "nid") {
-		h <- bandwidth.rq(tau, n, hs = hs)
-		if(tau+h>1)stop("tau + h > 1:  error in summary.rq")
-        	if(tau-h<0)stop("tau - h < 0:  error in summary.rq")
-		bhi <- rq.fit.fn(x, y, tau = tau + h)$coef
-		blo <- rq.fit.fn(x, y, tau = tau - h)$coef
-		dyhat <- x %*% (bhi - blo)
-		if(any(dyhat <= 0))
-			warning(paste(sum(dyhat <= 0), "non-positive fis"))
-		f <- pmax(0, (2 * h)/(dyhat - eps))
-		fxxinv <- diag(p)
-		fxxinv <- backsolve(qr(sqrt(f) * x)$qr[1:p, 1:p], fxxinv)
-		fxxinv <- fxxinv %*% t(fxxinv)
-		cov <- tau * (1 - tau) * fxxinv %*% crossprod(x) %*% fxxinv
-		serr <- sqrt(diag(cov))
-	}
-	else if(se == "ker") {
-		h <- bandwidth.rq(tau, n, hs = hs)
-		if(tau+h>1)stop("tau + h > 1:  error in summary.rq")
-        	if(tau-h<0)stop("tau - h < 0:  error in summary.rq")
-		h <- qnorm(tau + h) -  qnorm(tau - h)
-		uhat <- c(y - x %*% coef)
-		f <- dnorm(uhat/h)/h
-		fxxinv <- diag(p)
-		fxxinv <- backsolve(qr(sqrt(f) * x)$qr[1:p, 1:p], fxxinv)
-		fxxinv <- fxxinv %*% t(fxxinv)
-		cov <- tau * (1 - tau) * fxxinv %*% crossprod(x) %*% fxxinv
-		serr <- sqrt(diag(cov))
-	}
-	else if(se == "boot"){
-		B <- boot.rq(x,y,tau, ...)
-		cov <- cov(B)
-		serr <- sqrt(diag(cov))
-		}
-	coef <- array(coef, c(p, 4))
-	dimnames(coef) <- list(vnames, c("Value", "Std. Error", "t value",
-		"Pr(>|t|)"))
-	coef[, 2] <- serr
-	coef[, 3] <- coef[, 1]/coef[, 2]
-	coef[, 4] <- if(rdf > 0) 2 * (1 - pt(abs(coef[, 3]), rdf)) else NA
-#	object <- object[c("call", "terms", "assign")]
-	object <- object[c("call", "terms")]
-	if(covariance == TRUE) {
-		object$cov <- cov
-		if(se %in% c("nid","ker")) {
-			object$Hinv <- fxxinv
-			object$J <- crossprod(x)
-			}
-		else if(se == "boot"){
-			object$B <- B
-			}
-		}
-	object$coefficients <- coef
-	object$rdf <- rdf
-	object$tau <- tau
-	class(object) <- "summary.rq"
-	object
+    mt <- terms(object)
+    m <- model.frame(object)
+    y <- model.response(m)
+    x <- model.matrix(mt,m,contrasts = object$contrasts)
+    wt <- model.weights(m)
+    tau <- object$tau
+    eps <- .Machine$double.eps^(2/3)
+    coef <- coefficients(object)
+    if (is.matrix(coef)) 
+        coef <- coef[, 1]
+    vnames <- dimnames(x)[[2]]
+    resid <- object$residuals
+    n <- length(resid)
+    p <- length(coef)
+    rdf <- n - p
+    if (!is.null(wt)) {
+        resid <- resid * wt
+        x <- x * wt
+        y <- y * wt
+    }
+    if (missing(se)) {
+        if (n < 1001) 
+            se <- "rank"
+        else se <- "nid"
+    }
+    if (se == "rank") {
+        f <- rq.fit.br(x, y, tau = tau, ci = TRUE, ...)
+        return(f)
+    }
+    if (se == "iid") {
+        xxinv <- diag(p)
+        xxinv <- backsolve(qr(x)$qr[1:p, 1:p], xxinv)
+        xxinv <- xxinv %*% t(xxinv)
+        pz <- sum(abs(resid) < eps)
+        h <- max(p + 1, ceiling(n * bandwidth.rq(tau, n, hs = hs)))
+        ir <- (pz + 1):(h + pz + 1)
+        ord.resid <- sort(resid[order(abs(resid))][ir])
+        xt <- ir/(n - p)
+        sparsity <- rq(ord.resid ~ xt)$coef[2, 1]
+        cov <- sparsity^2 * xxinv * tau * (1 - tau)
+        serr <- sqrt(diag(cov))
+    }
+    else if (se == "nid") {
+        h <- bandwidth.rq(tau, n, hs = hs)
+        if (tau + h > 1) 
+            stop("tau + h > 1:  error in summary.rq")
+        if (tau - h < 0) 
+            stop("tau - h < 0:  error in summary.rq")
+        bhi <- rq.fit.fn(x, y, tau = tau + h)$coef
+        blo <- rq.fit.fn(x, y, tau = tau - h)$coef
+        dyhat <- x %*% (bhi - blo)
+        if (any(dyhat <= 0)) 
+            warning(paste(sum(dyhat <= 0), "non-positive fis"))
+        f <- pmax(0, (2 * h)/(dyhat - eps))
+        fxxinv <- diag(p)
+        fxxinv <- backsolve(qr(sqrt(f) * x)$qr[1:p, 1:p], fxxinv)
+        fxxinv <- fxxinv %*% t(fxxinv)
+        cov <- tau * (1 - tau) * fxxinv %*% crossprod(x) %*% 
+            fxxinv
+        serr <- sqrt(diag(cov))
+    }
+    else if (se == "ker") {
+        h <- bandwidth.rq(tau, n, hs = hs)
+        if (tau + h > 1) 
+            stop("tau + h > 1:  error in summary.rq")
+        if (tau - h < 0) 
+            stop("tau - h < 0:  error in summary.rq")
+        h <- qnorm(tau + h) - qnorm(tau - h)
+        uhat <- c(y - x %*% coef)
+        f <- dnorm(uhat/h)/h
+        fxxinv <- diag(p)
+        fxxinv <- backsolve(qr(sqrt(f) * x)$qr[1:p, 1:p], fxxinv)
+        fxxinv <- fxxinv %*% t(fxxinv)
+        cov <- tau * (1 - tau) * fxxinv %*% crossprod(x) %*% 
+            fxxinv
+        serr <- sqrt(diag(cov))
+    }
+    else if (se == "boot") {
+        B <- boot.rq(x, y, tau, ...)
+        cov <- cov(B)
+        serr <- sqrt(diag(cov))
+    }
+    coef <- array(coef, c(p, 4))
+    dimnames(coef) <- list(vnames, c("Value", "Std. Error", "t value", 
+        "Pr(>|t|)"))
+    coef[, 2] <- serr
+    coef[, 3] <- coef[, 1]/coef[, 2]
+    coef[, 4] <- if (rdf > 0) 
+        2 * (1 - pt(abs(coef[, 3]), rdf))
+    else NA
+    object <- object[c("call", "terms")]
+    if (covariance == TRUE) {
+        object$cov <- cov
+        if (se %in% c("nid", "ker")) {
+            object$Hinv <- fxxinv
+            object$J <- crossprod(x)
+        }
+        else if (se == "boot") {
+            object$B <- B
+        }
+    }
+    object$coefficients <- coef
+    object$rdf <- rdf
+    object$tau <- tau
+    class(object) <- "summary.rq"
+    object
 }
-
 
 "akj" <-
 function(x, z = seq(min(x), max(x),  , 2 * length(x)), 

@@ -141,15 +141,34 @@ found by Juan de la Garza.
 
 1.  Fixed a bug in ranks() found by Brian Cade involving the tau score function.
 
-3.35  March 12  2004
+3.35  March 09  2004
 
 1.  Changed the default behavior of rq to produce only the point estimates and
 residuals when 0 < tau < 1, instead of automatically producing the rank inversion
 confidence interval table.  The latter is now available from summary.rq by 
-specifying se="rank".  (This is the default option in summary.rq when
-the sample size is less than 1001.)
+specifying se="rank".  (This is actually the default option in summary.rq when
+the sample size is less than 1001.
 
 2.  Altered anova.rq slightly to accomodate its use for two sample rank tests --
 this task was simplified somewhat by (1.).
 
-3.  Withdrew the Khmaladze functions for a thorough reworking.
+3.36 June 9, 2004
+
+1.  Scoping problem in summary.rq made data invisible when formula
+variables were specified using data=blot in rq().  This entailed a
+somewhat extensive updating of rq and summary.rq in accordance with
+the "Notes on model-fitting" white paper on the R developer page.
+Thanks for that! to the anon author.  Now rather than passing x,y
+a model object is passed indicating how the model should be 
+reconstructed.  As a byproduct, the lowest level fitting routines
+no longer return x,y,  thus saving some memory.
+
+2.  added a error check to boot.rq to prevent users from calling with
+tau outside (0,1).  Calls with   tau = 1 produced a rather nasty memory
+overwrite as experienced by Alexis Diamond, debugging required some interesting 
+adventures with gc().
+
+3.  Major revision of the code to do inference on the rq process based
+on the Khmaladze approach.  See khmaladze.test for further details.
+In the process discovered a minor bug the resulted in problem with the
+Joint test statistic.  (Two missing commas!)
