@@ -1,0 +1,8 @@
+Package:  quantreg
+Version:  2.0-2
+Author:   Roger Koenker. R port by Kjetil Halvorsen.
+Description: Compute regression quantiles and some 
+              related rank statistics.
+License:  This software has been submitted to Statlib and may be freely
+           used and redistributed for non-commercial purposes. See Readme
+           file.

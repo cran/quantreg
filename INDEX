@@ -1,0 +1,11 @@
+rq                       quantile regression (main function)
+rq.formula               quantile regression with R formulas
+qrq                      linearized quantile estimation
+ranks                    function to compute ranks from the dual
+                         (regression rankscore) process
+rrs.test                 function to compute regression rankscore test of
+                         linear hypothesis
+trq                      function to compute analogues of the trimmed
+                         mean
+trq.print                print a Trimmed Regression Quantile Summary
+Patacamaya               example data set

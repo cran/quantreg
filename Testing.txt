@@ -1,0 +1,28 @@
+Testing of rq, R version:
+
+A. Running the examples in rq help:
+   rq(stack.x,stack.loss,.5) 
+              R gives warning about possible non-unique solution, which S
+              doesn't.  But the computed solutions are the same, to full
+              precision printed.  Warning might have to do with conversion
+              to double precision?
+
+   rq(stack.x,stack.loss,tau=.5,ci=T,method="score") 
+              R gives warning about possible non-unique solution, not S. 
+              as above.
+
+   rq(stack.x,stack.loss,.25)
+              Help comments: note that 8 of the 21 points lie exactly 
+	      on this plane in 4-space.  For the R-solution, only 4
+              points! $h component of solution is different! This is the
+              index of the observations in the basis, so indicates that
+              indeed different solutions have been found. But coefficients
+              and confidence intervals are identical.  
+
+   rq(stack.x,stack.loss,-1) 
+             As above, some differences in $h component. 
+
+   rq(y=rnorm(10),method="sparsity")
+             OK.
+
+
