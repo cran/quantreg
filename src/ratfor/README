@@ -2,3 +2,16 @@ This directory contains ratfor source for the several routines of the
 rq library.  These are not strictly necessary, but they may prove useful
 to anyone wanting to look at the source in detail, since the fortran
 translation of them by the ratfor compiler is far from readable.
+
+Note added September 17, 2004
+
+Apparently g77 v3.4 doesn't like double precision data statements so
+these have been changed to parameter() declarations.  However, this
+entailed the dangerous step of installing the SEP ratfor77 translator.
+Past experience, and now a bug file in the SEP distro, suggests
+that the ratfor switch statement is unlikely to be correctly handled.
+Fortunately, none of the included routines in the directory use switch
+but caution is undoubtedly indicated.  The fortran produced for rqbr.r
+is somewhat different than that produced by my older sun version, and
+generates two warnings from g77, but these appear to be harmless.
+Famous last words...

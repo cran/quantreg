@@ -45,7 +45,7 @@ subroutine rqfn(n,p,a,y,rhs,d,u,beta,eps,wn,wp,aa,nit,info)
 integer n,p,info,nit(3)
 double precision a(p,n),y(n),rhs(p),d(n),u(n),wn(n,10),wp(p,p+3),aa(p,p)
 double precision one,beta,eps
-data one/1.0d0/
+parameter( one = 1.0d0)
 call fna(n,p,a,y,rhs,d,u,beta,eps,wn(1,1),wn(1,2),
 	wp(1,1),wn(1,3),wn(1,4),wn(1,5), wn(1,6),
 	wp(1,2),wn(1,7),wn(1,8),wn(1,9),wn(1,10),wp(1,3), wp(1,4),aa,nit,info)
@@ -61,11 +61,11 @@ double precision deltap,deltad,beta,eps,cx,by,uw,uz,mu,mua,acomp,rdg,g
 double precision x(n),u(n),s(n),y(p),z(n),w(n),d(n),rhs(p),ada(p,p)
 double precision aa(p,p),dx(n),ds(n),dy(p),dz(n),dw(n),dxdz(n),dsdw(n)
 
-data zero /0.0d0/
-data half /0.5d0/
-data one  /1.0d0/
-data mone  /-1.0d0/
-data big /1.0d+20/
+parameter( zero  = 0.0d0)
+parameter( half  = 0.5d0)
+parameter( one   = 1.0d0)
+parameter( mone   = -1.0d0)
+parameter( big  = 1.0d+20)
 
 # Initialization:  We try to follow the notation of LMS
 # On input we require:

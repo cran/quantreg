@@ -3,7 +3,7 @@ integer n1,n2,p,info,nit(3)
 double precision a1(p,n1),a2(p,n2),y(n1),r(n2),rhs(p),d1(n1),d2(n2),u(n1)
 double precision wn1(n1,9),wn2(n2,6),wp(p,p+3)
 double precision one,beta,eps
-data one/1.0d0/
+parameter(one = 1.0d0)
 call lpfnc(n1,n2,p,a1,y,a2,r,rhs,d1,d2,u,beta,eps,wn1(1,1),wn2(1,1),wn1(1,2),
 	wp(1,1),wn1(1,3),wn2(1,2),wn1(1,4),wn1(1,5),wn2(1,3),wn1(1,6),
         wp(1,2),wn1(1,7),wn2(1,4),wn1(1,8),wn1(1,9),wn2(1,5),wn2(1,6),
@@ -33,11 +33,11 @@ double precision d1(n1),d2(n2),rhs(p),ada(p,p)
 double precision dx1(n1),dx2(n2),ds(n1),dy(p),dz1(n1),dz2(n2),dw(n1)
 double precision dr1(n1),dr2(n2),r2(n2)
 
-data zero /0.0d0/
-data one  /1.0d0/
-data mone  /-1.0d0/
-data big /1.0d+20/
-data maxit /50/
+parameter(zero  = 0.0d0)
+parameter(one   = 1.0d0)
+parameter(mone   = -1.0d0)
+parameter(big  = 1.0d+20)
+parameter(maxit  = 50)
 
 # Initialization:  We try to follow the notation of LMS
 # On input we require:
@@ -202,7 +202,7 @@ end
 subroutine stepy2(n1,n2,p,a1,d1,a2,d2,b,ada,info)
 integer n1,n2,p,i,j,k,info
 double precision a1(p,n1),a2(p,n2),b(p),d1(n1),d2(n2),ada(p,p),zero
-data zero/0.0d0/
+parameter(zero = 0.0d0)
 # Solve the linear system ada'x=b by Choleski -- d is diagonal
 # Note that a isn't altered, and on output ada returns the upper
 # triangle Choleski factor, which can be reused, eg with blas dtrtrs

@@ -5,8 +5,8 @@
   Produces a file with latex commands for a table of rq results.
 }
 \usage{
-latex.summary.rqs(x, transpose = FALSE, caption = "caption goes
-here.", digits = 3, file = as.character(substitute(x)), ...)
+latex.summary.rqs(x, transpose = FALSE, caption = "caption goes here.",
+                  digits = 3, file = as.character(substitute(x)), ...)
 }
 \arguments{
   \item{x}{\code{x} is an object of class \code{summary.rqs}}

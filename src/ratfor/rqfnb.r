@@ -2,7 +2,7 @@ subroutine rqfnb(n,p,a,y,rhs,d,u,beta,eps,wn,wp,nit,info)
 integer n,p,info,nit(3)
 double precision a(p,n),y(n),rhs(p),d(n),u(n),wn(n,9),wp(p,p+3)
 double precision one,beta,eps
-data one/1.0d0/
+parameter( one = 1.0d0)
 call lpfnb(n,p,a,y,rhs,d,u,beta,eps,wn(1,1),wn(1,2),
         wp(1,1),wn(1,3),wn(1,4),wn(1,5),wn(1,6),
         wp(1,2),wn(1,7),wn(1,8),wn(1,9),wp(1,3),wp(1,4),nit,info)
@@ -28,11 +28,11 @@ double precision deltap,deltad,beta,eps,mu,gap,g
 double precision x(n),u(n),s(n),y(p),z(n),w(n),d(n),rhs(p),ada(p,p)
 double precision dx(n),ds(n),dy(p),dz(n),dw(n),dr(n)
 
-data zero /0.0d0/
-data one  /1.0d0/
-data mone /-1.0d0/
-data big /1.0d+20/
-data maxit /50/
+parameter( zero  = 0.0d0)
+parameter( one   = 1.0d0)
+parameter( mone  = -1.0d0)
+parameter( big  = 1.0d+20)
+parameter( maxit  = 50)
 
 # Initialization:  We follow the notation of LMS
 # On input we require:
@@ -155,7 +155,7 @@ end
 subroutine stepy(n,p,a,d,b,ada,info)
 integer n,p,pp,i,info
 double precision a(p,n),b(p),d(n),ada(p,p),zero
-data zero/0.0d0/
+parameter( zero = 0.0d0)
 # Solve the linear system ada'x=b by Choleski -- d is diagonal
 # Note that a isn't altered, and on output ada returns the upper
 # triangle Choleski factor, which can be reused, eg with blas dtrtrs

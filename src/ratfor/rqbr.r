@@ -61,9 +61,9 @@ double precision min,max,toler,zero,half,one,two
 double precision b(m),sol(n3,nsol),a(m,nn),x(nn),wa(m5,n4),wb(m)
 double precision sum,e(m),dsol(m,ndsol)
 double precision qn(nn),cutoff,ci(4,nn),tnmat(4,nn),tnew,told,tn
-data zero/0.d0/
-data one/1.d0/
-data two/2.d0/
+parameter( zero = 0.d0)
+parameter( one = 1.d0)
+parameter( two = 2.d0)
 #
 #  check dimension parameters
 #

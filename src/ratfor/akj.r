@@ -22,13 +22,13 @@ double precision dens(nz),score(nz),psi(nz),h,kappa
 double precision z(nz),x(nx),xlam(nx),p(nx),qrange,pi
 double precision con1,sum,sqsum,xsd,a,fifth,hinv,half
 double precision xn,xker,dxker,ddxker,fact,xponen,alpha,glog,zero,one,two
-data zero/0.d0/
-data one/1.d0/
-data two/2.d0/
-data four/4.d0/
-data half/0.5d0/
-data fifth/0.2d0/
-data pi/3.141593d0/
+parameter( zero = 0.d0)
+parameter( one = 1.d0)
+parameter( two = 2.d0)
+parameter( four = 4.d0)
+parameter( half = 0.5d0)
+parameter( fifth = 0.2d0)
+parameter( pi = 3.141593d0)
 xn=nx
 
 #call srtad(x,1,nx) #port sort routine now done in S interface.

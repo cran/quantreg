@@ -1,5 +1,5 @@
 Package:  quantreg
-Version:  3.50
+Version:  3.52
 Author:   Roger Koenker <rkoenker@uiuc.edu>
 	Initial R port from Splus by Brian Ripley <ripley@stats.ox.ac.uk>
 Maintainer:  Roger Koenker <rkoenker@uiuc.edu>
@@ -7,4 +7,4 @@ Description: Quantile  regression and related methods.
 License:  GPL (version 2 or later)
 Title: Quantile Regression
 URL: http://www.econ.uiuc.edu/~roger/research/rq/rq.html
-Packaged: Wed Jul 21 11:47:57 2004; roger
+Packaged: Sat Sep 18 10:19:48 2004; hornik

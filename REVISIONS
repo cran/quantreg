@@ -184,7 +184,21 @@ methods for objects of class summary.rqs.
 2.  The Solaris f95 compiler choked on the & in column 1 of akj.f, so
 this has been moved to col 6.  
 
+3.60
+
+1.  The choice of bandwidth was corrected for the "ker" method in
+summary.rq() to account for the scale of the residual vector.  Thanks
+to Victor Chernozhukov for pointing this out!
 
 
+2.  On a 64bit gentoo linux system the statement 
+
+	data one/1.d0/
+
+set one = equal to zero...so I have systematically changed all data
+statements to parameter statements.  This seems to be a general problem
+that was created by gcc 3.4.  On the updating note that several of the
+.f files were preprocessed by a new ratfor processor.  See the README
+file in the src/ratfor directory for further details.
 
 

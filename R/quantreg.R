@@ -725,8 +725,9 @@ function (object, se = "nid", covariance = TRUE, hs = TRUE, ...)
             stop("tau + h > 1:  error in summary.rq")
         if (tau - h < 0) 
             stop("tau - h < 0:  error in summary.rq")
-        h <- qnorm(tau + h) - qnorm(tau - h)
         uhat <- c(y - x %*% coef)
+        h <- (qnorm(tau + h) - qnorm(tau - h))*
+		min(sqrt(var(uhat)), ( quantile(uhat,.75)- quantile(uhat, .25))/1.34 )
         f <- dnorm(uhat/h)/h
         fxxinv <- diag(p)
         fxxinv <- backsolve(qr(sqrt(f) * x)$qr[1:p, 1:p], fxxinv)

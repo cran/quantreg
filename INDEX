@@ -1,32 +1,42 @@
-akj                      Density estimation using adaptive kernel method
-bandwidth.rq             bandwidth selection for rq functions
-barro                    Barro Data
-khmaladzize              Function to compute Khmaladze Transformation
-lm.fit.recursive         Recursive Least Squares
-plot.khmal               Plots Standardized and Khmaladzized Residual
-                         Processes
-plot.rq.process          plot the coordinates of the quantile regression
-                         process
-plot.table.rq            Plot Table of Quantile Regression Results
-print.rq                 Print an rq object
-print.summary.rq         Print Quantile Regression Summary Object
-ranks                    Quantile Regression Ranks
-rq                       Quantile Regression
-rq.fit                   Function to choose method for Quantile
-                         Regression
-rq.fit.br                Quantile Regression Fitting by Exterior Point
-                         Methods
-rq.fit.fn                Quantile Regression Fitting via Interior Point
-                         Methods
-rq.fit.pfn               Preprocessing Algorithm for Quantile Regression
-rq.object                Linear Quantile Regression Object
-rq.process.object        Linear Quantile Regression Process Object
-rq.test.khmal            Estimates Quantile Regression Model and Test
-                         Statistics
-rq.wfit                  Function to choose method for Weighted Quantile
-                         Regression
-rrs.test                 Quantile Regression Rankscore Test
-standardize              Function to standardize the quantile regression
-                         process
-summary.rq               Summary method for Quantile Regression
-table.rq                 Table of Quantile Regression Results
+akj                     Density estimation using adaptive kernel
+                        method
+anova.rq                Anova function for quantile regression fits
+bandwidth.rq            bandwidth selection for rq functions
+barro                   Barro Data
+boot.rq                 Bootstrapping Quantile Regression
+engel                   Engel Data
+khmaladze.test          Tests of Location and Location Scale
+                        Hypothesis for Linear Models
+khmaladzize             Function to compute Khmaladze Transformation
+latex                   Make a latex version of an \R object
+latex.summary.rqs       Make a latex table from a table of rq results
+latex.table             Writes a latex formatted table to a file
+lm.fit.recursive        Recursive Least Squares
+plot.summary.rqs        plot the coordinates of the quantile
+                        regression process
+print.rq                Print an rq object
+print.summary.rq        Print Quantile Regression Summary Object
+ranks                   Quantile Regression Ranks
+rq                      Quantile Regression
+rq.fit                  Function to choose method for Quantile
+                        Regression
+rq.fit.br               Quantile Regression Fitting by Exterior Point
+                        Methods
+rq.fit.fn               Quantile Regression Fitting via Interior Point
+                        Methods
+rq.fit.fnb              Quantile Regression Fitting via Interior Point
+                        Methods
+rq.fit.fnc              Quantile Regression Fitting via Interior Point
+                        Methods
+rq.fit.pfn              Preprocessing Algorithm for Quantile
+                        Regression
+rq.object               Linear Quantile Regression Object
+rq.process.object       Linear Quantile Regression Process Object
+rq.wfit                 Function to choose method for Weighted
+                        Quantile Regression
+rqProcess               Compute Quantile Regression Process
+rrs.test                Quantile Regression Rankscore Test
+standardize             Function to standardize the quantile
+                        regression process
+summary.rq              Summary methods for Quantile Regression
+table.rq                Table of Quantile Regression Results

@@ -87,14 +87,11 @@ there are missing values and R's default of `na.action = na.omit' is used.
 The rank version of the nested model tests involves computing the entire
 regression quantile process using parametric linear programming and thus
 can be rather slow and memory intensive on problems with more than 
-several thousand observations.
-} 
-
-\seealso{ The model fitting function  \code{\link{rq}}, 
+several thousand observations.} 
+\seealso{The model fitting function  \code{\link{rq}}, 
 and the functions for testing hypothesis on the entire quantile
 regression process \code{\link{khmaladze.test}}.  For further details
-on the rank tests see \code{\link{ranks}}}. 
-
+on the rank tests see \code{\link{ranks}}.}
 \examples{
 data(barro)
 fit0 <- rq(y.net ~  lgdp2 + fse2 + gedy2 , data = barro)
