@@ -14,12 +14,11 @@ by coef hypothesis testing.
 } 
 
 \usage{
-plot.khmal(khmal.out, var.list = khmal.out$var.list, 
-	nrow= ceiling(length(var.list)/2), ncol= 2, plotn = 1:6, 
-	color="gray", \dots )
+plot.khmal(x, nrow= ceiling(length(x$var.list)/2), ncol= 2, plotn = 1:6, 
+	bcolor="gray", \dots )
 }
 \arguments{
-\item{khmal.out}{
+\item{x}{
 output of `rq.test.khmal'. plot.khmal() \bold{requires} the output of 
 `rq.test.khmal'.
 }
@@ -44,8 +43,11 @@ to produce individual postscript files of each array. For example,
 specifying plotn = 1 in conjunction will postscript("01.ps") will
 yield an array of plots of the quantile regression estimated coefficients.
 }
+\item{bcolor}{
+color of the confidence band by default "gray".
+}
 \item{\dots}{
-Other optional arguments passed to `plot'.
+other optional arguments passed to `plot'.
 }
 }
 \value{

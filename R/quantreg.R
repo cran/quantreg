@@ -17,38 +17,37 @@ function(p, n, hs = T, alpha = 0.05)
 
 "plot.rq.process" <-
 # Function to plot estimated quantile regression  process
-function(object, nrow = 3, ncol = 2)
+function(x, nrow = 3, ncol = 2, ...)
 {
-	tdim <- dim(object$sol)
+	tdim <- dim(x$sol)
 	p <- tdim[1] - 3
 	m <- tdim[2]
 	par(mfrow = c(nrow, ncol))
-	x <- object$sol[1,  ]
-	ylab <- dimnames(object$sol)[[1]]
+	ylab <- dimnames(x$sol)[[1]]
 	for(i in 1:p) {
-		plot(x, object$sol[3 + i,  ], xlab = "tau", ylab = ylab[3 +
+		plot(x$sol[1,], x$sol[3 + i,  ], xlab = "tau", ylab = ylab[3 +
 			i], type = "l")
 	}
 }
 
 "plot.table.rq" <-
 # Function to plot estimated quantile regression parameters in table.rq
-function(object, nrow = 3, ncol = 2)
+function(x, nrow = 3, ncol = 2, ...)
 {
-	tdim <- dim(object$a)
+	tdim <- dim(x$a)
 	p <- tdim[1]
 	m <- tdim[2]
 	k <- tdim[3]
 	par(mfrow = c(nrow, ncol))
-	x <- object$taus
+	xx <- x$taus
 	for(i in 1:p) {
-		ylab <- dimnames(object$a)[[1]]
-		plot(rep(x, 2), object$a[i,  , 2:3], xlab = "tau", ylab = ylab[
+		ylab <- dimnames(x$a)[[1]]
+		plot(rep(xx, 2), x$a[i,  , 2:3], xlab = "tau", ylab = ylab[
 			i], type = "n")
-		points(x, object$a[i,  , 1], pch = "o")
-		lines(x, object$a[i,  , 1])
-		lines(x, object$a[i,  , 2], lty = 2)
-		lines(x, object$a[i,  , 3], lty = 2)
+		points(xx, x$a[i,  , 1], pch = "o")
+		lines(xx, x$a[i,  , 1])
+		lines(xx, x$a[i,  , 2], lty = 2)
+		lines(xx, x$a[i,  , 3], lty = 2)
 	}
 }
 
@@ -203,6 +202,8 @@ function(x, y, tau = 0.5, method = "br", ...)
 #       if tau is between 0 and 1 then only one quantile solution is computed.
 #
 #       if ci = F  then just the point estimate and residuals are returned
+#		If the column dimension of x is 1 then ci is set to F since
+#		since the rank inversion method has no proper null model.
 #       if ci = T  then there are two options for confidence intervals:
 #
 #               1.  if iid = T we get the original version of the rank
@@ -239,8 +240,8 @@ function(x, y, tau = 0.5, method = "br", ...)
 #	not recommended for problems with n > 10,000.
 #	In large problems a grid of solutions is probably sufficient.
 #
-function(x, y, tau = 0.5, alpha = 0.10000000000000001, ci = T, iid = T, interp
-	 = T, tcrit = T)
+function(x, y, tau = 0.5, alpha = 0.10000000000000001, ci = T, 
+	iid = T, interp = T, tcrit = T)
 {
 	tol <- .Machine$double.eps^(2/3)
 	eps <- tol
@@ -259,6 +260,7 @@ function(x, y, tau = 0.5, alpha = 0.10000000000000001, ci = T, iid = T, interp
 		tau <- -1
 	}
 	else {
+		if(p==1) ci <- F
 		if(ci) {
 			lci1 <- T
 			if(tcrit)
@@ -496,7 +498,7 @@ function(x, y, tau = 0.5, int = F, Mm.factor = 0.8,
 }
 
 "rq.wfit" <-
-function(x, y, tau = 0.5, weights, method, int = T, ...)
+function(x, y, tau = 0.5, weights, method,  ...)
 {
 	if(!is.numeric(x))
 		stop("model matrix must be numeric")
@@ -564,7 +566,7 @@ function(x0, x1, y, v, score = "wilcoxon")
 # See the inference chapter of the putative QR book for further details.
 #
 #
-function(object, se = "nid", covariance = T, hs = T)
+function(object, se = "nid", covariance = T, hs = T, ...)
 {
 	x <- object$x
 	y <- object$y
@@ -593,7 +595,8 @@ function(object, se = "nid", covariance = T, hs = T)
 		h <- max(p + 1, ceiling(n * bandwidth.rq(tau, n, hs = hs)))
 		ir <- (pz + 1):(h + pz + 1)
 		ord.resid <- sort(resid[order(abs(resid))][ir])
-		sparsity <- l1fit(ir/(n - p), ord.resid)$coef[2]
+		xt <- ir/(n-p)
+		sparsity <- rq(ord.resid~xt, ord.resid)$coef[2,1]
 		cov <- sparsity^2 * xxinv * tau * (1 - tau)
 		serr <- sqrt(diag(cov))
 	}
@@ -799,35 +802,35 @@ function(tau, atau, Z, location.scale)
 	return(Z)
 }
 "plot.khmal" <-
-function (khmal.out, var.list = khmal.out$var.list, 
-		nrow = ceiling(length(var.list)/2), ncol = 2, 
-		plotn = 1:6, color="gray", ...) 
+function (x, nrow = ceiling(length(x$var.list)/2), ncol = 2, 
+		plotn = 1:6, bcolor="gray", ...) 
 {
-	location.scale <- khmal.out$location.scale
-    var.names <- khmal.out$vars
+	var.list <- x$var.list
+	location.scale <- x$location.scale
+    	var.names <- x$vars
 	if( any(plotn == 1) )
 	{
-    	se <- khmal.out$fit
-    	for (j in 1:length(khmal.out$taus)) 
+    	se <- x$fit
+    	for (j in 1:length(x$taus)) 
 		{
-        	vtau <- khmal.out$taus[j] * (1 - khmal.out$taus[j])
-        	se[, j] <- sqrt(vtau * diag(khmal.out$Hfit[, , j] %*% 
-            	khmal.out$Jn %*% khmal.out$Hfit[, , j]))
+        	vtau <- x$taus[j] * (1 - x$taus[j])
+        	se[, j] <- sqrt(vtau * diag(x$Hfit[, , j] %*% 
+            	x$Jn %*% x$Hfit[, , j]))
     	}
 		var.listc <- c(1,var.list)
     	par(mfrow = c(nrow, ncol))
     	#par(mai = c(0.35, 0.55, 0.10, 0.35))
     	for (i in var.listc) {
-        	b <- khmal.out$fit[i, ]
+        	b <- x$fit[i, ]
         	b.p <- b + qnorm(0.95) * se[i, ]
         	b.m <- b - qnorm(0.95) * se[i, ]
         	plot(0:1, range(c(b.m, b.p)), type = "n", ylab = var.names[i],
                 xlab="")
-        	polygon(c(khmal.out$taus, rev(khmal.out$taus)), c(b.p, 
-           	 rev(b.m)), col = color, density = -1)
-        	lines(khmal.out$taus, b)
+        	polygon(c(x$taus, rev(x$taus)), c(b.p, 
+           	 rev(b.m)), col = bcolor, density = -1)
+        	lines(x$taus, b)
         	abline(h = 0)
-			abline(h = khmal.out$ols[i], lty=2 )
+			abline(h = x$ols[i], lty=2 )
     	}
     }
 	#
@@ -838,16 +841,16 @@ function (khmal.out, var.list = khmal.out$var.list,
 		par(mfrow=c(nrow, ncol))
 		for(i in var.list)
 		{
-			plot(khmal.out$taus,khmal.out$fit[i,], type="l",
+			plot(x$taus,x$fit[i,], type="l",
 				ylab=var.names[i], xlab="")
 			if(location.scale==T)
 			{
-				lines(khmal.out$taus,cbind(1,khmal.out$fit[1,])%*%
-					khmal.out$b[,i],lty=2)
+				lines(x$taus,cbind(1,x$fit[1,])%*%
+					x$b[,i],lty=2)
 			}
 			else
 			{
-				abline(h=khmal.out$b[i],lty=2)
+				abline(h=x$b[i],lty=2)
 			}
 			abline(h=0)
 		}
@@ -861,7 +864,7 @@ function (khmal.out, var.list = khmal.out$var.list,
 		par(mfrow=c(nrow, ncol))
 		for(i in var.list)
 		{
-			plot(khmal.out$taus,khmal.out$J$Vhat[i,],type="l",
+			plot(x$taus,x$J$Vhat[i,],type="l",
 				ylab=var.names[i], xlab="")
 			abline(h=0)
 		}
@@ -875,7 +878,7 @@ function (khmal.out, var.list = khmal.out$var.list,
 		par(mfrow=c(nrow, ncol))
 		for(i in var.list)
 		{
-			plot(khmal.out$taus,khmal.out$J$vhat[i,],type="l",
+			plot(x$taus,x$J$vhat[i,],type="l",
 					ylab=var.names[i], xlab="")
 			abline(h=0)
 		}
@@ -889,7 +892,7 @@ function (khmal.out, var.list = khmal.out$var.list,
 		par(mfrow=c(nrow, ncol))
 		for(i in var.list)
 		{
-			plot(khmal.out$taus, khmal.out$Vtilde[i,],type="l",
+			plot(x$taus, x$Vtilde[i,],type="l",
 				ylab=var.names[i], xlab="")
 			abline(h=0)
 		}
@@ -905,12 +908,12 @@ function (khmal.out, var.list = khmal.out$var.list,
 		{
 			if(location.scale==T)
 			{
-				plot(khmal.out$taus, khmal.out$Tvtilde[i,], type="l",
+				plot(x$taus, x$Tvtilde[i,], type="l",
 					ylab=var.names[i], xlab="")
 			}
 			else
 			{
-				plot(khmal.out$taus, khmal.out$vtilde[i,], type="l",
+				plot(x$taus, x$vtilde[i,], type="l",
 					ylab=var.names[i], xlab="")
 			}
 			abline(h=0)
@@ -1025,7 +1028,7 @@ trim = c(0.25, 0.75) )
 	#
     if( location.scale == T)
     {
-        khmal.out <- list(location.scale = location.scale, 
+        x <- list(location.scale = location.scale, 
 		b = b, J = J, Vtilde = Vtilde, vtilde = vtilde, 
 		Tvtilde = Tvtilde, trim = trim, Kn = Kn, KHn = KHn, 
 		formula = formula, taus = taus, Jn = Jn, fit = fit, 
@@ -1034,15 +1037,15 @@ trim = c(0.25, 0.75) )
     }
     else
     {
-        khmal.out <- list(location.scale = location.scale, 
+        x <- list(location.scale = location.scale, 
 		b = b, J = J, Vtilde = Vtilde, vtilde = vtilde, 
 		trim = trim, Tn = Tn, THn = THn, 
                 formula = formula, taus = taus, Jn = Jn, fit = fit, 
                 Hfit = Hfit, vars = vars, var.list = var.list, 
                 ols = ols)
         }
-    class(khmal.out) <- "khmal"
-    invisible(khmal.out)
+    class(x) <- "khmal"
+    invisible(x)
 }
 
 # Added function:

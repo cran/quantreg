@@ -46,5 +46,4 @@ data(stackloss)
 ranks(rq(stack.loss ~ stack.x, tau=-1))
 }
 \keyword{regression}
-}
 % Converted by Sd2Rd version 0.3-3.

@@ -27,6 +27,6 @@ Koenker, Roger and Zhijie Xiao (2000), "Inference on the Quantile
      http://www.econ.uiuc.edu/~roger/research/inference/inference.html>
 	}
 \author{R. Koenker }
-\seealso{  \code{\link{rq.test.khmal}}
+\seealso{  \code{\link{rq.test.khmal}}}
 
 \keyword{htest}

@@ -1,0 +1,11 @@
+Recent Revision History
+
+3.04 September 19 2001  
+
+1.  ci set to F if p==1 to prevent seg fault identified by Marcel Wolbers.
+
+3.05 October 20 2001  
+
+1. "iid" case in summary.rq fixed to update call to l1fit 
+
+

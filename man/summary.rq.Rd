@@ -8,7 +8,7 @@ Returns a summary list for a quantile regression fit.  A null value
 will be returned if printing is invoked.
 }
 \usage{
-summary.rq(object, se="nid", covariance=T, hs = T)
+summary.rq(object, se="nid", covariance=T, hs = T, ...)
 }
 \arguments{
   \item{object}{
@@ -37,6 +37,10 @@ summary.rq(object, se="nid", covariance=T, hs = T)
   \item{hs}{
     Use Hall Sheather bandwidth for sparsity estimation
     If false revert to Bofinger bandwidth.
+   }
+  \item{...}{
+    Optional arguments to summary
+   }
 }
 \value{
   a list is returned with the following components

@@ -12,10 +12,10 @@ plotted against the taus specified in the \code{table.rq} command with
 a confidence band as produced by \code{rq()}.
 }
 \usage{
-plot.table.rq(object,nrow=3,ncol=2)
+plot.table.rq(x,nrow=3,ncol=2, ...)
 }
 \arguments{
-\item{object}{
+\item{x}{
   object of class \code{table.rq} containing the array to be plotted.
 }
 \item{nrow}{
@@ -23,6 +23,9 @@ plot.table.rq(object,nrow=3,ncol=2)
 }
 \item{ncol}{
   number of columns per page of plots
+}
+\item{...}{
+  optional arguments to plot
 }
 }
 \section{Side Effects}{

@@ -1,5 +1,5 @@
 Package:  quantreg
-Version:  3.03
+Version:  3.04
 Author:   Roger Koenker <rkoenker@uiuc.edu>
 	Polishing of R port by Brian Ripley <ripley@stats.ox.ac.uk>
 Maintainer:  Roger Koenker <rkoenker@uiuc.edu>
