@@ -137,3 +137,7 @@ approach of He and Hu based on code by Xuming He and Maria Kocherginsky.
 1.  fixed a bug in anova.rqlist that messed up the checking for an intercept
 found by Juan de la Garza.
 
+3.33  January 09  2004
+
+1.  Fixed a bug in ranks() found by Brian Cade involving the tau score function.
+

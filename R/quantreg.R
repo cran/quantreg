@@ -105,7 +105,8 @@ function(v, score = "wilcoxon", tau = 0.5)
 		w <- (tau - v$sol[1, j.tau])/(v$sol[1, j.tau + 1] - v$sol[
 			1, j.tau])
 		r <- w * v$dsol[, j.tau + 1] + (1 - w) * v$dsol[, j.tau]
-		ranks <- 2 * r - 1
+		ranks <- r - (1-tau)
+        	A2 <- tau * (1-tau)
 		return(list(ranks=ranks, A2=A2))
 	}
 	else if(score == "interquartile") {
