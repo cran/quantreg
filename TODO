@@ -22,3 +22,5 @@ and to incorporate rqss stuff to akima, tripack, etc.
 7.  Allow bootstrappping routines to do subsampling. [Done August, 03]
 
 8.  Allow percentile methods for the bootstrap methods.
+
+9.  Add predict methods

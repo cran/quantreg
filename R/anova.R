@@ -73,7 +73,7 @@ function (object, ..., test = "Wald", score="tau")
             if (!setequal(names[[i]], names[[1]])) 
                 stop("Models with common tau don't have same X")
         }
-        if (names[[1]] != "(Intercept)") 
+        if (names[[1]][1] != "(Intercept)") 
             stop("Intercept required in common tau testing")
         Omega <- outer(taus, taus, pmin) - outer(taus, taus)
         J <- objects[[1]]$J

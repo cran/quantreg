@@ -63,6 +63,6 @@ x <- matrix(rnorm(100),50)
 fit <- rq(y~x,tau = .4)
 summary(fit,se = "boot", bsmethod= "xy")
 summary(fit,se = "boot", bsmethod= "pwy")
-summary(fit,se = "boot", bsmethod= "mcmb")
+#summary(fit,se = "boot", bsmethod= "mcmb")
 }
 \keyword{ regression}

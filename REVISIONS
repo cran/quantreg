@@ -131,3 +131,9 @@ this happens.
 approach of He and Hu based on code by Xuming He and Maria Kocherginsky.
 
 2.  added n choose m subsampling for the xy pair version of the bootstrap.
+
+3.31  August 25 2003
+
+1.  fixed a bug in anova.rqlist that messed up the checking for an intercept
+found by Juan de la Garza.
+

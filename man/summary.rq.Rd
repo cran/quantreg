@@ -62,8 +62,19 @@ summary.rq(object, se="nid", covariance=TRUE, hs = TRUE,  ...)
   Outer product of gradient matrix returned if \code{cov=TRUE} and \code{se
     != "iid"}. The Huber sandwich is \code{cov = Hinv \%*\% J \%*\% Hinv}.
 }}
+\details{
+When the default summary method is used, it tries to estimate a sandwich
+form of the asymptotic covariance matrix and this involves estimating
+the conditional density at each of the sample observations, negative
+estimates can occur if there is crossing of the neighboring quantile
+surfaces used to compute the difference quotient estimate.  If the
+number of these is large relative to the sample size it is sometimes
+an indication that some additional nonlinearity in the covariates
+would be helpful, for instance quadratic effects.}
+ 
+
 \references{
-  Koenker, R. (2000) \emph{Quantile Regression}.
+  Koenker, R. (2004) \emph{Quantile Regression}.
 }
 \seealso{
   \code{\link{rq}}
