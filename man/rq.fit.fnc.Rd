@@ -10,7 +10,7 @@ call to specify linear inequality constraints to which the fitted
 coefficients will be subjected. 
 }
 \usage{
-rq.fit.fnc(x, y, R, r, tau=0.5, beta=0.99995, eps=1e-06)
+rq.fit.fnc(x, y, R, r, tau=0.5, beta=0.9995, eps=1e-06)
 }
 \arguments{
 \item{x}{

@@ -1,5 +1,5 @@
 Package:  quantreg
-Version:  3.33
+Version:  3.34
 Author:   Roger Koenker <rkoenker@uiuc.edu>
 	Initial R port from Splus by Brian Ripley <ripley@stats.ox.ac.uk>
 Maintainer:  Roger Koenker <rkoenker@uiuc.edu>

@@ -420,7 +420,7 @@ function (x, y, tau = 0.5, beta = 0.99995, eps = 1e-06)
 }
 
 "rq.fit.fnc" <-
-function (x, y, R, r, tau = 0.5, beta = 0.9995, eps = 1e-08) 
+function (x, y, R, r, tau = 0.5, beta = 0.9995, eps = 1e-06) 
 {
     n1 <- length(y)
     n2 <- length(r)
@@ -546,7 +546,7 @@ function(x, y, tau = 0.5,  Mm.factor = 0.8,
 }
 
 "rq.wfit" <-
-function(x, y, tau = 0.5, weights, method,  ...)
+function(x, y, tau = 0.5, weights, method = "br",  ...)
 {
 	if(!is.numeric(x))
 		stop("model matrix must be numeric")

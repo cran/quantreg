@@ -8,7 +8,7 @@
 }
 \usage{
 latex.table.rq(object, transpose = FALSE, caption="caption goes here.", 
-	digits=3, file="a",\dots)
+	digits=3, file=as.character(substitute(object)),\dots)
 }
 %- maybe also `usage' for other objects documented here.
 \arguments{

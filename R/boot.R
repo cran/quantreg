@@ -1,5 +1,5 @@
 "boot.rq"<-
-function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = n, ...)
+function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y), ...)
 {
     n <- length(y)
     x <- as.matrix(x)
