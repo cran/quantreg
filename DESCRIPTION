@@ -1,7 +1,7 @@
 Package:  quantreg
-Version:  3.04
+Version:  3.05
 Author:   Roger Koenker <rkoenker@uiuc.edu>
-	Polishing of R port by Brian Ripley <ripley@stats.ox.ac.uk>
+	Initial R port by Brian Ripley <ripley@stats.ox.ac.uk>
 Maintainer:  Roger Koenker <rkoenker@uiuc.edu>
 Description: Quantile  regression and related methods.
 License:  GPL (version 2 or later)
