@@ -7,11 +7,11 @@
 	Controls rounding, alignment, etc, etc
 }
 \usage{
-latex.table(x, file=as.character(substitute(x)), rowlabel=file, rowlabel.just="l", cgroup, n.cgroup, rgroup, n.rgroup=NULL, digits, dec, rdec, cdec, append=FALSE, dcolumn=FALSE, cdot=FALSE, longtable=FALSE, table.env=TRUE, lines.page=40, caption, caption.lot, label=file, double.slash=FALSE)
+latex.table(object, file=as.character(substitute(x)), rowlabel=file, rowlabel.just="l", cgroup, n.cgroup, rgroup, n.rgroup=NULL, digits, dec, rdec, cdec, append=FALSE, dcolumn=FALSE, cdot=FALSE, longtable=FALSE, table.env=TRUE, lines.page=40, caption, caption.lot, label=file, double.slash=FALSE,\dots)
 }
 %- maybe also `usage' for other objects documented here.
 \arguments{
-  \item{x}{ A matrix \code{x} with dimnames}
+  \item{object}{ A matrix \code{object} with dimnames}
   \item{file}{ Name of output \code{file} (.tex will be added) }
   \item{rowlabel}{ If `x' has row dimnames, rowlabel is a character 
 	string containing the column heading for the row dimnames. 
@@ -81,6 +81,7 @@ latex.table(x, file=as.character(substitute(x)), rowlabel=file, rowlabel.just="l
   \item{double.slash}{set to `T' to output `\\' as `\\\\' in LaTeX commands. 
 	Useful when you are reading the output file back into an S vector 
 	for later output.  }
+  \item{\dots}{other optional arguments}
 }
 \value{
 	returns invisibly

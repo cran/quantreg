@@ -634,7 +634,7 @@ function(object, se = "nid", covariance = TRUE, hs = TRUE, ...)
 		ir <- (pz + 1):(h + pz + 1)
 		ord.resid <- sort(resid[order(abs(resid))][ir])
 		xt <- ir/(n-p)
-		sparsity <- rq(ord.resid~xt, ord.resid)$coef[2,1]
+		sparsity <- rq(ord.resid~xt)$coef[2,1]
 		cov <- sparsity^2 * xxinv * tau * (1 - tau)
 		serr <- sqrt(diag(cov))
 	}

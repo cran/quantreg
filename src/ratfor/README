@@ -1,4 +1,4 @@
-This directory contains ratfor source for the two main routines of the
+This directory contains ratfor source for the several routines of the
 rq library.  These are not strictly necessary, but they may prove useful
 to anyone wanting to look at the source in detail, since the fortran
 translation of them by the ratfor compiler is far from readable.

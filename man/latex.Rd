@@ -6,10 +6,10 @@
 	to make the output of table.rq() into a latex table.
 }
 \usage{
-latex(x, ...)
+latex(object, ...)
 }
 \arguments{
-  \item{x}{ ~~Object \code{x} to be converted to latex~~ }
+  \item{object}{ ~~Object \code{x} to be converted to latex~~ }
   \item{\dots}{ ~~Other arguments \code{\dots} here~~ }
 }
 \details{

@@ -71,3 +71,29 @@ Kurt Hornik.)
 
 1.  Fixed a few more T/F's at Kurt's behest, and changed some _ to <- in
 the examples.  And added PACKAGE = "quantreg") to the .Fortran calls.
+
+3.12 Nov 1, 2002.  
+
+1.  fixed two generic inconsistencies Kurt found in table.R.
+
+3.13 December 18 2002
+
+1.  Fixed bug in summary.rq when se=iid found by Xuming.
+ 
+3.14 December 30 2002
+
+1.  Added a graphics example to rq.Rd using the Engel data and added the data set 
+
+3.15 January 22 2003 
+
+1. Fixed a typo in the akj.Rd file and added a reference.
+
+3.16 February 6 2003 
+
+1.  Fixed a generic method mismatch in the latex family prompted by Kurt's notice
+that R CMD check quantreg produced a warning in R 1.7.0.  Now seems to check cleanly
+in the devel version of 1.7.0 installed today.
+
+3.17 February 17 2003 
+
+1.  Removed the last of the _ assignments in the example files.

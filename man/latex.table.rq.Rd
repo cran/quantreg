@@ -8,7 +8,7 @@
 }
 \usage{
 latex.table.rq(object, transpose = FALSE, caption="caption goes here.", 
-	digits=3, file="a")
+	digits=3, file="a",\dots)
 }
 %- maybe also `usage' for other objects documented here.
 \arguments{
@@ -17,6 +17,7 @@ latex.table.rq(object, transpose = FALSE, caption="caption goes here.",
   \item{caption}{ latex \code{caption}  }
   \item{digits}{ number of significant \code{digits} }
   \item{file}{ name of output \code{file} }
+  \item{\dots}{ other optional arguments }
 }
 \details{
 	calls latex.table() a modified version of Frank Harrell's Splus function

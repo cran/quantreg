@@ -1,6 +1,6 @@
 "latex.table.rq" <-
 function (object, transpose = FALSE, caption = "caption goes here.", digits = 3,
-    file = as.character(substitute(object)))
+    file = as.character(substitute(object)), ...)
 {
     a <- format(round(object$a, digits))
     taus <- format(round(object$taus, digits))
@@ -65,11 +65,11 @@ function (x, nrow = 3, ncol = 2, alpha= .1, ...)
     }
 }
 "latex.table" <-
-function (x, file = as.character(substitute(x)), rowlabel = file, 
+function (object, file = as.character(substitute(x)), rowlabel = file, 
     rowlabel.just = "l", cgroup, n.cgroup, rgroup, n.rgroup = NULL, 
     digits, dec, rdec, cdec, append = FALSE, dcolumn = FALSE, cdot = FALSE, 
     longtable = FALSE, table.env = TRUE, lines.page = 40, caption, caption.lot, 
-    label = file, double.slash = FALSE) 
+    label = file, double.slash = FALSE, ...) 
 {
     nc <- ncol(x)
     nr <- nrow(x)
@@ -374,5 +374,5 @@ function (formula, taus = c(0.25, 0.5, 0.75), method = "br",
     invisible(tab)
 }
 "latex" <-
-function(x, ...){UseMethod("latex")
+function(object, ...){UseMethod("latex")
 }

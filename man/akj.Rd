@@ -3,7 +3,8 @@
 \title{
 Density estimation using adaptive kernel method
 }
-\description{univariate adaptive kernel density estimation a la Silverman}
+\description{univariate adaptive kernel density estimation a la Silverman.  As used
+by Portnoy and Koenker (1989)}
 \usage{
 akj(x, z, p, h, alpha, kappa, iker1, iker2)
 
@@ -33,11 +34,12 @@ the vector of estimated density}
 \item{psi}{
 a vector of \eqn{\psi=-f'/f} function}
 \item{score}{
-a vector of score \eqn{(f'/f)^2-f'/f} function}
+a vector of score \eqn{(f'/f)^2-f''/f} function}
 \item{h}{
 same as the input argument h}
 }
 \keyword{smooth}
 \references{
+Portnoy, S and R Koenker, (1989) Adaptive L Estimation of Linear Models, Annals, 17, 362-81.
 Silverman, B. (1986) Density Estimation, pp100-104.
 }

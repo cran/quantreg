@@ -91,6 +91,17 @@ rq(stack.loss ~ stack.x,.25)  #the 1st quartile,
 rq(stack.loss ~ stack.x, tau=-1)   #this returns the full rq process
 rq(rnorm(50) ~ 1, ci=FALSE)    #ordinary sample median --no rank inversion ci
 rq(rnorm(50) ~ 1, weights=runif(50),ci=FALSE)  #weighted sample median 
+#plot of engel data and some rq lines see KB(1982) for references to data
+data(engel)
+attach(engel)
+plot(x,y,xlab="household income",ylab="food expenditure",cex=.5)
+taus <- c(.05,.1,.25,.75,.9,.95)
+xx <- seq(min(x),max(x),100)
+for(tau in taus){
+        f <- rq((y)~(x),tau=tau)$coef[,1]
+        yy <- (f[1]+f[2]*(xx))
+        lines(xx,yy)
+        }
 #Example to illustrate inequality constrained fitting
 n <- 100
 p <- 5
