@@ -4,8 +4,8 @@
 Quantile Regression 
 }
 \description{
-Returns an object of class \code{"rq"} or \code{"rq.process"} that represents 
-a quantile regression fit. 
+Returns an object of class \code{"rq"} \code{"rqs"} 
+or \code{"rq.process"} that represents a quantile regression fit. 
 }
 \usage{
 rq(formula, tau=.5, data, weights, na.action,
@@ -17,11 +17,14 @@ rq(formula, tau=.5, data, weights, na.action,
     and the terms, separated by \code{+} operators, on the right. 
   }
   \item{tau}{
-    the quantile to be estimated, this is generally a number between 0 and 1, 
+    the quantile(s) to be estimated, this is generally a number between 0 and 1, 
     but if specified outside this range, it is presumed that the solutions 
     for all values of \code{tau} in (0,1) are desired.  In the former case an
     object of class \code{"rq"} is returned, in the latter,
-    an object of class \code{"rq.process"} is returned.
+    an object of class \code{"rq.process"} is returned.  As of version 3.50
+    tau can also be a vector of values between 0 and 1; in this case an
+    object of class \code{"rqs"} is returned containing among other things
+    a matrix of coefficient estimates at the specified quantiles.
   }
   \item{data}{
     a data.frame in which to interpret the variables 
@@ -85,6 +88,7 @@ rq(formula, tau=.5, data, weights, na.action,
 }
 \value{
   See \code{\link{rq.object}} and \code{\link{rq.process.object}} for details. 
+  Inferential matters are handled with \code{\link{summary}}.
 }
 \examples{
 data(stackloss)
@@ -97,14 +101,20 @@ rq(rnorm(50) ~ 1, weights=runif(50),ci=FALSE)  #weighted sample median
 #plot of engel data and some rq lines see KB(1982) for references to data
 data(engel)
 attach(engel)
-plot(x,y,xlab="household income",ylab="food expenditure",cex=.5)
+plot(x,y,xlab="Household Income",ylab="Food Expenditure",type = "n", cex=.5)
+points(x,y,cex=.5,col="blue")
 taus <- c(.05,.1,.25,.75,.9,.95)
 xx <- seq(min(x),max(x),100)
-for(tau in taus){
-        f <- coef(rq((y)~(x),tau=tau))
-        yy <- (f[1]+f[2]*(xx))
-        lines(xx,yy)
+f <- coef(rq((y)~(x),tau=taus))
+yy <- cbind(1,xx)\%*\%f
+for(i in 1:length(taus)){
+        lines(xx,yy[,i],col = "gray")
         }
+abline(lm(y~x),col="red",lty = 2)
+abline(rq(y~x),col="blue")
+legend(3000,500,c("mean (LSE) fit", "median (LAE) fit"),col = c("red","blue"),lty = c(2,1))
+#Example of plotting of coefficients and their confidence bands
+plot(summary(rq(y~x,tau = 1:49/50,data=engel)))
 #Example to illustrate inequality constrained fitting
 n <- 100
 p <- 5

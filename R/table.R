@@ -1,68 +1,95 @@
-"latex.table.rq" <-
-function (object, transpose = FALSE, caption = "caption goes here.", digits = 3,
-    file = as.character(substitute(object)), ...)
-{
-    a <- format(round(object$a, digits))
-    taus <- format(round(object$taus, digits))
-    tdim <- dim(a)
-    p <- tdim[1] 
-    k <- tdim[2]
-    m <- tdim[3]
-    table <- matrix("", p, m)
-    for (i in 1:m) {
-        for (j in 1:p) {
-            if (k == 3) {
+"latex" <- function(x, ...) UseMethod("latex")
+
+"latex.summary.rqs" <-
+function (x, transpose = FALSE, caption = "caption goes here.", 
+	digits = 3, file = as.character(substitute(x)), ...)
+{   
+        taus <- function(x) x$tau
+        taus <- unlist(lapply(x,taus))
+        taus <- format(round(taus, digits))
+        coef <- lapply(x,coefficients)
+        p <- nrow(coef[[1]])
+        k <- ncol(coef[[1]])
+        m <- length(taus)
+        rlab <- dimnames(coef[[1]])[[1]]
+        clab <- taus
+        a <- format(round(array(unlist(coef),c(p,k,m)),digits = 3))
+        table <- matrix("", p, m)
+        for (i in 1:m) {
+           for (j in 1:p) {
+              if (k == 3) {
                 table[j, i] <- paste("$\\underset{(", a[j, 2,
-                  i], ",", a[j, 3, i], ")}{", a[j, 1, i], "}$",sep="")
+                  i], ",", a[j, 3, i], ")}{", a[j, 1, i], "}$", sep="")
             }
-            else if (k == 4) {
-                table[j, i] <- paste("$\\underset{(", a[j,2,i] , ")}{", 
-			a[j,1, i], "}$",sep="")
+              else if (k == 4) {
+                table[j, i] <- paste("$\\underset{(", a[j,2,i] , ")}{",
+                        a[j,1, i], "}$",sep="")
+               }
             }
-        }
-    }
-    rlab <- dimnames(a)[[1]]
-    clab <- taus
-    rowlabel <- "Covariates"
-    dimnames(table) <- list(rlab, clab)
-    if(transpose) {
-        table=t(table)
-        rowlabel <- "Quantiles"
-        }
-    latex.table(table, caption = caption, rowlabel = rowlabel,
-        file = file)
-    invisible()
+        }   
+        rowlabel <- "Covariates"
+        dimnames(table) <- list(rlab, clab)
+        if(transpose) { 
+              table <- t(table)
+              rowlabel <- "Quantiles"
+             }
+        latex.table(table, caption = caption, rowlabel = rowlabel, file = file)
+        invisible()
+}       
+
+"latex.table.rq" <-  
+function(x, ...) {
+cat("table.rq and related methods are defunct -- see rq, which now accepts a vector of taus.")
 }
-"plot.table.rq" <-
-function (x, nrow = 3, ncol = 2, alpha= .1, ...) 
-{
-#x is an object of class table.rq created by table.rq()
-    tdim <- dim(x$a)
-    p <- tdim[1]
-    k <- tdim[2]
-    m <- tdim[3]
-    par(mfrow = c(nrow, ncol))
-    ylab <- dimnames(x$a)[[1]]
-    xx <- x$taus
-    zalpha <- qnorm(1-alpha/2)
-    for (i in 1:p) {
-	if(x$method == "fn"){
-		b  <- x$a[i,1,] 
-		bl <- x$a[i,1,] - x$a[i,2,]*zalpha
-		bu <- x$a[i,1,] + x$a[i,2,]*zalpha
+
+"plot.table.rq" <- 
+function(x, ...){
+cat("table.rq() and related methods are defunct --  see ?rq, which now accepts a vector of taus.")
+}
+
+"table.rq" <- 
+function(x, ...){
+cat("table.rq() and related methods are defunct  -- see ?rq, which now accepts a vector of taus.")
+}
+
+"plot.summary.rqs" <-
+function (x, nrow = 3, ncol = 2, alpha= .1, ols = TRUE, ...) {
+# x is an object of class summary.rqs created presumably by  summary.rqs()
+# as a list of summary.rq objects the first  task is to unlist stuff:
+        taus <- function(x) x$tau
+        xx <- unlist(lapply(x,taus))
+        coef <- lapply(x,coefficients)
+        p <- nrow(coef[[1]])
+        k <- ncol(coef[[1]])
+        m <- length(xx)
+        blab <- dimnames(coef[[1]])[[1]]
+        a <- array(unlist(coef),c(p,k,m))
+        zalpha <- qnorm(1 - alpha/2)
+        par(mfrow = c(nrow,ncol))
+        for(i in 1:p){
+                if(k == 4){ # standard error methods 
+                        b  <- a[i,1,] 
+                        bl <- a[i,1,] - a[i,2,]*zalpha
+                        bu <- a[i,1,] + a[i,2,]*zalpha
+                        }
+                else if(k==3){ # rank inversion confidence intervals
+                        b  <- a[i,1,] 
+                        bl <- a[i,2,] 
+                        bu <- a[i,3,] 
+                        }
+        else stop("summary.rqs components have wrong dimension")
+        plot(rep(xx, 2), c(bl,bu), xlab = "", ylab = "", type = "n")
+        title(paste(blab[i]),cex = .75)
+        polygon(c(xx,rev(xx)),c(bl,rev(bu)),col="LightSkyBlue")
+        points(xx, b, cex = .5, pch = "o", col = "blue") 
+        lines(xx, b, col = "blue") 
+        abline(h=0)
+	if(ols){
+		abline(h=x$olscoef[i,1],col="red")
+		abline(h=x$olscoef[i,1] - x$olscoef[i,2]*zalpha, lty = 2, col="pink")
+		abline(h=x$olscoef[i,1] + x$olscoef[i,2]*zalpha, lty = 2, col="pink")
 		}
-	else {
-		b  <- x$a[i,1,] 
-		bl <- x$a[i,2,]
-		bu <- x$a[i,3,] 
-		}
-        plot(rep(xx, 2), c(bl,bu), xlab = "tau", ylab = ylab[i], type = "n")
-	polygon(c(xx,rev(xx)),c(bl,rev(bu)),col="grey")
-        points(xx, b, pch = "o")
-        lines(xx, b)
-        #lines(xx, bl, lty = 2)
-        #lines(xx, bu, lty = 2)
-    }
+        }
 }
 "latex.table" <-
 function (x, file = as.character(substitute(x)), rowlabel = file, 
@@ -348,28 +375,5 @@ function (x, file = as.character(substitute(x)), rowlabel = file,
     invisible()
 }
 "table.rq" <-
-function (formula, taus = c(0.25, 0.5, 0.75), method = "br", 
-    ...) 
-{
-    m <- length(taus)
-    tab <- NULL
-    for (i in 1:m) {
-        fit <- rq(formula, taus[i], method = method)
-	if(method=="fn") fit <- summary(fit)
-        tab <- rbind(tab, coefficients(fit))
-    }
-    p <- nrow(tab)/m
-    colsfit <-  3
-    ctypes <- c("coefs", "lower ci limit", "upper ci limit")
-    if(method == "fn") {
-	colsfit <- 4
-    	ctypes <- c("coefs", "se", "t-stat","P-value")
-	}
-    a <- array(tab, dim = c(p, m, colsfit))
-    vnames <- dimnames(coefficients(fit))[[1]]
-    dimnames(a) <- list(vnames, paste("tau=", taus), ctypes)
-    a <- aperm(a,c(1,3,2))
-    tab <- list(a = a, taus = taus, method = method)
-    class(tab) <- "table.rq"
-    invisible(tab)
-}
+function (x, ...) 
+stop("table.rq now defunct, rq() now accepts vector tau argument.  See ?rq.")

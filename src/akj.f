@@ -3,7 +3,7 @@
       double precision z(nz),x(nx),xlam(nx),p(nx),qrange,pi
       double precision con1,sum,sqsum,xsd,a,fifth,hinv,half
       double precision xn,xker,dxker,ddxker,fact,xponen,alpha,glog,zero,
-&     one,two
+     &one,two
       data zero/0.d0/
       data one/1.d0/
       data two/2.d0/

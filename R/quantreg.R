@@ -35,6 +35,25 @@ function(x, nrow = 3, ncol = 2, ...)
 	}
 }
 
+"print.rqs" <-
+function (x, ...) 
+{
+    if (!is.null(cl <- x$call)) {
+        cat("Call:\n")
+        dput(cl)
+    }
+    coef <- coef(x)
+    cat("\nCoefficients:\n")
+    print(coef, ...)
+    rank <- x$rank
+    nobs <- nrow(residuals(x))
+    p <- nrow(coef)
+    rdf <- nobs - p
+    cat("\nDegrees of freedom:", nobs, "total;", rdf, "residual\n")
+    if (!is.null(attr(x, "na.message"))) 
+        cat(attr(x, "na.message"), "\n")
+    invisible(x)
+}
 
 "print.rq" <-
 function(x, ...)
@@ -58,6 +77,9 @@ function(x, ...)
 	invisible(x)
 }
 
+"print.summary.rqs" <- 
+function(x, ...) lapply(x,print.summary.rq)
+
 "print.summary.rq" <-
 function(x, digits = max(5, .Options$digits - 2), ...)
 {
@@ -67,6 +89,8 @@ function(x, digits = max(5, .Options$digits - 2), ...)
 	df <- x$df
 	rdf <- x$rdf
 	tau <- x$tau
+	cat("\ntau: ")
+	print(format(round(tau,digits = digits)), quote = FALSE, ...)
 	cat("\nCoefficients:\n")
 	print(format(round(coef, digits = digits)), quote = FALSE, ...)
 	invisible(x)
@@ -141,26 +165,44 @@ function (formula, tau = 0.5, data, weights, na.action, method = "br",
     weights <- model.weights(mf)
     Y <- model.response(mf)
     X <- model.matrix(mt, mf, contrasts)
-    process <- (tau < 0 || tau > 1)
-    fit <- {
-        if (length(weights)) 
-            rq.wfit(X, Y, tau = tau, weights, method, ...)
-        else rq.fit(X, Y, tau = tau, method, ...)
-    }
+    if(length(tau)>1){
+	if(any(tau <0) || any(tau >1)) stop("invalid taus")
+	coef <- matrix(0,ncol(X),length(tau))
+	resid <- matrix(0,nrow(X),length(tau))
+	for(i in 1:length(tau)){
+	    z <- {if (length(weights)) 
+                 	rq.wfit(X, Y, tau = tau[i], weights, method, ...)
+                  else rq.fit(X, Y, tau = tau[i], method, ...)
+    		 }
+	    coef[,i] <- z$coefficients 
+	    resid[,i] <- z$residuals
+	   }
+	taulabs <- paste("tau=",format(round(tau,3)))
+	dimnames(coef) <- list(dimnames(X)[[2]],taulabs)
+	dimnames(resid) <- list(dimnames(X)[[1]],taulabs)
+	fit <- list(coefficients = coef, residuals = resid)
+	class(fit) <- "rqs"
+	}
+    else{
+        process <- (tau < 0 || tau > 1)
+        fit <- {
+            if (length(weights)) 
+                rq.wfit(X, Y, tau = tau, weights, method, ...)
+            else rq.fit(X, Y, tau = tau, method, ...)
+           }
+        class(fit) <- ifelse(process, "rq.process", "rq")
+	}
     fit$formula <- formula
     fit$terms <- mt
     fit$call <- call
     fit$tau <- tau
     attr(fit, "na.message") <- attr(m, "na.message")
-    class(fit) <- ifelse(process, "rq.process", "rq")
     if(model) fit$model <- mf
     fit
 }
 "rq.fit" <-
 function(x, y, tau = 0.5, method = "br", ...)
 {
-	#if(!is.numeric(x)) stop("model matrix must be numeric")
-	#if(!is.numeric(y)) stop("response must be numeric")
 	fit <- switch(method,
 		fn = rq.fit.fn(x, y, tau = tau, ...),
 		fnb = rq.fit.fnb(x, y, tau = tau, ...),
@@ -224,7 +266,7 @@ function(x, y, tau = 0.5, method = "br", ...)
 #	quantile regression solution as a process in tau, the resulting arrays
 #	containing the primal and dual solutions, betahat(tau), ahat(tau)
 #       are called sol and dsol.  These arrays aren't printed by the default
-#       function print.rq but they are available as attributes.
+#       print function but they are available as attributes.
 #       It should be emphasized that this form of the solution can be
 #	both memory and cpu quite intensive.  On typical machines it is
 #	not recommended for problems with n > 10,000.
@@ -283,7 +325,6 @@ function (x, y, tau = 0.5, alpha = 0.1, ci = FALSE, iid = TRUE, interp = TRUE, t
             cutoff <- 0
         }
     }
-    assign <- attr(x, "assign")
     z <- .Fortran("rqbr", as.integer(n), as.integer(p), as.integer(n + 
         5), as.integer(p + 3), as.integer(p + 4), as.double(x), 
         as.double(y), as.double(tau), as.double(tol), flag = as.integer(1), 
@@ -322,8 +363,7 @@ function (x, y, tau = 0.5, alpha = 0.1, ci = FALSE, iid = TRUE, interp = TRUE, t
         cnames <- c("coefficients", "lower bd", "upper bd")
         dimnames(coefficients) <- list(vnames, cnames)
         residuals <- z$resid
-        return(list(coefficients = coefficients, 
-            residuals = residuals, assign = assign))
+        return(list(coefficients = coefficients, residuals = residuals))
     }
     else {
         Tci <- matrix(z$ci, nrow = 4)
@@ -527,10 +567,6 @@ function(x, y, tau = 0.5,  Mm.factor = 0.8,
 "rq.wfit" <-
 function(x, y, tau = 0.5, weights, method = "br",  ...)
 {
-	if(!is.numeric(x))
-		stop("model matrix must be numeric")
-	if(!is.numeric(y))
-		stop("response must be numeric")
 	if(any(weights < 0))
 		stop("negative weights not allowed")
 	contr <- attr(x, "contrasts")
@@ -539,7 +575,8 @@ function(x, y, tau = 0.5, weights, method = "br",  ...)
 	fit <- switch(method,
 		fn = rq.fit.fn(x, y, tau = tau, ...),
 		br = rq.fit.br(x, y, tau = tau, ...),
-		{
+		fnc = rq.fit.fnc(x, y, tau = tau, ...), 
+                pfn = rq.fit.pfn(x, y, tau = tau, ...), {
 			what <- paste("rq.fit.", method, sep = "")
 			if(exists(what, mode = "function"))
 				(get(what, mode = "function"))(x, y, ...)
@@ -562,6 +599,27 @@ function(x0, x1, y, v, score = "wilcoxon")
 	ranks <- r$ranks
 	return(list(sn=sn, ranks=ranks))
 }
+
+"summary.rqs" <-
+function (object, ...) {
+        taus <- object$tau
+        xsum <- as.list(taus)
+        for(i in 1:length(taus)){
+                xi <- object
+                xi$coefficients <- xi$coefficients[,i]
+                xi$residuals <- xi$residuals[,i]
+                xi$tau <- xi$tau[i]
+                class(xi) <- "rq"
+                xsum[[i]] <- summary(xi, ...)
+                }
+        class(xsum) <- "summary.rqs"
+   	mt <- terms(object)
+    	m <- model.frame(object)
+    	y <- model.response(m)
+    	x <- model.matrix(mt,m,contrasts = object$contrasts)
+	xsum$olscoefs <- coef(summary(lm(y~x)))
+        xsum
+        }
 
 "summary.rq" <-
 # This function provides  methods for summarizing the output of the
@@ -628,7 +686,6 @@ function (object, se = "nid", covariance = TRUE, hs = TRUE, ...)
     }
     if (se == "rank") {
         f <- rq.fit.br(x, y, tau = tau, ci = TRUE, ...)
-        return(f)
     }
     if (se == "iid") {
         xxinv <- diag(p)
@@ -683,14 +740,19 @@ function (object, se = "nid", covariance = TRUE, hs = TRUE, ...)
         cov <- cov(B)
         serr <- sqrt(diag(cov))
     }
-    coef <- array(coef, c(p, 4))
-    dimnames(coef) <- list(vnames, c("Value", "Std. Error", "t value", 
-        "Pr(>|t|)"))
-    coef[, 2] <- serr
-    coef[, 3] <- coef[, 1]/coef[, 2]
-    coef[, 4] <- if (rdf > 0) 
-        2 * (1 - pt(abs(coef[, 3]), rdf))
-    else NA
+    if( se == "rank"){
+	coef <- f$coef
+	}
+    else {
+    	coef <- array(coef, c(p, 4))
+    	dimnames(coef) <- list(vnames, c("Value", "Std. Error", "t value", 
+             "Pr(>|t|)"))
+    	coef[, 2] <- serr
+    	coef[, 3] <- coef[, 1]/coef[, 2]
+    	coef[, 4] <- if (rdf > 0) 
+			2 * (1 - pt(abs(coef[, 3]), rdf))
+    		     else NA
+	}
     object <- object[c("call", "terms")]
     if (covariance == TRUE) {
         object$cov <- cov

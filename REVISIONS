@@ -172,3 +172,19 @@ adventures with gc().
 on the Khmaladze approach.  See khmaladze.test for further details.
 In the process discovered a minor bug the resulted in problem with the
 Joint test statistic.  (Two missing commas!)
+
+3.50  July 17, 2004
+
+1.  The function table.rq was made defunct, replaced by the more
+direct ability to specify multiple taus in rq().  When a vector of
+taus is specified, rq() returns an object of class rqs, and
+summary.rqs produces output for each tau.  There are plot and latex
+methods for objects of class summary.rqs.
+
+2.  The Solaris f95 compiler choked on the & in column 1 of akj.f, so
+this has been moved to col 6.  
+
+
+
+
+

@@ -1,7 +1,8 @@
 \name{summary.rq}
 \alias{summary.rq}
+\alias{summary.rqs}
 \title{
-Summary method for Quantile Regression
+Summary methods for Quantile Regression
 }
 \description{
 Returns a summary list for a quantile regression fit.  A null value
@@ -9,10 +10,13 @@ will be returned if printing is invoked.
 }
 \usage{
 summary.rq(object, se="nid", covariance=TRUE, hs = TRUE,  ...)
+summary.rqs(object, ...)
 }
 \arguments{
   \item{object}{
-    This is an object of class \code{"rq"} produced by a call to \code{rq()}.
+    This is an object of class \code{"rq"} or \code{"rqs"} produced by 
+    a call to \code{rq()}, depending on whether one or more taus are
+    specified.
   }
   \item{se}{
     specifies the method used to compute standard standard errors.  There
@@ -53,7 +57,8 @@ summary.rq(object, se="nid", covariance=TRUE, hs = TRUE,  ...)
    }
 }
 \value{
-  a list is returned with the following components
+  a list is returned with the following components, when \code{object}
+  is of class \code{"rqs"} then there is a list of such lists.
 
 \item{coefficients}{
   a p by 4 matrix consisting of the coefficients, their estimated standard
