@@ -7,7 +7,7 @@ Quantile Regression Ranks
 Function to compute ranks from the dual (regression rankscore) process.
 }
 \usage{
-ranks(v, score="wilcoxon", tau=0.5)
+ranks(v, score="wilcoxon", tau=0.5, trim = NULL)
 }
 \arguments{
 \item{v}{
@@ -20,12 +20,21 @@ ranks(v, score="wilcoxon", tau=0.5)
   the  logistic,  Gaussian  and Laplace location shift models respectively.
   The "normal" score  function is also sometimes called van der Waerden scores.
   Also implemented are the \code{"tau"} which generalizes sign scores to an
-  arbitrary quantile, and \code{"interquartile"} which is appropriate
-  for tests of scale shift.
+  arbitrary quantile, \code{"interquartile"} which is appropriate
+  for tests of scale shift, \code{normalscale} for Gaussian scale shift,
+  \code{halfnormalscale} for Gaussian scale shift only to the right of the median,
+  and \code{lehmann} for Lehmann local alternatives. See Koenker (2010) for
+  further details on the last three of these scores.
 }
 \item{tau}{
   the optional value of \code{tau} if the \code{"tau"} score function is used.
-}}
+}
+\item{trim}{optional trimming proportion parameter(s)  -- only applicable for the
+Wilcoxon score function --  when one value is provided there is symmetric 
+trimming of the score integral to the interval \code{(trim, 1-trim)}, when
+there are two values provided, then the trimming restricts the integration
+to \code{(trim[1], trim[2])}.}
+}
 \value{
 The function returns two components. One is the ranks,  the
 other is a scale factor which is the \eqn{L_2} norm of the score
@@ -38,13 +47,14 @@ function.  All score functions should be normalized to have mean zero.
   Gutenbrunner, C., J. Jureckova,  Koenker, R. and  Portnoy,
   S. (1993)  Tests  of linear hypotheses  based on regression
   rank scores, \emph{Journal of  Nonparametric  Statistics},  (2), 307--331.
+
+  Koenker, R. Rank Tests for Heterogeneous Treatment Effects with Covariates, preprint.
 }
 \seealso{
-  \code{\link{rq}}, \code{\link{rq.test.rank}} \code{\link{anova.rq}}
+  \code{\link{rq}}, \code{\link{rq.test.rank}} \code{\link{anova}}
 }
 \examples{
 data(stackloss)
 ranks(rq(stack.loss ~ stack.x, tau=-1))
 }
 \keyword{regression}
-% Converted by Sd2Rd version 0.3-3.

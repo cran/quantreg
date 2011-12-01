@@ -9,7 +9,6 @@ package.
 \usage{
 lm.fit.recursive(X, y, int=TRUE)
 }
-%- maybe also `usage' for other objects documented here.
 \arguments{
   \item{X}{ Design Matrix }
   \item{y}{ Response Variable}

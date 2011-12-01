@@ -28,6 +28,6 @@ rq.wfit(x, y, tau=0.5, weights, method="br", ...)
 } 
 }
  
-\seealso{  \code{\link{rq}} \code{\link{rq.fit.br}} \code{\link{rq.fit.fn}}}
+\seealso{  \code{\link{rq}} \code{\link{rq.fit.br}} \code{\link{rq.fit.fnb}}}
 
 \keyword{ regression }

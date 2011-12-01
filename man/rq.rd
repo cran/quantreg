@@ -8,7 +8,7 @@ Returns an object of class \code{"rq"} \code{"rqs"}
 or \code{"rq.process"} that represents a quantile regression fit. 
 }
 \usage{
-rq(formula, tau=.5, data, weights, na.action,
+rq(formula, tau=.5, data, subset, weights, na.action,
    method="br", model = TRUE, contrasts, \dots) 
 }
 \arguments{
@@ -17,11 +17,11 @@ rq(formula, tau=.5, data, weights, na.action,
     and the terms, separated by \code{+} operators, on the right. 
   }
   \item{tau}{
-    the quantile(s) to be estimated, this is generally a number between 0 and 1, 
-    but if specified outside this range, it is presumed that the solutions 
+    the quantile(s) to be estimated, this is generally a number strictly between 0 and 1, 
+    but if specified strictly outside this range, it is presumed that the solutions 
     for all values of \code{tau} in (0,1) are desired.  In the former case an
     object of class \code{"rq"} is returned, in the latter,
-    an object of class \code{"rq.process"} is returned.  As of version 3.50
+    an object of class \code{"rq.process"} is returned.  As of version 3.50,
     tau can also be a vector of values between 0 and 1; in this case an
     object of class \code{"rqs"} is returned containing among other things
     a matrix of coefficient estimates at the specified quantiles.
@@ -33,6 +33,9 @@ rq(formula, tau=.5, data, weights, na.action,
     search list.  This may also be a single number to handle some special  
     cases -- see below for details.   
   }
+  \item{subset}{
+    an optional vector specifying a subset of observations to be
+    used in the fitting process.}
   \item{weights}{
     vector of observation weights; if supplied, the algorithm fits
     to minimize the sum of the weights multiplied into the
@@ -52,8 +55,8 @@ rq(formula, tau=.5, data, weights, na.action,
     essential if one wants to call summary subsequently.
   }
   \item{method}{
-    the algorithmic method used to compute the fit.  There are currently 
-    four options:   The default method is the modified  version of the
+    the algorithmic method used to compute the fit.  There are several
+    options:   The default method is the modified  version of the
     Barrodale and Roberts algorithm for \eqn{l_1}{l1}-regression,
     used by \code{l1fit} in S, and is described in detail in 
     Koenker and d'Orey(1987, 1994),  default = \code{"br"}. 
@@ -65,12 +68,15 @@ rq(formula, tau=.5, data, weights, na.action,
     the Frisch--Newton interior point method \code{"fn"}. 
     And very large problems one can use the Frisch--Newton approach after 
     preprocessing \code{"pfn"}.  Both of the latter methods are
-    described in detail in Portnoy and Koenker(1997).   Finally, there
-    is a fourth option \code{"fnc"} that enables the user to specify
+    described in detail in Portnoy and Koenker(1997).   
+    There is a fifth option \code{"fnc"} that enables the user to specify
     linear inequality constraints on the fitted coefficients; in this
     case one needs to specify the matrix \code{R} and the vector \code{r}
-    representing the constraints in the form $Rb \geq r$.  See the
-    examples 
+    representing the constraints in the form \eqn{Rb \geq r}.  See the
+    examples.  Finally, there are two penalized methods:  \code{"lasso"}
+    and \code{"scad"} that implement the lasso penalty and Fan and Li's
+    smoothly clipped absolute deviation penalty, respectively.  These
+    methods should probably be regarded as experimental.
   }
   \item{contrasts}{
     a list giving contrasts for some or all of the factors 
@@ -82,14 +88,23 @@ rq(formula, tau=.5, data, weights, na.action,
   }
   \item{...}{
     additional arguments for the fitting routines 
-    (see \code{\link{rq.fit.br}} and \code{\link{rq.fit.fn}}
+    (see \code{\link{rq.fit.br}} and \code{\link{rq.fit.fnb}}
     and the functions they call). 
   }
 }
 \value{
   See \code{\link{rq.object}} and \code{\link{rq.process.object}} for details. 
-  Inferential matters are handled with \code{\link{summary}}.
+  Inferential matters are handled with \code{\link{summary}}.  There are
+  extractor methods \code{logLik} and \code{AIC} that are potentially
+  relevant for model selection.
 }
+\details{For further details see the vignette available from \R with
+    \code{ vignette("rq",package="quantreg")} and/or the Koenker (2005).
+    For estimation of nonlinear (in parameters) quantile regression models
+    there is the function \code{nlrq} and for nonparametric additive 
+    quantile regression there is the function \code{rqss}.
+    Fitting of quantile regression models with censored data is handled by the
+    \code{crq} function.} 
 \examples{
 data(stackloss)
 rq(stack.loss ~ stack.x,.5)  #median (l1) regression  fit for the stackloss data. 
@@ -101,20 +116,21 @@ rq(rnorm(50) ~ 1, weights=runif(50),ci=FALSE)  #weighted sample median
 #plot of engel data and some rq lines see KB(1982) for references to data
 data(engel)
 attach(engel)
-plot(x,y,xlab="Household Income",ylab="Food Expenditure",type = "n", cex=.5)
-points(x,y,cex=.5,col="blue")
+plot(income,foodexp,xlab="Household Income",ylab="Food Expenditure",type = "n", cex=.5)
+points(income,foodexp,cex=.5,col="blue")
 taus <- c(.05,.1,.25,.75,.9,.95)
-xx <- seq(min(x),max(x),100)
-f <- coef(rq((y)~(x),tau=taus))
+xx <- seq(min(income),max(income),100)
+f <- coef(rq((foodexp)~(income),tau=taus))
 yy <- cbind(1,xx)\%*\%f
 for(i in 1:length(taus)){
         lines(xx,yy[,i],col = "gray")
         }
-abline(lm(y~x),col="red",lty = 2)
-abline(rq(y~x),col="blue")
-legend(3000,500,c("mean (LSE) fit", "median (LAE) fit"),col = c("red","blue"),lty = c(2,1))
+abline(lm(foodexp ~ income),col="red",lty = 2)
+abline(rq(foodexp ~ income), col="blue")
+legend(3000,500,c("mean (LSE) fit", "median (LAE) fit"),
+	col = c("red","blue"),lty = c(2,1))
 #Example of plotting of coefficients and their confidence bands
-plot(summary(rq(y~x,tau = 1:49/50,data=engel)))
+plot(summary(rq(foodexp~income,tau = 1:49/50,data=engel)))
 #Example to illustrate inequality constrained fitting
 n <- 100
 p <- 5
@@ -164,11 +180,15 @@ Springer-Verlag, New York.
 Tortoise:  Computability of Squared-error vs Absolute Error Estimators, 
 (with discussion).  \emph{Statistical Science,} \bold{12}, 279-300.
 
+[6] Koenker, R. W. (2005). \emph{Quantile Regression},  Cambridge U. Press.
+
 There is also recent information available at the URL:
 \url{http://www.econ.uiuc.edu}.
 }
 \seealso{
-  \code{\link{summary.rq}}, \code{\link{rq.object}},
+  \code{\link{summary.rq}}, 
+  \code{\link{nlrq}},
+  \code{\link{rqss}},
+  \code{\link{rq.object}},
   \code{\link{rq.process.object}}
 }
-% Converted by Sd2Rd version 0.3-3.

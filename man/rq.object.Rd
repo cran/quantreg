@@ -1,5 +1,11 @@
 \name{rq.object}
 \alias{rq.object}
+\alias{formula.rq}
+\alias{logLik.rq}
+\alias{logLik.rqs}
+\alias{AIC.rq}
+\alias{AIC.rqs}
+\alias{extractAIC.rq}
 \title{
 Linear Quantile Regression Object 
 }
@@ -17,9 +23,12 @@ functions:
 \code{coef}, \code{effects}
 , \code{formula}
 , \code{labels}
-,  \code{model.frame}
+, \code{model.frame}
 , \code{model.matrix}
 , \code{plot}
+, \code{logLik}
+, \code{AIC}
+, \code{extractAIC}
 , \code{predict}
 , \code{print}
 , \code{print.summary}
@@ -42,6 +51,12 @@ functions:
     }
     \item{\code{residuals}}{
       the residuals from the fit. 
+    }
+    \item{\code{dual}}{
+      the vector dual variables from the fit. 
+    }
+    \item{\code{rho}}{
+      The value(s) of objective function at the solution.
     }
     \item{\code{contrasts}}{
       a list containing sufficient information to construct the contrasts 
@@ -68,9 +83,17 @@ functions:
 \details{
   The coefficients, residuals, and effects may be extracted 
   by the generic functions of the same name, rather than 
-  by the \code{$} operator.   
-  For pure \code{rq} objects this is less critical 
-  than for some of the inheritor classes.  
+  by the \code{$} operator.   For pure \code{rq} objects this is less critical 
+  than for some of the inheritor classes.  In particular, for fitted rq objects
+  using "lasso" and "scad" penalties, \code{logLik} and \code{AIC} functions
+  compute degrees of freedom of the fitted model as the number of estimated
+  parameters whose absolute value exceeds a threshold \code{edfThresh}.  By
+  default this threshold is 0.0001, but this can be passed via the \code{AIC}
+  function if this value is deemed unsatisfactory.  The function \code{AIC}
+  is a generic function in R, with parameter \code{k} that controls the form
+  of the penalty:  the default value of \code{k} is 2 which yields the classical
+  Akaike form of the penalty, while \code{k <= 0} yields the Schwarz (BIC)
+  form of the penalty.
   Note that the extractor function \code{coef} returns a vector with missing values 
   omitted.  
 }
@@ -78,4 +101,3 @@ functions:
   \code{\link{rq}},  \code{\link{coefficients}}.   
 }
 \keyword{regression}
-% Converted by Sd2Rd version 0.3-3.

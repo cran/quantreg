@@ -11,13 +11,28 @@ function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y), ...)
         s <- matrix(sample(n, mofn * R, replace = TRUE), mofn, R)
         B <- sqrt(mofn/n)*boot.rq.xy(x, y, s, tau)
     }   
+    else if (bsmethod == "wxy") {
+        w <- matrix(rexp(n * R,1), n, R)
+        B <- boot.rq.wxy(x, y, w, tau)
+    }   
     else if (bsmethod == "pwy") {
-        U <- t(x) %*% matrix(((runif(n * R) > tau) - tau), n,
+        U <- t(x) %*% matrix(((runif(n * R) < tau) - tau), n,
             R)
         B <- boot.rq.pwy(U, x, y, tau)
     }
     else if (bsmethod == "mcmb") {
         B <- boot.rq.mcmb(x, y, tau = tau, R = R)
+    }
+    else if (bsmethod == "wild") {
+        n <- length(y)
+        fit <- rq.fit(x, y, tau = tau)
+        S <- sample(c(-2*tau,2*(1-tau)),prob = c(tau,1-tau),size = n * R, replace = TRUE)
+        W <- matrix(S,n,R)
+        r <- c(fit$resid)
+        f0 <- akj(r,z=0)$dens 
+        r <- r + hat(x) * (tau - I(r < 0))/f0 
+        Y <- c(fitted(fit)) + W * abs(r)
+        B <- rqs.fit(x,Y,tau = tau)
     }
     else stop("your chosen bootstrap method is not allowed")
     #cat(paste("Bootstrap standard errors based on ",R," replications"))
@@ -84,22 +99,64 @@ function(x, y, s, tau = 0.5, tol = 0.0001)
 		as.double(y),
 		as.double(tau),
 		as.double(tol),
-		flag = as.integer(1),
+		flag = integer(R),
 		coef = double(p * R),
 		resid = double(m),
 		integer(m),
 		double((m + 5) * (p + 2)),
 		double(m),
-		as.integer(1),
-		sol = double((p + 2)),
-		dsol = double(m),
-		lsol = as.integer(0),
 		xx = double(m * p),
 		yy = double(m),
 		as.integer(s),
 		PACKAGE = "quantreg")
+	if(sum(z$flag)>0){
+		if(any(z$flag)==2) 
+			warning(paste(sum(z$flag==2),"out of",R, 
+				"BS replications have near singular design"))
+		if(any(z$flag)==1) 
+			warning(paste(sum(z$flag==1),"out of",R,"may be nonuniqu")) 
+		}
 	return(t(matrix(z$coef, p, R)))
 }
+"boot.rq.wxy"<-
+function(x, y, w, tau = 0.5, tol = 0.0001)
+{
+#function to compute weighted bootstrap a la Bose for regression quantiles 
+        x <- as.matrix(x)
+        p <- ncol(x)
+        n <- nrow(x)
+        R <- ncol(w)
+        m <- nrow(w)
+        z <- .Fortran("wxy",
+                as.integer(n),
+                as.integer(p),
+                as.integer(R),
+                as.integer(m + 5),
+                as.integer(p + 2),
+                as.double(x),
+                as.double(y),
+                as.double(tau),
+                as.double(tol),
+                flag = integer(R),
+                coef = double(p * R),
+                resid = double(m),
+                integer(m),
+                double((m + 5) * (p + 2)),
+                double(m),
+                xx = double(m * p),
+                yy = double(m),
+                as.double(w),
+                PACKAGE = "quantreg")
+        if(sum(z$flag)>0){
+                if(any(z$flag)==2)
+                        warning(paste(sum(z$flag==2),"out of",R,
+                                "BS replications have near singular design"))
+                if(any(z$flag)==1)
+                        warning(paste(sum(z$flag==1),"out of",R,"may be nonunique"))
+                }
+        return(t(matrix(z$coef, p, R)))
+}
+
 "boot.rq.pwy"<-
 function(U,X, y, tau = 0.5, tol=1e-4)
 {
@@ -129,10 +186,6 @@ function(U,X, y, tau = 0.5, tol=1e-4)
 		integer(n),
 		double((n + 5) * (p + 2)),
 		double(n),
-		as.integer(1),
-		sol = double((p + 2)),
-		dsol = double(n),
-		lsol = as.integer(0),
 		PACKAGE = "quantreg")
 	return(t(matrix(z$coef, p, R)))
 }

@@ -7,7 +7,8 @@ Quantile Regression Fitting via Interior Point Methods
 This is a lower level routine called by \code{rq()} to compute quantile
 regression methods using the Frisch-Newton algorithm.  It allows the
 call to specify linear inequality constraints to which the fitted
-coefficients will be subjected. 
+coefficients will be subjected.  The constraints are assumed to be 
+formulated as Rb >= r.
 }
 \usage{
 rq.fit.fnc(x, y, R, r, tau=0.5, beta=0.9995, eps=1e-06)
@@ -41,9 +42,7 @@ technical step length parameter -- alter at your own risk!
 }
 \value{
   returns an object of class \code{"rq"}, which can be passed to
-  \code{\link{summary.rq}} to obtain standard errors, etc.  It is
-  an open research problem to provide an inference apparatus for
-  inequality constrained quantile regression.
+  \code{\link{summary.rq}} to obtain standard errors, etc.  
 }
 \details{
   The details of the algorithm are explained in Koenker and Ng (2002).
@@ -52,6 +51,8 @@ technical step length parameter -- alter at your own risk!
   implementation is based on proposals by Mehrotra and others in the
   recent (explosive) literature on interior point methods for solving linear 
   programming problems.  See \code{"rq"} helpfile for an example.
+  It is an open research problem to provide an inference apparatus for
+  inequality constrained quantile regression.
 }
 \references{
 Koenker, R. and S. Portnoy (1997).
@@ -59,12 +60,11 @@ The Gaussian Hare and the Laplacian Tortoise:
 Computability of squared-error vs. absolute-error estimators, with discussion,
 \emph{Statistical Science}, \bold{12}, 279-300.
 
-Koenker, R. and P. Ng(2002).
-Inequality Constrained Quantile Regression, in process
+Koenker, R. and P. Ng(2005).
+Inequality Constrained Quantile Regression, \emph{Sankya}, 418-440.
 }
 \seealso{
   \code{\link{rq}}, \code{\link{rq.fit.br}},
   \code{\link{rq.fit.pfn}}
 }
 \keyword{regression}
-% Converted by Sd2Rd version 0.3-3.

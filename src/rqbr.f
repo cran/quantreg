@@ -495,10 +495,8 @@ C Output from Public domain Ratfor, version 1.0
       go to 50
 40    if(lsol.gt.2)then
       sol(1,1) = zero
-      sol(2,1) = zero
       sol(3,1) = zero
       sol(1,lsol) = one
-      sol(2,lsol) = zero
       sol(3,lsol) = zero
       do23220 i = 1,m 
       dsol(i,1) = one
@@ -537,7 +535,7 @@ C Output from Public domain Ratfor, version 1.0
       if(.not.lci1)then
       goto 23018
       endif
-      if(.not.lci2)then
+      if(.not.(.not.lci2))goto 23234
       lci2 = .true.
       n = nn-1
       n1 = n+1
@@ -545,21 +543,22 @@ C Output from Public domain Ratfor, version 1.0
       n3 = n+3
       n4 = n+4
 60    idxcf = idxcf+1
-      if(idxcf.gt.nn)then
+      if(.not.(idxcf.gt.nn))goto 23236
       goto 23018
-      endif
-70    if(lup)then
+23236 continue 
+70    if(.not.(lup))goto 23238
       tnew = x(idxcf)+toler
       told = tnew
       ci(3,idxcf) = x(idxcf)
       tnmat(3,idxcf) = zero
-      else
+      goto 23239
+23238 continue
       tnew = x(idxcf)-toler
       told = tnew
       ci(2,idxcf) = x(idxcf)
       tnmat(2,idxcf) = zero
-      endif
-      endif
+23239 continue
+23234 continue
 23017 goto 23016
 23018 continue
       do23242 i=1,m

@@ -1,61 +1,44 @@
-C	This is a very primative version of the barrodale-roberts rq
-C	algorithm intended only to be used for resampling procedures.
-C       bug reports should be sent to roger@ysidro.econ.uiuc.edu or to
+
+      SUBROUTINE RQ1(M,N,MDIM,N2,A,B,T,TOLER,IFT,X,E,S,WA,WB)
 C
-C				Roger Koenker
-C				Department of Economics
-C				University of Illinois
-C				Champaign, Illinois, 61820
-C
-C
-      SUBROUTINE RQ1(M,N,M5,N2,A,B,TAU,TOLER,IFT,X,E,S,WA,WB,
-     *NSOL,SOL,DSOL,LSOL)
-C
+C     Modified to remove SOL and related vars -- only good for single tau
 C     Number of Observations
 C     Number of Parameters
-C     M+5
+C     MDIM  row dimension for arrays  A  and  WA
 C     N+2
 C     A is the X matrix
 C     B is the y vector
-C     tau, the desired quantile
-C     toler, smallest detectable |x-y|/x machine precision to the 2/3
-C     ift exit code:
+C     T, the desired quantile
+C     TOLER, smallest detectable |x-y|/x machine precision to the 2/3
+C     IFT exit code:
 C		0-ok
-C		else dimensions inconsistent
+C		else dimensions inconsistent or T not in (0,1)
 C     X the parameter estimate betahat
 C     E is the residual vector
-C     S is an integer work array
-C     WA is a work array
-C     WB is another work array
-C     NSOL is an estimated (row) dimension of the solution array say 3*M
-C     SOL is the primal solution array
-C     DSOL is the dual solution arry
-C     LSOL is the actual dimension of the solution arrays
+C     S is an integer work array (M)
+C     WA is a real work array (M5,N2)
+C     WB is another real work array (M)
 C     Utilization:  If you just want a solution at a single quantile you
-C     needn't bother with SOL, NSOL, etc, if you want all the solutions
-C     then set TAU to something <0 and SOL and DSOL will return all the
-C     estimated quantile solutions.
 C     The algorithm  is a slightly modified version of Algorithm AS 229 
 C     described in Koenker and D'Orey, "Computing Regression Quantiles,
 C     Applied Statistics, pp. 383-393. 
 C
-      INTEGER I,J,K,KL,KOUNT,KR,L,LSOL,M,M1,M2,M3,M4,M5,IFT
-      INTEGER N,N1,N2,NSOL,OUT,S(M)
+      IMPLICIT REAL*8(A-H,O-Z)
+      INTEGER I,J,K,KL,KOUNT,KR,M,M1,M2,M3,M4,M5,IFT
+      INTEGER MDIM,N,N1,N2,OUT,S(MDIM)
       LOGICAL STAGE,TEST,INIT,IEND
-      DOUBLE PRECISION A1,AUX,B1,BIG,D,DIF,PIVOT,SMAX,TAU,T0,T1,TNT
-      DOUBLE PRECISION MIN,MAX,TOLER,ZERO,HALF,ONE,TWO
-      DOUBLE PRECISION B(M),SOL(N2,NSOL),A(M,N),X(N),WA(M5,N2),WB(M)
-      DOUBLE PRECISION SUM,E(M),DSOL(M,NSOL)
-      PARAMETER( BIG = 1.D37)
-      PARAMETER( ZERO = 0.D00)
-      PARAMETER( HALF = 0.5D0)
-      PARAMETER( ONE = 1.D0)
-      PARAMETER( TWO = 2.D0)
+      DOUBLE PRECISION MIN,MAX
+      DIMENSION B(MDIM),A(MDIM,N),X(N),WA(MDIM,N2),
+     *          WB(MDIM),E(M)
+      DATA BIG/1.D37/
+      DATA ZERO/0.00D0/
+      DATA HALF/0.50D0/
+      DATA ONE/1.00D0/
+      DATA TWO/2.00D0/
 C
 C  CHECK DIMENSION PARAMETERS
 C
       IFT=0
-      IF(M5 .NE. M+5)IFT = 3
       IF(N2 .NE. N+2)IFT = 4
       IF(M.LE.ZERO.OR.N.LE.ZERO)IFT = 5
       IF(IFT .GT. TWO)RETURN
@@ -67,6 +50,7 @@ C
       M2 = M+2
       M3 = M+3
       M4 = M+4
+      M5 = M+5
       DO 2 I=1,M
       WB(I)=B(I)
       DO 1 J=1,N
@@ -76,14 +60,11 @@ C
       WA(M2,N1)=ZERO
       DIF = ZERO
       IEND = .TRUE.
-      IF(TAU .GE. ZERO .AND. TAU .LE. ONE)GOTO 3
-      T0 = ONE/FLOAT(M)-TOLER
-      T1 = ONE - T0
-      TAU = T0
-      IEND = .FALSE.
+      IF(T .GE. ZERO .AND. T .LE. ONE)GOTO 3
+      IFT = 6
+      RETURN
   3   CONTINUE
       INIT = .FALSE.
-      LSOL = 1
       KOUNT = 0
       DO 9 K=1,N
       WA(M5,K) = ZERO
@@ -117,7 +98,6 @@ C
  42   CONTINUE
       GOTO 48
  43   CONTINUE
-      LSOL = LSOL + 1
       DO 44 I=1,M
       S(I) = ZERO
  44   CONTINUE
@@ -125,32 +105,32 @@ C
       X(J) = ZERO
  45   CONTINUE
 C
-C  COMPUTE NEXT TAU
+C  COMPUTE NEXT T
 C
       SMAX = TWO
       DO 47 J=1,N
       B1 =  WA(M3,J)
       A1 = (-TWO - WA(M2,J))/B1
       B1 = -WA(M2,J)/B1
-      IF(A1 .LT. TAU)GOTO 46
+      IF(A1 .LT. T)GOTO 46
       IF(A1 .GE. SMAX) GOTO 46
       SMAX = A1
       DIF = (B1 - A1 )/TWO
- 46   IF(B1 .LE. TAU) GOTO 47
+ 46   IF(B1 .LE. T) GOTO 47
       IF(B1 .GE. SMAX)GOTO 47
       SMAX = B1
       DIF = (B1 - A1)/TWO
  47   CONTINUE
       TNT = SMAX + TOLER * (ONE + ABS(DIF)) 
       IF(TNT .GE. T1 + TOLER)IEND = .TRUE.
-      TAU = TNT
-      IF(IEND)TAU = T1
+      T = TNT
+      IF(IEND)T = T1
  48   CONTINUE
 C
 C COMPUTE NEW MARGINAL COSTS
 C
       DO 49 J=1,N
-      WA(M1,J) = WA(M2,J) + WA(M3,J) * TAU
+      WA(M1,J) = WA(M2,J) + WA(M3,J) * T
  49   CONTINUE
       IF(INIT) GOTO 265
 C
@@ -291,57 +271,13 @@ C
       K=WA(I,N2)*SIGN(ONE,WA(I,N2))
       X(K) = WA(I,N1) * SIGN(ONE,WA(I,N2))
  320  CONTINUE
-      SUM=ZERO
-      DO 330 I=1,N
-      SUM=SUM + X(I) * WA(M5,I)
-      SOL(I+2,LSOL)=X(I)
-      KD=ABS(WA(M4,I))-N
-      DSOL(KD,LSOL)=ONE+WA(M1,I)/TWO
-      IF(WA(M4,I).LT.ZERO)DSOL(KD,LSOL)=ONE-DSOL(KD,LSOL)
- 330  CONTINUE
-      DO 335 I=KL,M
-      KD=ABS(WA(I,N2))-N
-      IF(WA(I,N2).LT.ZERO)DSOL(KD,LSOL)=ZERO
-      IF(WA(I,N2).GT.ZERO)DSOL(KD,LSOL)=ONE
- 335  CONTINUE
-      SOL(1,LSOL) = SMAX
-      SOL(2,LSOL) = SUM
-      IF(IEND)GOTO 340
-      INIT = .TRUE.
-      GOTO 43
- 340  CONTINUE
-      IF(LSOL.LE.2)GOTO 355
-      SOL(1,1)=ZERO
-      SOL(1,LSOL)=ONE
-      DO 350 I=1,M
-      DSOL(I,1)=ONE
-      DSOL(I,LSOL)=ZERO
- 350  CONTINUE
- 355  CONTINUE
-      L =KL-1
-      DO 370 I=1,L
-      IF(WA(I,N1).GE.ZERO)GOTO 370
-      DO 360 J=KR,N2
-      WA(I,J)=-WA(I,J)
- 360  CONTINUE
- 370  CONTINUE
-      WA(M2,N1)=ZERO
-      IF(KR.NE.1)GOTO 390
-      DO 380 J=1,N
-      D=ABS(WA(M1,J))
-      IF(D.LE.TOLER.OR.TWO-D.LE.TOLER)GOTO 390
- 380  CONTINUE
-      WA(M2,N1)=ONE
  390  SUM = ZERO
       DO 400 I=KL,M
       K = WA(I,N2) * SIGN(ONE,WA(I,N2))
       D = WA(I,N1) * SIGN(ONE,WA(I,N2))
-      SUM = SUM + D * SIGN(ONE,D) * (HALF + SIGN(ONE,D)*(TAU-HALF))
+      SUM = SUM + D * SIGN(ONE,D) * (HALF + SIGN(ONE,D)*(T-HALF))
       K=K-N
       E(K)=D
  400  CONTINUE
-      WA(M2,N2)=KOUNT
-      WA(M1,N2)=N1-KR
-      WA(M1,N1) = SUM
       RETURN
       END

@@ -4,7 +4,6 @@
 \description{
 A preprocessing algorithm for the Frisch Newton algorithm 
 for quantile regression. This is one possible method for rq().}
-}
 \usage{
 rq.fit.pfn(x, y, tau=0.5, Mm.factor=0.8, max.bad.fixup=3, eps=1e-06)
 }

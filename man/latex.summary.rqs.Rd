@@ -4,9 +4,8 @@
 \description{
   Produces a file with latex commands for a table of rq results.
 }
-\usage{
-latex.summary.rqs(x, transpose = FALSE, caption = "caption goes here.",
-                  digits = 3, file = as.character(substitute(x)), ...)
+\usage{\method{latex}{summary.rqs}(x, transpose = FALSE, caption = "caption goes here.", 
+		digits = 3, file = as.character(substitute(x)), ...)
 }
 \arguments{
   \item{x}{\code{x} is an object of class \code{summary.rqs}}
@@ -25,6 +24,4 @@ latex.summary.rqs(x, transpose = FALSE, caption = "caption goes here.",
 }
 \author{ R. Koenker}
 \seealso{ \code{\link{summary.rqs}}, \code{\link{latex.table}}}
-\examples{
-}
 \keyword{IO}

@@ -1,6 +1,6 @@
 \name{latex}
 \alias{latex}
-\title{ Make a latex version of an \R object }
+\title{ Make a latex version of an R object }
 \description{
 Generic function for converting an  \R object into a latex file.
 }

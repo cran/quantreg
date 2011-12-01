@@ -1,4 +1,4 @@
-# This is a special version of K-d'O rq modified to compute the LR process
+# This is a special version of K-dO rq modified to compute the LR process
 # Note that the sol array is now p+3 by J and the third row contains the
 # value of the objective function at the tau specified in row one.
 #
@@ -40,15 +40,15 @@ subroutine rqbr(m,nn,m5,n3,n4,a,b,t,toler,ift,x,e,s,wa,wb,nsol,ndsol,sol,dsol,ls
 #     h is the matrix of basic observations indices
 #     qn is the vector of residuals variances from the projection of each column of the x matrix on the remaining columns
 #     cutoff, the critical point for N(0,1)
-#     ci is the matrix of confident intervals
+#     ci is the matrix of confidence intervals
 #     tnmat is the matrix of the JGPK rank test statistics
 #     big, large positive finite floating-point number
 #     utilization:  if you just want a solution at a single quantile you
-#     needn't bother with sol, nsol, etc, if you want all the solutions
+#     neednt bother with sol, nsol, etc, if you want all the solutions
 #     then set theta to something <0 and sol and dsol will return all the
 #     estimated quantile solutions.
 #     the algorithm  is a slightly modified version of algorithm as 229
-#     described in koenker and d'orey, "computing regression quantiles,
+#     described in koenker and dorey, computing regression quantiles,
 #     applied statistics, pp. 383-393.
 #
 integer i,j,k,kl,kount,kr,l,lsol,m,m1,m2,m3,m4,m5,ift
@@ -501,10 +501,10 @@ if (ift<=two) {
     go to 50
     40  if (lsol>2) {
       sol(1,1) = zero
-      sol(2,1) = zero
+      #sol(2,1) = zero
       sol(3,1) = zero
       sol(1,lsol) = one
-      sol(2,lsol) = zero
+      #sol(2,lsol) = zero
       sol(3,lsol) = zero
       do i = 1,m {
         dsol(i,1) = one
@@ -541,9 +541,10 @@ if (ift<=two) {
       n2 = n+2
       n3 = n+3
       n4 = n+4
-    60  idxcf = idxcf+1
-      if (idxcf>nn)
+    60 idxcf = idxcf+1
+      if (idxcf>nn){
         break 1
+	}
     70  if (lup){
         tnew = x(idxcf)+toler
         told = tnew

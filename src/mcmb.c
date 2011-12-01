@@ -3,7 +3,7 @@
 /*  Markov Chain Marginal Bootstrap Package for Quantile Regression   */ 
 /*  Maria Kocherginsky <mkocherg@uchicago.edu>,Xuming He <he@uiuc.edu>*/ 
 /*                                                                    */
-/*  This code was modified by R. Koenker (July 30, 2003)              */ 
+/*  This code modified by R. Koenker (July 30, 2003, April 21 2010)   */ 
 /*  to employ R random number generation conventions and to conform   */ 
 /*  to the conventions of the quantreg package.  See the function     */ 
 /*  boot.rq.mcmb for details on the interface to summary.rq           */ 
@@ -23,7 +23,6 @@
 #define MAXIT 100
 #define BMAXIT 100
 
-#include "nrutil.h"
 #define UNUSED (-1.11e30)
 #define SWAP(a,b) temp=(a);(a)=(b);(b)=temp;
 #define M 7
@@ -36,16 +35,16 @@ int allZero;
 /*  Various Utilities off the Web (for use with sort2())        */ 
 /****************************************************************/
 
-unsigned long *lvector(long nl, long nh)
-/* allocate a long int vector with subscript range v[nl..nh] */
+unsigned int *lvector(int  nl, int  nh)
+/* allocate a int vector with subscript range v[nl..nh] */
 {
-    long *v = (long *)malloc((size_t)((nh-nl+2) * sizeof(long)));
+    unsigned int *v = (unsigned int *)malloc((size_t)((nh-nl+2) * sizeof(int)));
     if (v == NULL) error("allocation failure in lvector()");
     return (v-nl+1);
 }
 
-void free_lvector(unsigned long *v, long nl, long nh)
-/* free a long int vector allocated with lvector() */
+void free_lvector(unsigned int *v, int nl, int nh)
+/* free a int int vector allocated with lvector() */
 {
     free(v+nl-1);
 }
@@ -86,8 +85,8 @@ double sign(double x){
 /*  Sort Function                                               */ 
 /****************************************************************/
 
-void sort2(unsigned long n, double arr[], double brr[]){
-  unsigned long i,ir=n,j,k,l=1,*istack;
+void sort2(unsigned int  n, double arr[], double brr[]){
+  unsigned int  i,ir=n,j,k,l=1,*istack;
   int jstack=0;
   double a,b,temp;
   istack=lvector(1,NSTACK);
@@ -167,11 +166,16 @@ void sort2(unsigned long n, double arr[], double brr[]){
 
 double func(double *x, double *y,  double tau, double *tTilda, double *A,  double 
 sum_right, double sumxij, double sumabsxij, int j, int pp, int nn){
-  int i,jj,ii,m;
-  double *px, corig[MAXP];
-  double xj[MAXN], yj[MAXN], z[MAXN], wt[MAXN],wtsum;
-  unsigned long mm;
+  int i,m;
+  double *xj, *yj, *z, *wt, wtsum;
+  unsigned int mm;
   double taustar, pwtsum, ans, large;
+
+  xj=(double *) calloc(nn+1, sizeof(double));
+  yj=(double *) calloc(nn+1, sizeof(double));  
+  z=(double *) calloc(nn+2, sizeof(double));  
+  wt=(double *) calloc(nn+2, sizeof(double));
+
   
   for(i=0;i<nn;i++){
     yj[i]=y[i];
@@ -208,10 +212,6 @@ sum_right, double sumxij, double sumabsxij, int j, int pp, int nn){
   mm=m;
   sort2(m, z, wt);
 
-  /*for(ii=0;ii<m+1;ii++){
-    printf("i=%d z=%f wt=%f \n",ii,z[ii],wt[ii]);
-    }*/
-
   pwtsum=0; i=1;
   ans=z[1];
   while(pwtsum<=taustar & i<nn+1){
@@ -228,22 +228,25 @@ sum_right, double sumxij, double sumabsxij, int j, int pp, int nn){
   
   /*printf("q=%f sumabsxij=%f  fabs(xj[nn])=%f taustar=%f\n", ans, sumabsxij, fabs(xj[nn]), taustar);*/
 
+  free(xj);
+  free(yj);
+  free(z);
+  free(wt);
+
   return ans;
 
 }
 
 /****************************************************************/
-/*bootnp() genderates s* and then loops for j and k to solve for*/ 
-/*theta's, using rtflsp()                                       */
+/* RQMCMB                                                       */
 /****************************************************************/
 
 
 void bootnp(double *x, double *y,  double *tau, double *theta_tilda, double *A, double *zstar, 
-	    double *sumxij, double *sumabsxij, long *n, long *p, int *success, double *theta, long *MAXK){
+	    double *sumxij, double *sumabsxij, int *n, int *p, int *success, double *theta, int *MAXK, int *seed){
   
-  int i, j, ii, jj, k, nn, pp;
+  int i, j,  jj, k, nn, pp;
   double sum, s[MAXP],tau2, tTilda[MAXP];
-  long t1;
   int rand_ind;
   extern int allZero;
   

@@ -25,6 +25,6 @@ rq.fit(x, y, tau=0.5, method="br", ...)
 }
 
 \description{Function to choose method for quantile regression}
-\seealso{  \code{\link{rq}} \code{\link{rq.fit.br}} \code{\link{rq.fit.fn}}}
+\seealso{  \code{\link{rq}} \code{\link{rq.fit.br}} \code{\link{rq.fit.fnb}}}
 
 \keyword{ regression }

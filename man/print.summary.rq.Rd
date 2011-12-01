@@ -3,8 +3,8 @@
 \alias{print.summary.rqs}
 \title{ Print Quantile Regression Summary Object }
 \usage{
-print.summary.rq(x, digits=max(5, .Options$digits - 2), ...)
-print.summary.rqs(x, ...)
+\method{print}{summary.rq}(x, digits=max(5, .Options$digits - 2), ...)
+\method{print}{summary.rqs}(x, ...)
 }
 \arguments{
   \item{x}{

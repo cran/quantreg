@@ -13,7 +13,7 @@ function (x, transpose = FALSE, caption = "caption goes here.",
         m <- length(taus)
         rlab <- dimnames(coef[[1]])[[1]]
         clab <- taus
-        a <- format(round(array(unlist(coef),c(p,k,m)),digits = 3))
+        a <- format(round(array(unlist(coef),c(p,k,m)),digits = digits))
         table <- matrix("", p, m)
         for (i in 1:m) {
            for (j in 1:p) {
@@ -33,7 +33,7 @@ function (x, transpose = FALSE, caption = "caption goes here.",
               table <- t(table)
               rowlabel <- "Quantiles"
              }
-        latex.table(table, caption = caption, rowlabel = rowlabel, file = file)
+        latex.table(table, caption = caption, rowlabel = rowlabel, file = file, ...)
         invisible()
 }       
 
@@ -52,44 +52,156 @@ function(x, ...){
 cat("table.rq() and related methods are defunct  -- see ?rq, which now accepts a vector of taus.")
 }
 
-"plot.summary.rqs" <-
-function (x, nrow = 3, ncol = 2, alpha= .1, ols = TRUE, ...) {
-# x is an object of class summary.rqs created presumably by  summary.rqs()
-# as a list of summary.rq objects the first  task is to unlist stuff:
-        taus <- function(x) x$tau
-        xx <- unlist(lapply(x,taus))
-        coef <- lapply(x,coefficients)
-        p <- nrow(coef[[1]])
-        k <- ncol(coef[[1]])
-        m <- length(xx)
-        blab <- dimnames(coef[[1]])[[1]]
-        a <- array(unlist(coef),c(p,k,m))
-        zalpha <- qnorm(1 - alpha/2)
-        par(mfrow = c(nrow,ncol))
-        for(i in 1:p){
-                if(k == 4){ # standard error methods 
-                        b  <- a[i,1,] 
-                        bl <- a[i,1,] - a[i,2,]*zalpha
-                        bu <- a[i,1,] + a[i,2,]*zalpha
-                        }
-                else if(k==3){ # rank inversion confidence intervals
-                        b  <- a[i,1,] 
-                        bl <- a[i,2,] 
-                        bu <- a[i,3,] 
-                        }
-        else stop("summary.rqs components have wrong dimension")
-        plot(rep(xx, 2), c(bl,bu), xlab = "", ylab = "", type = "n")
-        title(paste(blab[i]),cex = .75)
-        polygon(c(xx,rev(xx)),c(bl,rev(bu)),col="LightSkyBlue")
-        points(xx, b, cex = .5, pch = "o", col = "blue") 
-        lines(xx, b, col = "blue") 
-        abline(h=0)
-	if(ols){
-		abline(h=x$olscoef[i,1],col="red")
-		abline(h=x$olscoef[i,1] - x$olscoef[i,2]*zalpha, lty = 2, col="pink")
-		abline(h=x$olscoef[i,1] + x$olscoef[i,2]*zalpha, lty = 2, col="pink")
-		}
-        }
+plot.rqs <- function(x, parm = NULL, ols = TRUE,
+  mfrow = NULL, mar = NULL, ylim = NULL, main = NULL, col = 1:2, lty = 1:2,
+  cex = 0.5, pch = 20, type = "b", xlab = "", ylab = "", ...)
+{
+  ## extract taus
+  taus <- x$tau
+
+  ## obtain rq coefficients (in "parm")
+  cf <- coef(x)
+  if(is.null(parm)) parm <- rownames(cf)
+  if(is.numeric(parm)) parm <- rownames(cf)[parm]
+  cf <- cf[parm,,drop = FALSE]
+
+  ## obtain OLS coefficients
+  if(ols) {
+    obj <- x
+    mt <- terms(x)
+    mf <- model.frame(x)
+    y <- model.response(mf)
+    X <- model.matrix(mt, mf, contrasts = x$contrasts)
+    olscf <- lm.fit(X, y)$coefficients[parm]
+  }
+
+  ## plotting parameters
+  mfrow_orig <- par("mfrow")
+  mar_orig <- par("mar")
+  if(is.null(mfrow)) mfrow <- n2mfrow(length(parm))
+  if(is.null(mar)) mar <- c(3.1, 3.1, 3.1, 1.6)
+  par(mfrow = mfrow, mar = mar)
+  col <- rep(col, length.out = 2)
+  lty <- rep(lty, length.out = 2)
+  if(is.null(main)) main <- parm
+  main <- rep(main, length.out = length(parm))
+  xlab <- rep(xlab, length.out = length(parm))
+  ylab <- rep(ylab, length.out = length(parm))
+
+  ## actual plotting
+ ylim0 <- ylim
+ for (i in seq(along = parm)) {
+        if(is.null(ylim)){         
+           if(ols)
+	        ylim <- range(c(cf[i, ], olscf[i]))
+           else
+		ylim <- range(cf[i,])
+	   }
+        plot(taus, cf[i, ], cex = cex, pch = pch, type = type, col = col[1],
+            ylim = ylim, xlab = xlab[i], ylab = ylab[i], main = main[i], ...)
+        if (ols)
+            abline(h = olscf[i], col = col[2], lty = 2)
+        abline(h = 0, col = gray(0.3))
+	ylim <- ylim0
+    }
+
+  ## restore original par settings
+  par(mfrow = mfrow_orig, mar = mar_orig)
+  if(ols)
+     invisible(cbind(cf, ols = olscf))
+  else
+     invisible(cf)
+}  
+  
+plot.summary.rqs <- function(x, parm = NULL, level = 0.9, ols = TRUE,
+  mfrow = NULL, mar = NULL, ylim = NULL, main = NULL,
+  col = gray(c(0, 0.75)), border = NULL, lcol = 2, lty = 1:2,
+  cex = 0.5, pch = 20, type = "b", xlab = "", ylab = "", ...)
+{
+  ## normal quantile
+  zalpha <- qnorm(1 - (1-level)/2)
+
+  ## extract taus
+  taus <- sapply(x, function(x) x$tau)
+
+  ## obtain rq coefficients
+  cf <- lapply(x, coef)
+  if(ncol(cf[[1]]) == 4) {
+    for(i in 1:length(cf)) {
+      cfi <- cf[[i]]
+      cfi <- cbind(cfi[,1], cfi[,1] - cfi[,2] * zalpha, cfi[,1] + cfi[,2] * zalpha)
+      colnames(cfi) <- c("coefficients", "lower bd", "upper bd")
+      cf[[i]] <- cfi
+    }
+  }
+  if(ncol(cf[[1]]) != 3) stop("summary.rqs components have wrong dimension")
+
+  ## extract only coefficients in "parm"
+  if(is.null(parm)) parm <- rownames(cf[[1]])
+  if(is.numeric(parm)) parm <- rownames(cf[[1]])[parm]
+  cf <- lapply(cf, function(x) x[parm,,drop=FALSE])
+  names(cf) <- paste("tau=", taus)
+
+  ## obtain OLS coefficients
+  if(ols) {
+    obj <- x[[1]]
+    mt <- terms(obj)
+    mf <- model.frame(obj)
+    y <- model.response(mf)
+    X <- model.matrix(mt, mf, contrasts = obj$contrasts)
+    olscf <- summary(lm(y ~ X))$coefficients
+    rownames(olscf) <- rownames(coef(obj))
+    olscf <- cbind(olscf[parm,1,drop=FALSE],
+                   olscf[parm,1,drop=FALSE] - olscf[parm,2,drop=FALSE] * zalpha,
+                   olscf[parm,1,drop=FALSE] + olscf[parm,2,drop=FALSE] * zalpha)
+    colnames(olscf) <- c("coefficients", "lower bd", "upper bd")
+  }
+
+  ## plotting parameters
+  mfrow_orig <- par("mfrow")
+  mar_orig <- par("mar")
+  if(is.null(mfrow)) mfrow <- n2mfrow(length(parm))
+  if(is.null(mar)) mar <- c(3.1, 3.1, 3.1, 1.6)
+  par(mfrow = mfrow, mar = mar)
+  col <- rep(col, length.out = 2)
+  lty <- rep(lty, length.out = 2)
+  if(is.null(border)) border <- col[2]
+  if(is.null(main)) main <- parm
+  main <- rep(main, length.out = length(parm))
+  xlab <- rep(xlab, length.out = length(parm))
+  ylab <- rep(ylab, length.out = length(parm))
+
+  ## actual plotting
+  ylim0 <- ylim
+  for(i in seq(along = parm)) {
+  b <- t(sapply(seq(along = cf), function(tau) cf[[tau]][i, ]))
+  if(is.null(ylim)){
+           if(ols)
+                ylim <- range(c(b[,2], b[,3], olscf[i]))
+           else
+                ylim <- range(b[,2],b[,3])
+           }
+    plot(rep(taus, 2), c(b[,2], b[,3]), type = "n",
+      ylim = ylim, xlab = xlab[i], ylab = ylab[i], main = main[i])
+    polygon(c(taus, rev(taus)), c(b[,2], rev(b[,3])), col = col[2], border = border)
+    points(taus, b[,1], cex = cex, pch = pch, type = type, col = col[1], ...)
+    if(ols) {
+      abline(h = olscf[i, 1], col = lcol, lty = lty[1])
+      abline(h = olscf[i, 2], col = lcol, lty = lty[2])
+      abline(h = olscf[i, 3], col = lcol, lty = lty[2])
+    }
+    abline(h = 0, col = gray(0.3))
+    ylim <- ylim0
+  }
+
+  ## restore original par settings and return
+  par(mfrow = mfrow_orig, mar = mar_orig)
+  if(ols)
+        x <- c(cf, list(ols = olscf))
+  else
+        x <- cf
+  invisible(structure(as.vector(unlist(x)), .Dim = c(dim(x[[1]]), length(x)),
+    .Dimnames = list(rownames(x[[1]]), colnames(x[[1]]), names(x))))
 }
 "latex.table" <-
 function (x, file = as.character(substitute(x)), rowlabel = file, 
@@ -365,9 +477,11 @@ function (x, file = as.character(substitute(x)), rowlabel = file,
         cat(sl, "end{longtable}\n", sep = "", file = fi, append = TRUE)
     else {
         cat(sl, "end{tabular}\n", sep = "", file = fi, append = TRUE)
-        if (!missing(caption)) 
+        if (!missing(caption)) {
             cat(sl, "vspace{3mm}\n", sep = "", file = fi, append = TRUE)
-        cat(caption, "\n", file = fi, append = TRUE)
+            #cat(caption, "\n", file = fi, append = TRUE)
+	    }
+        #cat(caption, "\n", file = fi, append = TRUE)
         cat(sl, "end{center}\n", sep = "", file = fi, append = TRUE)
         if (table.env) 
             cat(sl, "end{table}\n", sep = "", file = fi, append = TRUE)

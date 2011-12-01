@@ -1,15 +1,12 @@
 \name{latex.table}
 \alias{latex.table}
-%- Also NEED an `\alias' for EACH other topic documented here.
 \title{ Writes a latex formatted table to a file}
 \description{
 	Automatically generates a latex formatted table from the matrix x
 	Controls rounding, alignment, etc, etc
 }
-\usage{
-latex.table(x, file=as.character(substitute(x)), rowlabel=file, rowlabel.just="l", cgroup, n.cgroup, rgroup, n.rgroup=NULL, digits, dec, rdec, cdec, append=FALSE, dcolumn=FALSE, cdot=FALSE, longtable=FALSE, table.env=TRUE, lines.page=40, caption, caption.lot, label=file, double.slash=FALSE,\dots)
+\usage{\method{latex}{table}(x, file=as.character(substitute(x)), rowlabel=file, rowlabel.just="l", cgroup, n.cgroup, rgroup, n.rgroup=NULL, digits, dec, rdec, cdec, append=FALSE, dcolumn=FALSE, cdot=FALSE, longtable=FALSE, table.env=TRUE, lines.page=40, caption, caption.lot, label=file, double.slash=FALSE,\dots)
 }
-%- maybe also `usage' for other objects documented here.
 \arguments{
   \item{x}{ A matrix \code{x} with dimnames}
   \item{file}{ Name of output \code{file} (.tex will be added) }
@@ -76,21 +73,14 @@ latex.table(x, file=as.character(substitute(x)), rowlabel=file, rowlabel.just="l
   \item{caption.lot}{ a text string representing a short caption to be used 
 	in the "List of Tables".  By default, LaTeX will use `caption'.  }
   \item{label}{ a text string representing a symbolic label for the table 
-	for referencing with the LaTex `\\ref{label}' command. The default 
+	for referencing with the LaTex `\\ref\{label\}' command. The default 
 	is `file'.  `label' is only used if `caption' is given.  }
   \item{double.slash}{set to `T' to output `\\' as `\\\\' in LaTeX commands. 
 	Useful when you are reading the output file back into an S vector 
 	for later output.  }
   \item{\dots}{other optional arguments}
 }
-\value{
-	returns invisibly
-}
+\value{ returns invisibly }
 \references{ Minor modification of Frank Harrell's Splus code }
 \author{ Roger Koenker }
-
-
-
-\examples{
-}
-\keyword{ utilities }% at least one, from doc/KEYWORDS
+\keyword{ utilities }

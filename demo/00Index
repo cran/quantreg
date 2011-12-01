@@ -1,0 +1,14 @@
+cobar   Demo of the triogram fitting and rgl perspective plot for Cobar Ore data
+Frank   Demo of nonlinear in parameters fitting of Frank copula model
+cobar   Demo of contour plot of triogram fit of cobar model
+combos  Demo of combos function: ordered combinations
+cpoint  Demo for a simple change point (broken-stick) problem
+hinged  Demo for a simple rqss bivariate fitting  of hinge function
+engel1  Demo of QR fitting of Engel curves
+engel2  Demo of estimated conditional quantile functions for Engel data.
+Mel	Demo of conditional density estimation using Melbourne daily temperature.
+KMvCRQ  Demo to compare Kaplan Meier and Portnoy's crq estimation in one-sample case.
+predemo Demo for prediction and confidence intervals 
+rqsslasso	Demo for lasso penalized rqss
+arqss	Demo for automatic lambda selection
+Mammals	Demo for rqss with running speed of mammals data

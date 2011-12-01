@@ -41,8 +41,8 @@ technical step length parameter -- alter at your own risk!
   Frisch in the 1950's for constrained optimization.  But the current
   implementation is based on proposals by Mehrotra and others in the
   recent (explosive) literature on interior point methods for solving linear 
-  programming problems.  This is a slightly modified version of \code{rq.fit.fn}
-  currently to be regarded as under betatest.  This 'method' allows the
+  programming problems.  This function replaces an earlier one \code{rq.fit.fn},
+  which required the initial dual values to be feasible.  This version allows the
   user to specify an infeasible starting point for the dual problem, that
   is one that may not satisfy the dual equality constraints.  It still 
   assumes that the starting value satisfies the upper and lower bounds.

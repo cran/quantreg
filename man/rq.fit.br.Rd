@@ -58,6 +58,8 @@ values are used.
 \value{
   Returns an object of class \code{"rq"}
   for tau in (0,1), or else of class \code{"rq.process"}.
+  Note that \code{rq.fit.br} when called for a single tau value
+  will return the vector of optimal dual variables.
   See \code{\link{rq.object}} and \code{\link{rq.process.object}}
   for further details.
 }
@@ -77,14 +79,13 @@ values are used.
 \references{
 Koenker, R. and J.A.F. Machado, (1999) Goodness of fit and related inference 
 processes for quantile regression,
-\emph{J. of Am Stat. Assoc.}, forthcoming
+\emph{J. of Am Stat. Assoc.}, 94, 1296-1310. 
 }
 \seealso{
-\code{\link{rq}}, \code{\link{rq.fit.fn}}
+\code{\link{rq}}, \code{\link{rq.fit.fnb}}
 }
 \examples{
 data(stackloss)
 rq.fit.br(stack.x, stack.loss, tau=.73 ,interp=FALSE)
 }
 \keyword{regression}
-% Converted by Sd2Rd version 0.3-3.

@@ -88,4 +88,3 @@ functions:
 \code{\link{rq}}.
 }
 \keyword{regression}
-% Converted by Sd2Rd version 0.3-3.
