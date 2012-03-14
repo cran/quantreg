@@ -72,7 +72,7 @@ function(x, y, constraint = "N", lambda = 1, ndum= 0, dummies = NULL, w=rep(1,le
 # Constraints are specified by the constraint argument:
 #
 #	N	none
-#	U	convex
+#	V	convex
 #	C	concave
 #
 # Author:  Roger Koenker   April 2, 2003

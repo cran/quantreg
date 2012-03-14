@@ -1038,3 +1038,22 @@ circumstances this produced crashes from rq.fit.br.
 2.  Clarified the documentation for summary.rq to indicated that when se ==
 "boot" you can't get seperate Hinv and J components only the full sandwich cov
 component.
+
+3.  Fixed the license designation to explicitly reflect the ambiguity of the
+status of the cholesky.f code.
+
+4.75  
+
+1.  Fixed the documentation for qss where convexity was imposed by "V" not
+"U".
+
+4.77
+
+1.  Removed the LICENSE file that had described some uncertainties with respect to
+the license status of the code in src/cholesky.f.  These uncertainties have
+now been resolved by the original authors, Esmond Ng and Barry Peyton,
+declaring their code to be open source, and thus the quantreg package can now
+be considered fully  GPL.
+
+2.  Commented out some vestigial write and printf calls in mcmb.c and cholesky.f.
+

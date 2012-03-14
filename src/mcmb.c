@@ -32,6 +32,10 @@
 int allZero;
 
 /****************************************************************/
+/*  Error Handling      */ 
+/****************************************************************/
+void error(const char * format, ...);
+/****************************************************************/
 /*  Various Utilities off the Web (for use with sort2())        */ 
 /****************************************************************/
 
@@ -143,7 +147,7 @@ void sort2(unsigned int  n, double arr[], double brr[]){
       brr[l+1]=brr[j];
       brr[j]=b;
       jstack += 2;
-      if (jstack > NSTACK) printf("NSTACK too small in sort2.\n");
+      if (jstack > NSTACK) error("NSTACK too small in sort2.\n");
       if (ir-i+1 >= j-l) {
 	istack[jstack]=ir;
 	istack[jstack-1]=i;
@@ -195,8 +199,8 @@ sum_right, double sumxij, double sumabsxij, int j, int pp, int nn){
       z[m]=(y[i]-mprodx(&x[i*pp],tTilda,pp)+tTilda[j]*xj[i])/xj[i];
       wt[m]=fabs(xj[i])/wtsum;
       m=m+1;
-      /*printf("i=%d xj[i]=%f m=%d z[m]=%f wt[m]=%f\n",i,xj[i],m,z[m],wt[m]);*/}
-    else{printf("fabs(xj[i])<10e-16\n");}
+    }
+    else{error("fabs(xj[i])<10e-16\n");}
   }
   z[m]=10e16*sign(xj[nn]);
   large=z[m];
@@ -206,7 +210,7 @@ sum_right, double sumxij, double sumabsxij, int j, int pp, int nn){
   taustar=(tau-0.5)*(sumxij+xj[nn])/(wtsum)+0.5;
   
   if(m==0){
-    printf("Error: one design variable contains all 0s.\n");
+    error("Error: one design variable contains all 0s.\n");
     allZero=1;}
   
   mm=m;
@@ -222,11 +226,10 @@ sum_right, double sumxij, double sumabsxij, int j, int pp, int nn){
 
   /*resample if pick the largest z*/ 
   if(fabs(ans) > 10e15){
-    printf("Picked infinity; need to resample\n");
+    error("Picked infinity; need to resample\n");
     return 1.0;
   }
   
-  /*printf("q=%f sumabsxij=%f  fabs(xj[nn])=%f taustar=%f\n", ans, sumabsxij, fabs(xj[nn]), taustar);*/
 
   free(xj);
   free(yj);

@@ -1,0 +1,25 @@
+Versions of quantreg between 3.70 and 4.75 were removed from the CRAN
+archive due to uncertainties over the licensing status of the fortran
+code in src/cholesky.f.  As of 9 March 2012, original authors of cholesky.f,  
+Esmond Ng and Barry Peyton,  have now, very kindly,  given permission to 
+use cholesky.f under an open source license.  They have requested that 
+their code be credited via the following two publications:
+
+   Esmond G. Ng and Barry W. Peyton, "Block sparse Cholesky algorithms
+   on advanced uniprocessor computers". SIAM J. Sci. Stat. Comput.
+   14  (1993), pp. 1034-1056.
+
+   John R. Gilbert, Esmond G. Ng, and Barry W. Peyton, "An efficient
+   algorithm to compute row and column counts for sparse Cholesky
+   factorization". SIAM J. Matrix Anal. Appl. 15 (1994), pp. 1075-1091.
+
+Use of the sparse Cholesky code in cholesky.f in quantreg is limited  to calls
+to rqss() or to rq with method = "sfn".  
+
+In the event that readers wish to access the intermediate versions of quantreg
+that have been removed from CRAN, they will be available at:
+
+	http://www.econ.uiuc.edu/~roger/research/rq/quantreg
+
+Current versions are best accessed from CRAN and its many mirrors.
+

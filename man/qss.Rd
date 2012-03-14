@@ -24,10 +24,12 @@ qss(x, constraint = "N", lambda = 1, ndum = 0, dummies = NULL, w = rep(1, length
 	choice of the lambdas.  For now, this is the responsibility
 	of the user.}
   \item{constraint}{Optional specification of qualitative constraints
-	on the fitted univariate qss functions, take the values: "N","I","D","U","C"
-	"UI","UD","CI","CD" for none, increasing, decreasing, convex,
+	on the fitted univariate qss functions, take the values: "N","I","D","V","C"
+	"VI","VD","CI","CD" for none, increasing, decreasing, convex,
 	concave, convex and increasing, etc.  And for bivariate qss
-	components can take the values "N","U","C" for none, convex, and concave.}
+	components can take the values "N","V","C" for none, convex, and concave.
+	Note that confidence bands for constrained fits of this sort, while
+	available from \code{plot.rqss} as of yet lack a formal justification.}
   \item{ndum}{number of dummy vertices: this is only relevant for qss2
 	terms.  In addition to vertices at the observed (x,y) points
 	ndum dummy vertices are generated -- distributed uniformly over

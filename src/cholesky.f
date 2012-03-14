@@ -2785,7 +2785,7 @@ C
 C
         N = XSUPER(NSUPER+1) - 1
 C
-        WRITE (OUTUNT,*) ' '
+C       WRITE (OUTUNT,*) ' '
 C       -------------------------------------------------------
 C       DETERMINE THE NUMBER OF NONZEROS IN CHOLESKY FACTOR AND
 C       THE NUMBER OF SUBSCRIPTS IN REPRESENTING THE SUPERNODAL
@@ -2793,12 +2793,12 @@ C       STRUCTURE.
 C       -------------------------------------------------------
         NOFNZ = XLNZ(N+1) - 1
         NOFSUB = XLINDX(NSUPER+1) - 1
-        WRITE (OUTUNT,1) 
-     &      '   NUMBER OF SUPERNODES               = ', NSUPER
-        WRITE (OUTUNT,1) 
-     &      '   NUMBER OF NONZEROS IN L            = ', NOFNZ
-        WRITE (OUTUNT,1) 
-     &      '   NUMBER OF SUBSCRIPTS IN L          = ', NOFSUB
+C       WRITE (OUTUNT,1) 
+C     &     '   NUMBER OF SUPERNODES               = ', NSUPER
+C       WRITE (OUTUNT,1) 
+C     &     '   NUMBER OF NONZEROS IN L            = ', NOFNZ
+C       WRITE (OUTUNT,1) 
+C     &     '   NUMBER OF SUBSCRIPTS IN L          = ', NOFSUB
 C
 C       -------------------------------------------------------
 C       DETERMINE THE LARGEST SUPERNODE IN THE CHOLESKY FACTOR.
@@ -2819,13 +2819,13 @@ C           ----------------------------------------------------
             JSIZE = ((2*JLEN - NCOLS + 1)*NCOLS)/2
             IF  ( JSIZE .GT. SUPSZE )  SUPSZE = JSIZE
   100   CONTINUE
-        WRITE (OUTUNT,1) 
-     &      '   LARGEST SUPERNODE BY COLUMNS       = ', MAXSUP
-        WRITE (OUTUNT,1) 
-     &      '   LARGEST SUPERNODE BY NONZEROS      = ', SUPSZE
+C       WRITE (OUTUNT,1) 
+C     &     '   LARGEST SUPERNODE BY COLUMNS       = ', MAXSUP
+C       WRITE (OUTUNT,1) 
+C     &     '   LARGEST SUPERNODE BY NONZEROS      = ', SUPSZE
 C
-        WRITE (OUTUNT,1) 
-     &      '   SIZE OF TEMPORARY WORK STORAGE     = ', TMPSIZ
+C       WRITE (OUTUNT,1) 
+C    &      '   SIZE OF TEMPORARY WORK STORAGE     = ', TMPSIZ
 C
 C       ---------------------------
 C       DETERMINE OPERATION COUNTS.
@@ -2838,13 +2838,13 @@ C       ---------------------------
             FCTOPS = FCTOPS + JLEN**2 - 1
   400   CONTINUE
         SLVOPS = 2*SLVOPS
-        WRITE (OUTUNT,2) 
-     &      '   FACTORIZATION OPERATION COUNT      = ', FCTOPS
-        WRITE (OUTUNT,2) 
-     &      '   TRIANGULAR SOLN OPERATION COUNT    = ', SLVOPS
+C       WRITE (OUTUNT,2) 
+C     &     '   FACTORIZATION OPERATION COUNT      = ', FCTOPS
+C       WRITE (OUTUNT,2) 
+C     &     '   TRIANGULAR SOLN OPERATION COUNT    = ', SLVOPS
 C
-    1   FORMAT ( A40, I10 )
-    2   FORMAT ( A40, 1PD20.10 )
+C    1   FORMAT ( A40, I10 )
+C    2   FORMAT ( A40, 1PD20.10 )
         RETURN
       END
 C***********************************************************************
