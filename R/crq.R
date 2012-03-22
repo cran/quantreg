@@ -492,7 +492,10 @@ function (object, taus = 1:4/5, alpha = .05, se = "boot", covariance = TRUE, ...
        p <- length(coef)
        rdf <- n - p
        if (se == "boot") {
-           s <- cen  <  x %*% coef
+           if(attr(Y,"type") == "left")
+              s <- cen  <  x %*% coef
+           else
+              s <- cen  >  x %*% coef
            B <- boot.rq(x[s, ], y[s], tau, ...)
            cov <- cov(B)
            serr <- sqrt(diag(cov))

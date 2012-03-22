@@ -1057,3 +1057,8 @@ be considered fully  GPL.
 
 2.  Commented out some vestigial write and printf calls in mcmb.c and cholesky.f.
 
+4.78
+
+1.  Fixed a bug in summary.crq which failed to check whether censoring in the
+Powell method was "right" or "left" before calling boot.rq.
+
