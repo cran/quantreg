@@ -1062,3 +1062,6 @@ be considered fully  GPL.
 1.  Fixed a bug in summary.crq which failed to check whether censoring in the
 Powell method was "right" or "left" before calling boot.rq.
 
+4.79
+
+1.  Added logLik and AIC functions for the nlrq class.

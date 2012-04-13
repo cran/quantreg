@@ -40,7 +40,7 @@ function (object, ..., test = "Wald", joint = TRUE,
         if (test == "anowar") {
             X1 <- model.matrix(objects[[1]],mf,contrasts=objects[[1]]$contrasts)
             y <- model.response(mf)
-	    weights <- model.weights(mf)
+	    weights <- as.vector(model.weights(mf))
             tau <- taus[[1]]
             for (i in 2:nobjects) {
                 if (!all(names[[i]] %in% names[[1]])) 
@@ -58,7 +58,7 @@ function (object, ..., test = "Wald", joint = TRUE,
         else if (test == "rank") {
             x1 <- model.matrix(objects[[1]],mf,contrasts=objects[[1]]$contrasts)
             y <- model.response(mf)
-	    weights <- model.weights(mf)
+	    weights <- as.vector(model.weights(mf))
             for (i in 2:nobjects) {
                 if (!all(names[[i]] %in% names[[1]])) 
                   stop("Models aren't nested")

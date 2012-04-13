@@ -1,7 +1,7 @@
 Package: quantreg
 Title: Quantile Regression
 Description: Quantile regression and related methods.
-Version: 4.78
+Version: 4.79
 Author: Roger Koenker <rkoenker@uiuc.edu>
 Maintainer: Roger Koenker <rkoenker@uiuc.edu>
 Depends: R (>= 2.6), stats, SparseM
@@ -10,5 +10,5 @@ Suggests: tripack, akima, MASS, survival, rgl, logspline, nor1mix,
 License: GPL (>= 2)
 URL: http://www.r-project.org
 Repository: CRAN
-Date/Publication: 2012-03-22 21:25:36
-Packaged: 2012-03-22 20:03:16 UTC; root
+Date/Publication: 2012-04-13 20:28:24
+Packaged: 2012-04-13 13:09:19 UTC; root

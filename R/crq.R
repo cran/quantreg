@@ -228,7 +228,7 @@ crq <- function (formula, taus, data, subset, weights, na.action,
         return(mf)
     mt <- attr(mf, "terms")
     X <- model.matrix(mt, mf, contrasts)
-    weights <- model.weights(mf)
+    weights <- as.vector(model.weights(mf))
     Y <- model.extract(mf, "response")
     eps <- .Machine$double.eps^(2/3)
     if(!inherits(Y,"Surv"))
@@ -476,7 +476,7 @@ function (object, taus = 1:4/5, alpha = .05, se = "boot", covariance = TRUE, ...
     method <- object$method
     y <- Y[,1]
     cen  <- Y[,2]
-    wt <- model.weights(object$model)
+    wt <- as.vector(model.weights(object$model))
     if (!is.null(wt)) {
         resid <- resid * wt
         x <- x * wt

@@ -3,7 +3,7 @@
 # for nonlinear quantile regression. J. Econom., 71(1-2): 265-283.
 # adapted from nlrq routine of Koenker, R. to be compatible with  R nls models
 # by Ph. Grosjean, 2001 (phgrosjean@sciviews.org)
-# large parts of code are reused from the nls library of R v. 1.2.3
+# large parts of code are reused from the nls package of R v. 1.2.3
 
 # TO DO:
 # - nlrq should return a code 0 = convergence, 1 = lambda -> 0, etc..
@@ -250,12 +250,41 @@
         }
         model
     }
+    Rho <- function(u,tau) u * (tau - (u < 0))
     nlrq.out <- list(m=nlrq.calc(m, ctrl, trace), data=substitute(data), call=match.call(), PACKAGE = "quantreg")
+    nlrq.out$rho <- sum(Rho(nlrq.out$resid,tau))
     nlrq.out$call$control <- ctrl
     nlrq.out$call$trace <- trace
     class(nlrq.out) <- "nlrq"
     nlrq.out
 }
+"logLik.nlrq" <- function(object,  ...){
+        n <- length(object$residuals)
+        p <- length(object$coefficients)
+        tau <- object$tau
+        fid <- object$rho
+        val <- n * (log(tau * (1-tau)) - 1 - log(fid/n))
+        attr(val,"n") <- n
+        attr(val,"df") <- p
+        class(val) <- "logLik"
+        val
+        }
+"AIC.nlrq" <- function(object, ... , k = 2){
+        v <- logLik(object)
+        if(k <= 0)
+                k <- log(attr(v,"n"))
+        val <- AIC(v, k = k)
+        attr(val,"edf") <- attr(v,"df")
+        val
+        }
+"extractAIC.nlrq"  <- function(fit, scale, k=2, ...){
+	aic <- AIC(fit,k)
+	edf <- attr(aic, "edf")
+	c(edf, aic)
+	}
+
+
+
 
 "print.nlrq" <- function (x, ...)
 {

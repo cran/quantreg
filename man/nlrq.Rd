@@ -7,6 +7,9 @@
 \alias{formula.nlrq} 
 \alias{coef.nlrq} 
 \alias{fitted.nlrq} 
+\alias{logLik.nlrq} 
+\alias{AIC.nlrq} 
+\alias{extractAIC.nlrq} 
 \alias{predict.nlrq} 
 \alias{print.summary.nlrq} 
 \alias{tau.nlrq}

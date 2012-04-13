@@ -146,7 +146,7 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
     attr(mt, "predvars") <- NULL
     attr(mt, "dataClasses") <- NULL
     Y <- model.response(mf, "numeric")
-    weights <- model.weights(mf)
+    weights <- as.vector(model.weights(mf))
     if (is.empty.model(mt)) {
         X <- NULL
         rval <- list(coefficients = numeric(0), residuals = Y, 
