@@ -11,7 +11,7 @@
 \usage{
 \method{anova}{rq}(object, ...)
 \method{anova}{rqlist}(object, ...,  test = "Wald", joint = TRUE, 
-	score = "tau",R = 200, trim = NULL)
+	score = "tau", se = "nid", R = 200, trim = NULL)
 rq.test.rank(x0, x1, y, v = NULL, score = "wilcoxon", weights = NULL, tau=.5,
         iid = TRUE, delta0 = rep(0,NCOL(x1)), omega = 1, trim = NULL, pvalue = "F")
 rq.test.anowar(x0,x1,y,tau,R)
@@ -40,6 +40,7 @@ rq.test.anowar(x0,x1,y,tau,R)
   \item{x1}{design matrix for the alternative component of the rank and anowar tests. }
   \item{y}{response vector for the alternative component of the rank and anowar tests. }
   \item{v}{optional rq process fit}
+  \item{se}{method for computing standard errors, either "nid" or "ker"}
   \item{tau}{quantile of interest for quantile specific forms of testing.}
   \item{iid}{logical flag for quantile specific forms of testing, if TRUE the
 	test presumes that the conditional densities take identical values,

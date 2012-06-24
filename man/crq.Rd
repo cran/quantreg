@@ -17,9 +17,9 @@ censoring method of Portnoy (2003).  The third method is based on Peng and Huang
 \usage{
 crq(formula, taus, data, subset, weights, na.action, method = c("Powell", "Portnoy", "PengHuang"), contrasts = NULL, ...)
 crq.fit.pow(x, y, yc, tau=0.5, weights=NULL, start, left=TRUE, maxit = 500)
-crq.fit.pen(x, y, cen, weights=NULL, grid) 
-crq.fit.por(x, y, cen, weights=NULL, grid) 
-Curv(y, yc, type=c("left","right"))
+crq.fit.pen(x, y, cen, weights=NULL, grid, ctype = "right") 
+crq.fit.por(x, y, cen, weights=NULL, grid, ctype = "right") 
+Curv(y, yc, ctype=c("left","right"))
 \method{print}{crq}(x, ...)
 \method{print}{crq}(x, ...)
 \method{predict}{crq}(object, newdata,  ...)
@@ -45,11 +45,16 @@ Curv(y, yc, type=c("left","right"))
   \item{x}{An object of class \code{crq} or \code{crq}.}
   \item{object}{An object of class \code{crq} or \code{crq}.}
   \item{yc}{The censoring times for the "Powell" method.}
-  \item{type}{Censoring type for the "Powell" method, used in \code{Curv}, by 
+  \item{ctype}{Censoring type: for the "Powell" method, used in \code{Curv}, by 
 	default "left".  If you don't like "left", maybe you will like "right".
 	Note that for fixed censoring assumed in the "Powell" method, censoring
 	times \code{yc} must be provided for all observations and the event
-	times \code{y} must satisfy the (respective) inequality constraints.}
+	times \code{y} must satisfy the (respective) inequality constraints.
+	For the Portnoy and Peng-Huang methods ctype is determined by the
+	specification of the response as specified in \code{Surv}.
+        }
+  \item{type}{specifies either "left" or "right" as the form of censoring 
+	 in the \code{Surv} function for the "Portnoy" and "PengHuang"  methods.}
   \item{cen}{The censoring indicator for the "Portnoy" and "PengHuang"  methods.}
   \item{maxit}{Maximum number of iterations allowed for the "Powell" methods.}
   \item{start}{The starting value for the coefs for the "Powell" method.  Because

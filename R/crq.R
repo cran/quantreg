@@ -110,21 +110,21 @@ return (list(coefficients= coef, residuals = residuals))
 }
 
 
-Curv <- function (y,  yc, type = c("left", "right")) 
+Curv <- function (y,  yc, ctype = c("left", "right")) 
 {
     nn <- length(y)
     if(length(yc) != nn)
         stop("Event times and censoring times of different length")
-    type <- match.arg(type)
-    if(type == "right" && any(y > yc))
+    ctype <- match.arg(ctype)
+    if(ctype == "right" && any(y > yc))
         stop("Event times can not exceed ctimes for right censoring")
-    if(type == "left" && any(y < yc))
+    if(ctype == "left" && any(y < yc))
         stop("Event times can not be less than ctimes for left censoring")
-    if(!(type == "left" || type == "right"))
-        stop("Invalid type for method Powell")
+    if(!(ctype == "left" || ctype == "right"))
+        stop("Invalid ctype for method Powell")
     ss <- cbind(y, yc)
     dimnames(ss) <- list(NULL, c("time", "ctime"))
-    attr(ss, "type") <- type
+    attr(ss, "ctype") <- ctype
     class(ss) <- "Surv"
     ss
 }
@@ -142,7 +142,8 @@ taus <- taus[-1]; Qhat <- Qhat[-1]
 QTE <- outer(dQ * (1-taus) * log(1-taus) / Qhat, coef(x))
 list(QTE = QTE , taus = taus)
 }
-boot.crq <- function(x, y, c, taus, method, R=100,  mboot,  bmethod = "Bose", ...)
+boot.crq <- function(x, y, c, taus, method, ctype = "right", R=100,  
+		mboot,  bmethod = "Bose", ...)
         {
         n <- length(y)
         p <- ncol(x)
@@ -167,9 +168,9 @@ boot.crq <- function(x, y, c, taus, method, R=100,  mboot,  bmethod = "Bose", ..
                 else
                         stop("invalid bmethod for boot.crq")
 		if(method == "Portnoy")
-                	a <- crq.fit.por(xb,yb,cb, weights = w, ... )
+                	a <- crq.fit.por(xb,yb,cb, weights = w, ctype = ctype, ... )
 		else if(method == "PengHuang")
-                	a <- crq.fit.pen(xb,yb,cb, weights = w, ... )
+                	a <- crq.fit.pen(xb,yb,cb, weights = w, ctype = ctype, ... )
 		else
 			stop("Invalid method for boot.crq")
                 if((i %% floor(R/10)) == 0 )
@@ -235,10 +236,10 @@ crq <- function (formula, taus, data, subset, weights, na.action,
         stop("Response must be a survival object")
     method <- match.arg(method)
     if(method == "Powell") {
-	type <- attr(Y, "type")
-	if(!type %in% c("right","left")) 
+	ctype <- attr(Y, "ctype")
+	if(!ctype %in% c("right","left")) 
              stop("Only right or left censoring Surv objects are allowed")
-	left <- (type == "left")
+	left <- (ctype == "left")
         if (any(taus < -eps) || any(taus > 1 + eps))
             stop("invalid taus:  taus should be >= 0 and <= 1")
 	y <- Y[,1]
@@ -266,19 +267,25 @@ crq <- function (formula, taus, data, subset, weights, na.action,
 	}
      }
     else if(method == "Portnoy"){
-        if(attr(Y,"type") != "right")
-            stop("Only right censoring Surv objects are allowed for Portnoy method")
+        ctype <- "right"
+        if(attr(Y,"type") != "right"){
+            if(attr(Y,"type") == "left") ctype <- "left"
+            else stop("Only right censoring Surv objects are allowed for Portnoy method")
+            }
         y <- Y[,1]
         cen <-  Y[,2]
-        fit <- crq.fit.por(X, y, cen, weights,  ...)
+        fit <- crq.fit.por(X, y, cen, weights, ctype = ctype,   ...)
 	class(fit) <- "crq"
 	}
     else if(method == "PengHuang"){
-        if(attr(Y,"type") != "right")
-            stop("Only right censoring Surv objects are allowed for Peng-Huang method")
+        ctype <- "right"
+        if(attr(Y,"type") != "right"){
+            if(attr(Y,"type") == "left") ctype <- "left"
+            else stop("Only right censoring Surv objects are allowed for Portnoy method")
+            }
         y <- Y[,1]
         cen <-  Y[,2]
-        fit <- crq.fit.pen(X, y, cen, weights,  ...)
+        fit <- crq.fit.pen(X, y, cen, weights,  ctype = ctype, ...)
 	class(fit) <- "crq"
 	}
     else
@@ -288,6 +295,7 @@ fit$terms <- mt
 fit$call <- call
 fit$formula <-  formula(mt)
 fit$method <-  method
+fit$ctype <-  ctype
 attr(fit, "na.message") <- attr(m, "na.message")
 fit
 }
@@ -308,7 +316,7 @@ pred <- switch(method,
 	"PengHuang" = predict.rq.process(object, newdata,  ...) 
 	)
 }
-crq.fit.por <- function(x, y, cen, weights = NULL, grid )
+crq.fit.por <- function(x, y, cen, weights = NULL, grid, ctype = "right")
 {
       p <- ncol(x)
       n <- length(y) 
@@ -322,7 +330,8 @@ crq.fit.por <- function(x, y, cen, weights = NULL, grid )
     		x <- weights * x
     		y <- weights * y
 		}
-      if(missing(grid))  grid <-  seq(1/n,1-1/n,by=1/(5 + 3 * n^.4))
+    if(ctype == "left") y <- -y
+    if(missing(grid))  grid <-  seq(1/n,1-1/n,by=1/(5 + 3 * n^.4))
     if(is.numeric(grid)){
 		ginit <- min(grid)
 		dgrid <- diff(grid)
@@ -391,11 +400,15 @@ crq.fit.por <- function(x, y, cen, weights = NULL, grid )
 	sp <- (1:n)[ic == 1]
 	tsp <- z$tcen[sp]
         t1 <- z$wd[1:nw]
-	a<-list(sol=B, Isplit=sp, status=ic)
+        if(ctype == "left") {
+            sol[1,] <- 1 - sol[1,]
+            sol[-1,] <- - sol[-1,]
+            }
+	a<-list(sol=B, Isplit=sp, tsp = tsp,status=ic)
 	class(a) <- "crq"
 	return(a) 
 	}
-crq.fit.pen <- function(x, y, cen, weights=NULL,grid){
+crq.fit.pen <- function(x, y, cen, weights=NULL,grid, ctype = "right" ){
       p <- ncol(x)
       n <- length(y)
       if(missing(grid)) grid <-  seq(1/n,1-1/n,by=min(0.01,1/(2*length(y)^.7))) 
@@ -410,6 +423,7 @@ crq.fit.pen <- function(x, y, cen, weights=NULL,grid){
                 x <- x * weights
                 y <- y * weights
                 }
+        if(ctype == "left") y <- -y
         s <- rep(0,n)
         u <- rep(1,n)
         d <- rep(1,n)
@@ -432,6 +446,10 @@ crq.fit.pen <- function(x, y, cen, weights=NULL,grid){
         qhat <- t(xbar) %*% B
         B <- rbind(grid[1:J],B,qhat)
         dimnames(B) <- list(c("tau",dimnames(x)[[2]],"Qhat"),NULL)
+        if(ctype == "left") {
+            B[1,] <- 1 - B[1,]
+            B[-1,] <- - B[-1,]
+            }
         B  <- list(sol=B)
 	class(B) <- "crq"
 	B
@@ -474,6 +492,7 @@ function (object, taus = 1:4/5, alpha = .05, se = "boot", covariance = TRUE, ...
     x <- model.matrix(mt, m, contrasts = object$contrasts)
     Y <- model.response(m)
     method <- object$method
+    ctype <- object$ctype
     y <- Y[,1]
     cen  <- Y[,2]
     wt <- as.vector(model.weights(object$model))
@@ -523,7 +542,7 @@ function (object, taus = 1:4/5, alpha = .05, se = "boot", covariance = TRUE, ...
        coef <- as.matrix(coef(object,taus))
        coef <- coef[,apply(coef,2,function(x) any(!is.na(x))),drop = FALSE] # Delete NA columns if any
        taus <- taus[1:ncol(coef)]
-       B <- boot.crq(x, y, cen, taus, method = method,...)
+       B <- boot.crq(x, y, cen, taus, method = method, ctype = ctype, ...)
        sqmn <- sqrt(B$mboot/B$n)
        fact <-   qnorm(1 - alpha/2)/qnorm(.75)
        B <- apply(B$A, 1:2, quantile, probs = 1:3/4, na.rm = TRUE)

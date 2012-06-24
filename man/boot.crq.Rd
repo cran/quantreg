@@ -6,7 +6,7 @@ Functions used to estimated standard errors, confidence
 intervals and tests of hypotheses for censored quantile regression models
 using the Portnoy and Peng-Huang methods.  }
 \usage{
-boot.crq(x, y, c, taus, method, R = 100, mboot, bmethod = "Bose", ...)
+boot.crq(x, y, c, taus, method, ctype = "right", R = 100, mboot, bmethod = "Bose", ...)
 }
 \arguments{
   \item{x}{ The regression design matrix}
@@ -14,6 +14,7 @@ boot.crq(x, y, c, taus, method, R = 100, mboot, bmethod = "Bose", ...)
   \item{c}{ The censoring indicator}
   \item{taus}{ The quantiles of interest}
   \item{method}{ The fitting method: either "P" for Portnoy or "PH" for Peng and Huang.}
+  \item{ctype}{ Either "right" or "left"}
   \item{R}{ The number of bootstrap replications}
   \item{bmethod}{ The method to be employed.  There are (as yet) two
 	options:  method = "xy-pair" uses the xy-pair method, that is

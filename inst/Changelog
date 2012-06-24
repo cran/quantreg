@@ -1036,7 +1036,7 @@ values strictly in (0,1).  As noted by Christophe Rolphe under some exotic
 circumstances this produced crashes from rq.fit.br.
 
 2.  Clarified the documentation for summary.rq to indicated that when se ==
-"boot" you can't get seperate Hinv and J components only the full sandwich cov
+"boot" you can't get separate Hinv and J components only the full sandwich cov
 component.
 
 3.  Fixed the license designation to explicitly reflect the ambiguity of the
@@ -1065,3 +1065,18 @@ Powell method was "right" or "left" before calling boot.rq.
 4.79
 
 1.  Added logLik and AIC functions for the nlrq class.
+
+4.80
+
+1.  added optional se argument to anova.rqlist so one can specify "ker" 
+standard errors.
+
+4.81
+
+1.  modified crq to allow left censoring for both Portnoy and Peng-Huang
+methods.
+
+2.  added tsp to the object returned by crq.fit.por to facilitate conputing
+the weights used by the Portnoy method.  Eventually, there should be some
+further documentation of this.
+
