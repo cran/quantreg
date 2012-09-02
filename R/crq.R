@@ -320,9 +320,10 @@ crq.fit.por <- function(x, y, cen, weights = NULL, grid, ctype = "right")
 {
       p <- ncol(x)
       n <- length(y) 
-      cen <- 1 - cen #!!! Fortran routine wants censoring indicator flipped.
-      mp <- n + 5 + max(1, sum(cen))
+      cen <- 1 - cen #NB: Fortran routine wants censoring indicator flipped (!!!)
+      mp <- n + max(1, sum(cen))
       eps <- 1e-04
+      kmax <- 10000 # perhaps this should be parameter in future
       if(length(weights)){
 		if (any(weights < 0)) 
 		        stop("negative weights not allowed")
@@ -353,6 +354,7 @@ crq.fit.por <- function(x, y, cen, weights = NULL, grid, ctype = "right")
 		as.integer(n),
 		as.integer(p),
                 as.integer(mp), 
+                as.integer(mp+5), 
 		as.integer(p+2),
 		as.double(x),
 		as.double(y),
@@ -361,6 +363,7 @@ crq.fit.por <- function(x, y, cen, weights = NULL, grid, ctype = "right")
                 as.integer(mw),
                 as.double(gstep),
 		ift = integer(1),
+                as.integer(kmax),
 		h = integer(p),
                 xh = double(p*p),
 		wa = double(mp*p),
@@ -390,8 +393,9 @@ crq.fit.por <- function(x, y, cen, weights = NULL, grid, ctype = "right")
           		"Redefine nsol: use nsol < n to save for tau = i/(nsol-1)"),
 		paste("Error with partial return: possible degeneracies",
          		"Max number of rq calls exceeded: dither x or increase mw"),
-		paste("Premature stop: defective conditional distribution"))
-	if(flag > 0 && flag != 5 && flag < 8)
+		paste("Premature stop: defective conditional distribution"),
+		paste("Simplex iteration limit exceeded -- consider dithering y"))
+	if(flag > 0 && flag != 5 && flag < 10)
 		ifelse(flag <= 3,stop(msg),warning(msg))
 	J <- z$lsol
 	B <- matrix(z$sol, nrow=p+2, ncol=nsol, byrow=FALSE)[,1:J]
@@ -543,6 +547,7 @@ function (object, taus = 1:4/5, alpha = .05, se = "boot", covariance = TRUE, ...
        coef <- coef[,apply(coef,2,function(x) any(!is.na(x))),drop = FALSE] # Delete NA columns if any
        taus <- taus[1:ncol(coef)]
        B <- boot.crq(x, y, cen, taus, method = method, ctype = ctype, ...)
+       nas <- apply(is.na(B$A[1,,]),1,sum)
        sqmn <- sqrt(B$mboot/B$n)
        fact <-   qnorm(1 - alpha/2)/qnorm(.75)
        B <- apply(B$A, 1:2, quantile, probs = 1:3/4, na.rm = TRUE)
@@ -557,7 +562,7 @@ function (object, taus = 1:4/5, alpha = .05, se = "boot", covariance = TRUE, ...
        for(i in 1:length(taus)){
 	   tab <- cbind(coef[,i],L[,i],U[,i],S[,i],T[,i],P[,i])
 	   dimnames(tab)[[2]] <- cnames
-	   G[[i]] <- list(tau = taus[i], coefficients = tab)
+	   G[[i]] <- list(tau = taus[i], coefficients = tab, NAs = nas[i])
 	   }
        class(G) <- "summary.crqs"
        return(G)
@@ -599,10 +604,14 @@ print.summary.crqs <- function(x, ...)
 print.summary.crq <- function (x, digits = max(5, .Options$digits - 2), ...) {
     coef <- x$coefficients
     tau <- x$tau
+    NAs <- x$NAs
     cat("\ntau: ")
     print(format(round(tau, digits = digits)), quote = FALSE, ...)
+    if(NAs > 0) {
+       cat("         Number of NA Bootstrap Replications:  ")
+       print(format(NAs), quote = FALSE, ...)
+       }
     cat("\nCoefficients:\n")
     print(format(round(coef, digits = digits)), quote = FALSE, ...)
     invisible(x)
-
 }

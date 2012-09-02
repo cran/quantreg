@@ -1,44 +1,39 @@
-C       This software may be freely used and redistributed for
-C  non-commercial purposes.  No guarantees are offered or implied.
-C  If used, I would greatly appreciate hearing about the application.
-C  Comments, bug reports, etc. should be sent to:   
-C       portnoy@stat.uiuc.edu
-C
-      SUBROUTINE CRQ(M,N,MPLUS,N2,X,Y,C,TZERO,MAXW,STEP,IFT,H,XH,
+      SUBROUTINE CRQ(M,N,MD,MD5,N2,X,Y,C,TZERO,MAXW,STEP,IFT,KMAX,H,XH,
      * WA,WB,WC,WD,WE,WF,IA,NSOL,SOL,LSOL,ICEN,TCEN,LCEN)
 C
 C     M = number of Observations
 C     N = Number of Parameters
-C     MPLUS = row dim of X, WA, and WC .GE. M+1
+C     MD = row dim of WA 
+C     MD5 = row dim of WA 
 C     N2 = N+2
-C     X is the X matrix (MPLUS BY N) (includes censored obs)
-C     Y is the y vector (M) (includes censored obs)
-C     C is the censoring integer(M) vector, 1 if obs is censored,
-C                                           0 otherwise
-C     TZERO is the initial tau value
-C     MAXW ( .LE. MPLUS ): Maximal number of calls to weighted RQ
+C     X is the design matrix X
+C     Y is the response vector y
+C     C is the censoring indicator, NB:  1 if obs is censored, 0 otherwise  (!!!)
+C     TZERO is the initial tau value 
+C     MAXW ( .LE. MD ): Maximal number of calls to weighted RQ
 C           for possible degeneracies. If exceeded (IFT = 7), dither.
 C           If  MAXW .LE. 0, don't pivot -- use only weighted rq
 C     STEP: Step size for weighted rq at degeneracy
 C     IFT exit code:
 C        0:  ok
 C        1:  M < 0  or  N < 0  OR  M < N
-C	 2:  MPLUS .LT. M + 1  or  N2 .NE. N+2
-C        3:  MAXW > MPLUS
-C        4:  less than N noncensored obs above the tau=0 soln
+C	 2:  MD .LT. M + 1  or  N2 .NE. N+2
+C        3:  MAXW > MD
+C        4:  less than N noncensored obs above the tau=0 solution
 C        5:  possible degeneracy, rq called at tau + step, see IA
 C        6:  LSOL becomes greater than NSOL
 C        7:  MAXW exceeded
 C        8:  weighted rq tries to include infinite basis element
+C     KMAX iteration limit for calls to rq1.f
 C     H  is an integer work vector (N) ( = basis indices )
 C     XH is a double precision work array (N by N)
-C     WA is a double precision work array (MPLUS by N)
-C     WB is a double precision work vector (MPLUS)
-C     WC is a double precision work array (MPLUS by N+2)
-C     WD is a double precision work vector (MPLUS)
-C     WE is a double precision work vector (MPLUS)
+C     WA is a double precision work array (MD by N)
+C     WB is a double precision work vector (MD)
+C     WC is a double precision work array (MD by N+2)
+C     WD is a double precision work vector (MD)
+C     WE is a double precision work vector (MD)
 C     WF is a double precision work vector (N)
-C     IA is an integer work vector (MPLUS) 
+C     IA is an integer work vector (MD) 
 C     NSOL is an (estimated) row dimension of the solution array
 C          if NSOL < M, solutions returned only at tau = i/(NSOL-1)
 C          if all solutions are desired, NSOL = 3*M is a good choice
@@ -58,16 +53,16 @@ C          firstcrossed:  weight = (tau - TCEN(I))/(1 - TCEN(I))
 C          TCEN = 1 if censored obs is never crossed (ICEN = 3)
 C          TCEN = 0 if censored obs is deleted (ICEN = 2)
 C     LCEN = number of censored observations
-C     WD = list of first MPLUS tau values at which degeneracy
+C     WD = list of first MD tau values at which degeneracy
 C          may have occurred (and weighted RQ was called)
 C     H(1) = number of calls to weighted RQ (apparent degeneracy)
 C
       IMPLICIT REAL*8(A-H,O-Z)
-      INTEGER H(N),ICEN(M),C(M),IA(MPLUS)
+      INTEGER H(N),ICEN(M),C(M),IA(MD)
       LOGICAL APC, DEG
       DOUBLE PRECISION ONE
-      DIMENSION X(M,N),Y(M),SOL(N2,NSOL),WC(MPLUS,N2),XH(N,N)
-      DIMENSION WA(MPLUS,N),WB(MPLUS),WD(MPLUS),WE(MPLUS)
+      DIMENSION X(M,N),Y(M),SOL(N2,NSOL),WC(MD,N2),XH(N,N)
+      DIMENSION WA(MD,N),WB(MD),WD(MD),WE(MD)
       DIMENSION F(2),WF(N),TCEN(M)
       DATA BIG/1.D37/
       DATA ZERO/0.00D0/
@@ -83,10 +78,10 @@ C
       DO 2 I = 1,M
       IF(C(I) .EQ. 1) LCEN = LCEN + 1
    2  CONTINUE
-      IF(MPLUS .LT. M+1) IFT = 2
+      IF(MD .LT. M+1) IFT = 2
       IF(N2 .NE. N+2) IFT = 2
       IF(M .LE. ZERO .OR. N. LE. ZERO .OR. M .LT. N) IFT = 1
-      IF(MAXW .GT. MPLUS) IFT = 3
+      IF(MAXW .GT. MD) IFT = 3
       IF(IFT .NE. 0) RETURN
 C
 C  INITIALIZATION
@@ -109,8 +104,10 @@ C
         IFT = 4
         RETURN
       ENDIF
-      CALL RQ1(MA,N,MPLUS,N2,WA,WB,TZERO,TOLER,IFT1,
-     * WF,WE,IA,WC,WD)
+      CALL RQ1(MA,N,MD,MD5,N2,WA,WB,TZERO,TOLER,IFT,KMAX,WF,WE,IA,WC,WD)
+      IF(IFT .NE. 0) THEN
+        RETURN
+      ENDIF
       K = 0
       KL = 0
 C
@@ -396,7 +393,10 @@ C
       DO 534 J=1,N
  534  WA(MAL,J) = WF(J)
       WB(MAL) = BIG
-      CALL RQ1(MAL,N,MPLUS,N2,WA,WB,TAU,TOLER,IFT1,WF,WE,IA,WC,WD)
+      CALL RQ1(MAL,N,MD,MD5,N2,WA,WB,TAU,TOLER,IFT,KMAX,WF,WE,IA,WC,WD)
+      IF(IFT .NE. 0) THEN
+        RETURN
+      ENDIF
       DEG = .FALSE.
       IF(DABS(WE(MAL)) .LE. .0001) THEN
         IFT = 8
@@ -427,7 +427,7 @@ C
 C  DEFINE OUTPUT AND RETURN
 C
  600  H(1) = NWRQ
-      L = MIN0(NWRQ,MPLUS)
+      L = MIN0(NWRQ,MD)
       DO 610 I=1,L
  610  WD(I) = SOL(N+2,I)
       DO 620 I=1,M

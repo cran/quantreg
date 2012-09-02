@@ -1,11 +1,10 @@
       SUBROUTINE RQ0(M,N,M5,N2,A,B,T,TOLER,IFT,X,E,S,WA,WB)
 C
 C     Modified to remove SOL and related vars -- only good for single tau
-C     This is a modified version of rq1.f used exclusively for bootstrapping
 C     M Number of Observations
 C     N Number of Parameters
-C     M5 = M+5  row dimension for arrays  A  and  WA
-C     N2 = N+2
+C     M5 = M+5  row dimension for WA
+C     N2 = N+2  col dimension for WA
 C     A is the X matrix
 C     B is the y vector
 C     T, the desired quantile

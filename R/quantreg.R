@@ -497,12 +497,7 @@ function (x, y, tau = 0.5, alpha = 0.1, ci = FALSE, iid = TRUE,
     nsol <- 2
     ndsol <- 2
     # Check for Singularity of X since br fortran isn't very reliable about this
-    storage.mode(y) <- "double"
-    z <- .Fortran("dqrls", qr = as.double(x), n = n, p = p, y = y,
-        ny = ny, tol = as.double(tol), coefficients = mat.or.vec(p, ny),
-        residuals = y, effects = y, rank = integer(1), pivot = 1:p,
-        qraux = double(p), work = double(2 * p), PACKAGE = "base")
-    if (z$rank < p)
+    if (qr(x)$rank < p)
         stop("Singular design matrix")
     if (tau < 0 || tau > 1) {
         nsol <- 3 * n

@@ -1080,3 +1080,24 @@ methods.
 the weights used by the Portnoy method.  Eventually, there should be some
 further documentation of this.
 
+4.83  
+
+1.  modified rq1.f to fix a dimension problem for the workspace, and added
+a new argument to control the maximum number of simplex iterations.  This
+was needed to fix problems encountering severe degeneracy, which induced 
+the possibility of an (essentially?) infinite loop.  A fixed 100000 limit
+is currently implemented, with a warning when exceeded that users might
+want to consider dithering the response variable.
+
+2.  added a few lines in summary.crq and print.summary.crq to provide the
+number of NA replications in the bootstrap simulation for each of the
+requested taus.
+
+3.  Modified the documentation files to mention the above changes and also
+to mention that the grid for the Portnoy method is equally spaced.
+
+4.84
+
+1.  Removed wayward files in ratfor directory
+
+2.  replaced call to dqrls in rq.fit.br by call to R qr function.

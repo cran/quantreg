@@ -85,7 +85,11 @@ number of replications is set at \eqn{R = 100} a value that is obviously too sma
 most applications.  This is done merely to speed up the examples in the 
 documentation and facilitate testing. Larger, more appropriate values of \eqn{R}
 can be passed to the bootstrapping functions via the \code{\ldots} argument
-of the \code{summary} method.
+of the \code{summary} method.  It is important to recognize that when some
+of the bootstrap replications are NA they are simply ignored in the computation
+of the confidence bands and standard errors as currently reported.  The number
+of these NAs is returned as part of the \code{summary.crq} object, and 
+when printed is also reported. 
 }
 
 \references{
