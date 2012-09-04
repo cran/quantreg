@@ -1,36 +1,35 @@
-      SUBROUTINE RQ1(M,N,MD,MD5,N2,A,B,T,TOLER,IFT,KMAX,X,E,S,WA,WB)
+
+      SUBROUTINE RQ1(M,N,MDIM,N2,A,B,T,TOLER,IFT,X,E,S,WA,WB)
 C
-C     Specialized simplex algorithm for Portnoy's crq procedure
-C     M Number of Observations
-C     N Number of Parameters
-C     MD = row dimension for A  
-C     MD5 = MD+5  row dimension for WA
-C     N2 = N+2 column dimension for WA
+C     Modified to remove SOL and related vars -- only good for single tau
+C     Number of Observations
+C     Number of Parameters
+C     MDIM  row dimension for arrays  A  and  WA
+C     N+2
 C     A is the X matrix
 C     B is the y vector
 C     T, the desired quantile
 C     TOLER, smallest detectable |x-y|/x machine precision to the 2/3
 C     IFT exit code:
 C		0-ok
-C		2-5 dimensions inconsistent 
-C               6  T not in (0,1)
-C               9  iteration limit exceeded
-C     KMAX the iteration limit
+C		else dimensions inconsistent or T not in (0,1)
 C     X the parameter estimate betahat
 C     E is the residual vector
 C     S is an integer work array (M)
 C     WA is a real work array (M5,N2)
 C     WB is another real work array (M)
+C     Utilization:  If you just want a solution at a single quantile you
 C     The algorithm  is a slightly modified version of Algorithm AS 229 
 C     described in Koenker and D'Orey, "Computing Regression Quantiles,
 C     Applied Statistics, pp. 383-393. 
 C
       IMPLICIT REAL*8(A-H,O-Z)
       INTEGER I,J,K,KL,KOUNT,KR,M,M1,M2,M3,M4,M5,IFT
-      INTEGER MD,MD5,N,N1,N2,OUT,S(M)
+      INTEGER MDIM,N,N1,N2,OUT,S(MDIM)
       LOGICAL STAGE,TEST,INIT,IEND
       DOUBLE PRECISION MIN,MAX
-      DOUBLE PRECISION B(M),A(MD,N),X(N),WA(MD5,N2),WB(M),E(M)
+      DIMENSION B(MDIM),A(MDIM,N),X(N),WA(MDIM,N2),
+     *          WB(MDIM),E(M)
       DATA BIG/1.D37/
       DATA ZERO/0.00D0/
       DATA HALF/0.50D0/
@@ -157,9 +156,7 @@ C
 C
 C DETERMINE THE VECTOR TO LEAVE THE BASIS
 C
-      KIT=0
  100  K=0
-      KIT=KIT+1
       DO 110 I=KL,M
       D=WA(I,IN)
       IF(D.LE.TOLER)GOTO 110
@@ -258,10 +255,6 @@ C
       MAX=D
       IN=J
  290  CONTINUE
-      IF(KIT.LT.KMAX)GOTO 295
-      IFT=9
-      RETURN
- 295  CONTINUE
       IF(MAX.LE.TOLER)GOTO 310
       IF(WA(M1,IN).GT.ZERO)GOTO 100
       DO 300 I=1,M4

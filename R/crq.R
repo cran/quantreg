@@ -321,7 +321,7 @@ crq.fit.por <- function(x, y, cen, weights = NULL, grid, ctype = "right")
       p <- ncol(x)
       n <- length(y) 
       cen <- 1 - cen #NB: Fortran routine wants censoring indicator flipped (!!!)
-      mp <- n + max(1, sum(cen))
+      mp <- n + 5 + max(1, sum(cen))
       eps <- 1e-04
       kmax <- 10000 # perhaps this should be parameter in future
       if(length(weights)){
@@ -354,7 +354,6 @@ crq.fit.por <- function(x, y, cen, weights = NULL, grid, ctype = "right")
 		as.integer(n),
 		as.integer(p),
                 as.integer(mp), 
-                as.integer(mp+5), 
 		as.integer(p+2),
 		as.double(x),
 		as.double(y),
@@ -363,7 +362,6 @@ crq.fit.por <- function(x, y, cen, weights = NULL, grid, ctype = "right")
                 as.integer(mw),
                 as.double(gstep),
 		ift = integer(1),
-                as.integer(kmax),
 		h = integer(p),
                 xh = double(p*p),
 		wa = double(mp*p),
@@ -395,7 +393,8 @@ crq.fit.por <- function(x, y, cen, weights = NULL, grid, ctype = "right")
          		"Max number of rq calls exceeded: dither x or increase mw"),
 		paste("Premature stop: defective conditional distribution"),
 		paste("Simplex iteration limit exceeded -- consider dithering y"))
-	if(flag > 0 && flag != 5 && flag < 10)
+	#if(flag > 0 && flag != 5 && flag < 10)
+	if(flag %in% c(1:4,6,7))
 		ifelse(flag <= 3,stop(msg),warning(msg))
 	J <- z$lsol
 	B <- matrix(z$sol, nrow=p+2, ncol=nsol, byrow=FALSE)[,1:J]

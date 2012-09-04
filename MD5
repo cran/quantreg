@@ -1,9 +1,9 @@
-b7f1e42d06a93ea4ccc9b94a1167f321 *DESCRIPTION
+948b5620c42a16d8f5d7d7a4952d4196 *DESCRIPTION
 5bb7badbce735cc7f0cb193a9600e6b7 *NAMESPACE
 832fd0744d173af3315a5554d42812de *R/anova.R
 3ad4cde5e3d0f77d3b312a9725db40fc *R/boot.R
 ce4ed5c7fd88b6cff53cf6080e1391c4 *R/combos.R
-4fc7ae4ac87240f8ae0bedb501499f3d *R/crq.R
+e8c3d980bdd64ea985324c2f6d50f8ec *R/crq.R
 2103cc991cb933d3de779a79f758d0cc *R/dynrq.R
 13d99ab6094e93feb43c1a1c48de8da2 *R/khmal.R
 b1a67aeea28b2511b0301debfec906c6 *R/kuantile.R
@@ -36,7 +36,7 @@ d907e0e11fd1a4007ca28a3d1b03efed *demo/engel1.R
 aa2009c3a395aee9512819bb72dbc5c1 *demo/hinged.R
 ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 54b67ce66f210821311e4453b2ec7d03 *demo/rqsslasso.R
-553baef85f6ec39c2fefd75952d484a5 *inst/ChangeLog
+122e330bcff4490bb9d8392a277c914e *inst/ChangeLog
 312d1969a8ca11db63c317dde84bb403 *inst/FAQ
 18dfe18bf74d1df0d4154280292f76b3 *inst/TODO
 2d7164fe75f5567355dcbf805047e1e9 *inst/doc/Makefile
@@ -45,10 +45,10 @@ ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 cb8dad7af992c8babda4ee3357d1519e *inst/doc/crq.Rnw
 f7b16169b6fa9f3e33e186105850bb3c *inst/doc/crq.pdf
 9fbde9e4d01821032c7ce55fe645cf6d *inst/doc/crq0.pdf
-7fb4fc1ca923e2a4a79160d4b15aaa1d *inst/doc/engelcoef.pdf
+9a1953b13d415972325c42cb28f1c740 *inst/doc/engelcoef.pdf
 68533db22c31b13083be528576d024ea *inst/doc/gasprice.R
 3a2d95ab6517b6b17c5bbe4e444d3026 *inst/doc/rq.Rnw
-8289419c072ce3369f91f5605ffb51f2 *inst/doc/rq.pdf
+6810a290490cdcc73e1b0176169fc508 *inst/doc/rq.pdf
 9a96791aeb6477336abfa5db72860375 *inst/doc/rqss.Rnw
 96f5c238ade9146a10d4216b38718e35 *inst/doc/rqss.pdf
 6f27b3fb4ca90e21b7afeb4eaeceeb4e *inst/doc/rqss0.pdf
@@ -122,7 +122,7 @@ aedceed6123d738fb616aac56bcd4b4c *src/boot.f
 a0be9c29524c524d8a3427b8e2f82fee *src/cholesky.f
 6f8eae4914a61ad5babba80dc12b6f97 *src/cholesky.h
 715617e3a3e31546188a0d506c4b5d94 *src/combos.f
-5033845e85229efacbde36c7a8157ba8 *src/crq.f
+69d817fd19abcbdd3ff532942c78f4f2 *src/crq.f
 7527b37a98689fa775ad57b2a30d4555 *src/crqfnb.f
 a22827856f4818d9e202adee29184a11 *src/dsel05.f
 18897488444dcd8f4961107a14ae1cfb *src/etime.f
@@ -151,7 +151,7 @@ e099085dee267a7810af461acfd90bfd *src/ratfor/rqfnb.r
 6b34a4c3ddbc92462cc5f9df01852bdf *src/ratfor/rqs.r
 1f7ca8e2e1c1020ca72d6ce14d5f52c0 *src/rls.f
 5a11e9b4b1a7addecc8c3530c490b1ee *src/rq0.f
-eca098dc9b75a03394bdeec9a931a9de *src/rq1.f
+17329efdf297d541911e0de2a7fb960d *src/rq1.f
 820dbe94b51decb103678f8ed4b66565 *src/rqbr.f
 3b2c0e594df800e766b1a932c05a65d0 *src/rqfn.f
 5676042109bc6a20148f33744f0064e9 *src/rqfnb.f

@@ -1101,3 +1101,19 @@ to mention that the grid for the Portnoy method is equally spaced.
 1.  Removed wayward files in ratfor directory
 
 2.  replaced call to dqrls in rq.fit.br by call to R qr function.
+
+4.85
+
+1.  Changed example for uis data in crq.Rd to Peng from Portnoy.
+
+4.86
+
+1.  Changed crq.f so that it stopped the tau iteration whenever IFT = 9
+"simplex iteration limit exceeded" occurs.
+
+4.90
+
+1.  Reverted to earlier code for rq1.f and crq.f  pending resolution of
+strange disparity between results for R CMD check for osx and windoz.
+in versions 4.85-8 demo(KMvCRQ) produced errors on windows that were
+irreproducible on osx.
