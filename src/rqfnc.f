@@ -30,7 +30,7 @@ C Output from Public domain Ratfor, version 1.0
       parameter(one = 1.0d0)
       parameter(mone = -1.0d0)
       parameter(big = 1.0d+20)
-      parameter(maxit = 50)
+      parameter(maxit = 500)
       nit(1)=0
       nit(2)=0
       nit(3)=n1

@@ -1,4 +1,4 @@
-948b5620c42a16d8f5d7d7a4952d4196 *DESCRIPTION
+2922db02c34882e28c2fad9c0c1c7b94 *DESCRIPTION
 5bb7badbce735cc7f0cb193a9600e6b7 *NAMESPACE
 832fd0744d173af3315a5554d42812de *R/anova.R
 3ad4cde5e3d0f77d3b312a9725db40fc *R/boot.R
@@ -36,7 +36,7 @@ d907e0e11fd1a4007ca28a3d1b03efed *demo/engel1.R
 aa2009c3a395aee9512819bb72dbc5c1 *demo/hinged.R
 ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 54b67ce66f210821311e4453b2ec7d03 *demo/rqsslasso.R
-122e330bcff4490bb9d8392a277c914e *inst/ChangeLog
+e3aba36093d991d65f07b8de6cd48449 *inst/ChangeLog
 312d1969a8ca11db63c317dde84bb403 *inst/FAQ
 18dfe18bf74d1df0d4154280292f76b3 *inst/TODO
 2d7164fe75f5567355dcbf805047e1e9 *inst/doc/Makefile
@@ -45,10 +45,10 @@ ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 cb8dad7af992c8babda4ee3357d1519e *inst/doc/crq.Rnw
 f7b16169b6fa9f3e33e186105850bb3c *inst/doc/crq.pdf
 9fbde9e4d01821032c7ce55fe645cf6d *inst/doc/crq0.pdf
-9a1953b13d415972325c42cb28f1c740 *inst/doc/engelcoef.pdf
+7fbc7b58bfae864488a2041c8c63773e *inst/doc/engelcoef.pdf
 68533db22c31b13083be528576d024ea *inst/doc/gasprice.R
 3a2d95ab6517b6b17c5bbe4e444d3026 *inst/doc/rq.Rnw
-6810a290490cdcc73e1b0176169fc508 *inst/doc/rq.pdf
+def338a076e078746ca86882fe2d3b32 *inst/doc/rq.pdf
 9a96791aeb6477336abfa5db72860375 *inst/doc/rqss.Rnw
 96f5c238ade9146a10d4216b38718e35 *inst/doc/rqss.pdf
 6f27b3fb4ca90e21b7afeb4eaeceeb4e *inst/doc/rqss0.pdf
@@ -82,7 +82,7 @@ d2e7a73053e94b9a0444af290d0a19a1 *man/nlrq.control.Rd
 aa5102d7ad3c26a1eb17570d8e712134 *man/plot.rq.process.Rd
 585b11e2a458ebe2f58a208203df3660 *man/plot.rqs.Rd
 ac041e0db1de2b6db2322296087d009e *man/plot.rqss.Rd
-c581f1f3925c1a3a0c9e7fd027a51dee *man/plot.summary.rqs.Rd
+941dcf59933be6c98c071ba99b1af498 *man/plot.summary.rqs.Rd
 677f4fe78b9ad9d1356157d5147c3306 *man/predict.rq.Rd
 8cec74401439269b97c489e3335af5d6 *man/predict.rqss.Rd
 686fc7e0c9f3138fd5ff01645b8e9911 *man/print.rq.Rd
@@ -110,7 +110,7 @@ c42b5515ccf48527ae43449357b3dfb0 *man/rq.process.object.Rd
 138fa38a6ac8b4a98a60448bb4563c01 *man/rqss.object.Rd
 aecf6e2516e4142fc6c7d881eb67b7af *man/sfn.control.Rd
 1452fe475b765976d931f6735684ccdd *man/summary.crq.Rd
-d181f967fa0d0665dcdc09779a98b45c *man/summary.rq.Rd
+134e6b0091f3cf8a528913761ec646c4 *man/summary.rq.Rd
 2cd698ce46395e6e057f5981dcbcb3b9 *man/summary.rqss.Rd
 7c19b7bc8dcaeafdb05e8fae65322c04 *man/table.rq.Rd
 f5a8859d2b97685d09b1e5bc77f27194 *man/uis.Rd
@@ -147,7 +147,7 @@ e21e07cbcb292d892b4ece7c58e428e3 *src/ratfor/rqbr.f
 dedfe0a5f74855e05acd651a336781a7 *src/ratfor/rqbr.r
 f28516c6de1ee89b20c57f4c71a50c04 *src/ratfor/rqfn.r
 e099085dee267a7810af461acfd90bfd *src/ratfor/rqfnb.r
-8e1442043e7f527fc4cd02ad78aedbb2 *src/ratfor/rqfnc.r
+2c72c86d700f2261d262370809c4e00c *src/ratfor/rqfnc.r
 6b34a4c3ddbc92462cc5f9df01852bdf *src/ratfor/rqs.r
 1f7ca8e2e1c1020ca72d6ce14d5f52c0 *src/rls.f
 5a11e9b4b1a7addecc8c3530c490b1ee *src/rq0.f
@@ -155,7 +155,7 @@ e099085dee267a7810af461acfd90bfd *src/ratfor/rqfnb.r
 820dbe94b51decb103678f8ed4b66565 *src/rqbr.f
 3b2c0e594df800e766b1a932c05a65d0 *src/rqfn.f
 5676042109bc6a20148f33744f0064e9 *src/rqfnb.f
-027ffe7a32bfed620a622dae2172552f *src/rqfnc.f
+43a088b9403c8f82de378b2fc002edc6 *src/rqfnc.f
 cdb9d9dcf135b468f2c2b7f4b9148ff4 *src/rqs.f
 cb1d1832e90f2c23c8bf27753409795d *src/sparseM.h
 87300e30f5b32fb175c3789ca6e2a9d6 *src/sparskit2.f

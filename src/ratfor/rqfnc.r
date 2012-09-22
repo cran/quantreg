@@ -37,7 +37,7 @@ parameter(zero  = 0.0d0)
 parameter(one   = 1.0d0)
 parameter(mone   = -1.0d0)
 parameter(big  = 1.0d+20)
-parameter(maxit  = 50)
+parameter(maxit  = 500)
 
 # Initialization:  We try to follow the notation of LMS
 # On input we require:

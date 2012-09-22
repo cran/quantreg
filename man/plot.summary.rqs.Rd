@@ -21,7 +21,12 @@
   \item{parm}{a specification of which parameters are to be plotted,
     either a vector of numbers or a vector of names.  By default, all
     parameters are considered.}
-  \item{level}{numeric. Confidence level of bands.}
+  \item{level}{Confidence level of bands.  When using
+    the rank based confidence intervals in summary, which is the default
+    method for sample sizes under 1000, you will need to control the level
+    of the intervals by passing the parameter alpha to 
+    \code{\link{summary.rq}}, prior to calling 
+    \code{\link{plot.summary.rqs}}.  Note also that alpha = 1 - level.}
   \item{ols}{logical. Should a line for the OLS coefficient and their confidence
     bands (as estimated by \code{\link[stats]{lm}}) be added?}
   \item{mfrow, mar, ylim, main}{graphical parameters. Suitable defaults are chosen

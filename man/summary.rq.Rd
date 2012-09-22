@@ -57,7 +57,11 @@ will be returned if printing is invoked.
    }
   \item{...}{
     Optional arguments to summary, e.g. bsmethod to use bootstrapping.
-    see \code{\link{boot.rq}}
+    see \code{\link{boot.rq}}.  When using the "rank" method for confidence
+    intervals, which is the default method for sample sizes less than 1000,
+    the type I error probability of the intervals can be controlled with the
+    alpha parameter passed via "...",  thereby controlling the width of the
+    intervals plotted by \code{plot.summary.rqs}. 
    }
 }
 \value{

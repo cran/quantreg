@@ -1117,3 +1117,10 @@ to mention that the grid for the Portnoy method is equally spaced.
 strange disparity between results for R CMD check for osx and windoz.
 in versions 4.85-8 demo(KMvCRQ) produced errors on windows that were
 irreproducible on osx.
+
+4.91
+
+1.  Tried to clarify documentation for summary.rqs  concerning changes
+in the level of the confidence intervals when the rank method is being used.
+
+2.  Increased the default number of iterations in rq.fit.fnc.
