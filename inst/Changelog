@@ -1124,3 +1124,18 @@ irreproducible on osx.
 in the level of the confidence intervals when the rank method is being used.
 
 2.  Increased the default number of iterations in rq.fit.fnc.
+
+4.91
+
+1.  Added a drop = FALSE in nas definition of summary.crq to preserve the
+matrix structure there.
+
+4.93 
+
+1.  Fixed several bugs in the crq code for left censored data.  Thanks to
+Brian Cade as always for bringing this to my attention.
+
+4.94
+
+1.  Moved UIS crq example from man directory to demos to save check time as
+advised by Uwe Ligges.

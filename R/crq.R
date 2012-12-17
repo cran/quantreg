@@ -191,23 +191,32 @@ coef.crq <- function(object, taus = 1:4/5, ...)
         	}
         taus <- sort(taus)
         S <- object$sol
+        ctype <- object$ctype
         r <- S[1, ]
         r <- c(r[1],r)
         r <- (r[-1]+r[-length(r)])/2
-	r <- c(0,r)
+	r <- c(r[1],r)
 	if(is.unsorted(r)) r <- r[-length(r)] #kludge until why this happens is found
         B <- S[-1,]
         J <- length(r)
 	B <- t(cbind(B[,1],B))
-        ts <- taus[taus < max(r)]
+        if(object$ctype == "left") {
+	   r <- rev(r)
+	   B <- B[NROW(B):1,]
+	   }
+        ts <- taus[taus > min(r) & taus < max(r)]
         bin <- findInterval(ts,r)
         wgt <- (ts - r[bin])/(r[bin + 1] - r[bin])
         binlag <- bin - 1
         binlag[binlag == 0] <- 1
         coef <- t(wgt * B[bin, , drop = FALSE] + (1 - wgt) * B[binlag, , drop = FALSE])
         nna <- length(taus) - length(ts)
-        if(nna > 0)
-                coef <- cbind(coef, matrix(NA,nrow(coef),nna))
+        if(nna > 0) {
+           if (ctype == "left")
+              coef <- cbind(matrix(NA, nrow(coef), nna), coef)
+           else
+              coef <- cbind(coef, matrix(NA, nrow(coef), nna))
+        }
         taulabs <- paste("tau=", format(round(taus, 3)))
         dimnames(coef)[[2]] <- taulabs
         coef[-nrow(coef),]  # Delete Qhat entries
@@ -398,16 +407,16 @@ crq.fit.por <- function(x, y, cen, weights = NULL, grid, ctype = "right")
 		ifelse(flag <= 3,stop(msg),warning(msg))
 	J <- z$lsol
 	B <- matrix(z$sol, nrow=p+2, ncol=nsol, byrow=FALSE)[,1:J]
-	dimnames(B) <- list(c("tau",dimnames(x)[[2]],"Qbar"),NULL)
 	ic <- z$icen
 	sp <- (1:n)[ic == 1]
 	tsp <- z$tcen[sp]
         t1 <- z$wd[1:nw]
         if(ctype == "left") {
-            sol[1,] <- 1 - sol[1,]
-            sol[-1,] <- - sol[-1,]
+            B[1,] <- 1 - B[1,]
+            B[-1,] <- - B[-1,]
             }
-	a<-list(sol=B, Isplit=sp, tsp = tsp,status=ic)
+	dimnames(B) <- list(c("tau",dimnames(x)[[2]],"Qbar"),NULL)
+	a<-list(sol=B, Isplit=sp, tsp = tsp, status=ic, ctype = ctype)
 	class(a) <- "crq"
 	return(a) 
 	}
@@ -453,7 +462,7 @@ crq.fit.pen <- function(x, y, cen, weights=NULL,grid, ctype = "right" ){
             B[1,] <- 1 - B[1,]
             B[-1,] <- - B[-1,]
             }
-        B  <- list(sol=B)
+        B  <- list(sol=B, ctype = ctype)
 	class(B) <- "crq"
 	B
         }
@@ -546,7 +555,7 @@ function (object, taus = 1:4/5, alpha = .05, se = "boot", covariance = TRUE, ...
        coef <- coef[,apply(coef,2,function(x) any(!is.na(x))),drop = FALSE] # Delete NA columns if any
        taus <- taus[1:ncol(coef)]
        B <- boot.crq(x, y, cen, taus, method = method, ctype = ctype, ...)
-       nas <- apply(is.na(B$A[1,,]),1,sum)
+       nas <- apply(is.na(B$A[1,,, drop = TRUE]),1,sum)
        sqmn <- sqrt(B$mboot/B$n)
        fact <-   qnorm(1 - alpha/2)/qnorm(.75)
        B <- apply(B$A, 1:2, quantile, probs = 1:3/4, na.rm = TRUE)

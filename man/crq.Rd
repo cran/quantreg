@@ -192,22 +192,19 @@ for(tau in (1:4)/5){
         }
 legend(.15,2.5,c("Naive QR","Censored QR","Omniscient QR"),
         lty=rep(1,3),col=c("blue","red","green"))
-data(uis)
-#estimate the Peng and Huang model using log(TIME) AFT specification
-fit <- crq(Surv(log(TIME), CENSOR) ~  ND1 + ND2 + IV3 +
-               TREAT + FRAC + RACE + AGE * SITE, method = "Peng", data = uis)
-Sfit <- summary(fit,1:19/20)
-PHit <- coxph(Surv(TIME, CENSOR) ~  ND1 + ND2 + IV3 +
-               TREAT + FRAC + RACE + AGE * SITE, data = uis)
-plot(Sfit, CoxPHit = PHit)
-formula <-  ~  ND1 + ND2 + IV3 + TREAT + FRAC + RACE + AGE * SITE -1
-X <- data.frame(model.matrix(formula,data=uis))
-newd <- as.list(apply(X,2,median))
-pred <- predict(fit, newdata=newd, stepfun = TRUE)
-plot(pred,do.points=FALSE,xlab = expression(tau), ylab = expression(Q(tau)),
-	lwd = 1.5, main= "Quantiles at Median Covariate Values")
-plot(rearrange(pred),add=TRUE,do.points=FALSE,col.vert ="red", col.hor="red")
-legend(.10,10,c("Raw","Rearranged"),lty = rep(1,2),col=c("black","red"))
+
+# crq example with left censoring
+set.seed(1968)
+n <- 200
+x <-rnorm(n)
+y <- 5 + x + rnorm(n)
+plot(x,y,cex = .5)
+c <- 4 + x + rnorm(n)
+d <- (y > c)
+points(x[!d],y[!d],cex = .5, col = 2)
+f <- crq(Surv(y,d,type = "left") ~ x, method = "Portnoy")
+g <- summary(f)
 }
+
 \keyword{survival}
 \keyword{regression}
