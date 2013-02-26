@@ -1,8 +1,4 @@
-C       This software may be freely used and redistributed for
-C  non-commercial purposes.  No guarantees are offered or implied.
-C  If used, I would greatly appreciate hearing about the application.
-C  Comments, bug reports, etc. should be sent to:   
-C       portnoy@stat.uiuc.edu
+C  Comments, bug reports, etc. should be sent to:  portnoy@stat.uiuc.edu
 C
       SUBROUTINE CRQ(M,N,MPLUS,N2,X,Y,C,TZERO,MAXW,STEP,IFT,H,XH,
      * WA,WB,WC,WD,WE,WF,IA,NSOL,SOL,LSOL,ICEN,TCEN,LCEN)
@@ -69,7 +65,7 @@ C
       DIMENSION X(M,N),Y(M),SOL(N2,NSOL),WC(MPLUS,N2),XH(N,N)
       DIMENSION WA(MPLUS,N),WB(MPLUS),WD(MPLUS),WE(MPLUS)
       DIMENSION F(2),WF(N),TCEN(M)
-      DATA BIG/1.D37/
+      DATA BIG/1.D17/
       DATA ZERO/0.00D0/
       DATA HALF/0.50D0/
       DATA ONE/1.00D0/
@@ -77,6 +73,7 @@ C
 C
 C  CHECK DIMENSION PARAMETERS
 C
+      DEG = .FALSE.
       IFT=0
       N1 = NSOL-1
       LCEN = 0

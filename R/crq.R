@@ -304,6 +304,7 @@ fit$terms <- mt
 fit$call <- call
 fit$formula <-  formula(mt)
 fit$method <-  method
+fit$contrasts <- contrasts 
 fit$ctype <-  ctype
 attr(fit, "na.message") <- attr(m, "na.message")
 fit
@@ -330,7 +331,7 @@ crq.fit.por <- function(x, y, cen, weights = NULL, grid, ctype = "right")
       p <- ncol(x)
       n <- length(y) 
       cen <- 1 - cen #NB: Fortran routine wants censoring indicator flipped (!!!)
-      mp <- n + 5 + max(1, sum(cen))
+      mp <- max(n + 5 + max(1, sum(cen)),n+p)
       eps <- 1e-04
       kmax <- 10000 # perhaps this should be parameter in future
       if(length(weights)){
@@ -553,7 +554,8 @@ function (object, taus = 1:4/5, alpha = .05, se = "boot", covariance = TRUE, ...
     else if(method == "Portnoy" || method == "PengHuang") {
        coef <- as.matrix(coef(object,taus))
        coef <- coef[,apply(coef,2,function(x) any(!is.na(x))),drop = FALSE] # Delete NA columns if any
-       taus <- taus[1:ncol(coef)]
+       if(ctype == "right") taus <- taus[1:ncol(coef)]
+       else  taus <- taus[(1 + length(taus)-ncol(coef)):length(taus)]
        B <- boot.crq(x, y, cen, taus, method = method, ctype = ctype, ...)
        nas <- apply(is.na(B$A[1,,, drop = TRUE]),1,sum)
        sqmn <- sqrt(B$mboot/B$n)

@@ -1139,3 +1139,12 @@ Brian Cade as always for bringing this to my attention.
 
 1.  Moved UIS crq example from man directory to demos to save check time as
 advised by Uwe Ligges.
+
+4.95
+
+1. Bug in summary.crq when ctype == "left"  and some specified taus weren't
+estimable -- upper quantiles from bootstrap were deleted, but it was the lower
+ones that should have been.
+
+2.  BIG in crq.f was changed from 1.d37 to 1.d17  which "fixes" a segfault
+condition in an example of Brian Cade's, but I have no frigging idea why.

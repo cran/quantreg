@@ -1,9 +1,9 @@
-597cfa391d5c60ff66c8d7b10470beea *DESCRIPTION
+ae7be0547728ccea76dfef19627b21fc *DESCRIPTION
 5bb7badbce735cc7f0cb193a9600e6b7 *NAMESPACE
 832fd0744d173af3315a5554d42812de *R/anova.R
 3ad4cde5e3d0f77d3b312a9725db40fc *R/boot.R
 ce4ed5c7fd88b6cff53cf6080e1391c4 *R/combos.R
-6d7dfcc12292fc01afa754680df851a9 *R/crq.R
+37a2d85560655f1ae7da75c398f64a9d *R/crq.R
 2103cc991cb933d3de779a79f758d0cc *R/dynrq.R
 13d99ab6094e93feb43c1a1c48de8da2 *R/khmal.R
 b1a67aeea28b2511b0301debfec906c6 *R/kuantile.R
@@ -37,7 +37,7 @@ d907e0e11fd1a4007ca28a3d1b03efed *demo/engel1.R
 aa2009c3a395aee9512819bb72dbc5c1 *demo/hinged.R
 ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 54b67ce66f210821311e4453b2ec7d03 *demo/rqsslasso.R
-0cc3a5c6cb232119ff8ad1b561db33c1 *inst/ChangeLog
+d4d2db0e5586a013e85644b79da2c500 *inst/ChangeLog
 312d1969a8ca11db63c317dde84bb403 *inst/FAQ
 18dfe18bf74d1df0d4154280292f76b3 *inst/TODO
 2d7164fe75f5567355dcbf805047e1e9 *inst/doc/Makefile
@@ -46,10 +46,10 @@ ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 cb8dad7af992c8babda4ee3357d1519e *inst/doc/crq.Rnw
 f7b16169b6fa9f3e33e186105850bb3c *inst/doc/crq.pdf
 9fbde9e4d01821032c7ce55fe645cf6d *inst/doc/crq0.pdf
-a57604313116dd7d45dfacce12c92922 *inst/doc/engelcoef.pdf
+720675defec88a0d6836dceff07d1362 *inst/doc/engelcoef.pdf
 68533db22c31b13083be528576d024ea *inst/doc/gasprice.R
 3a2d95ab6517b6b17c5bbe4e444d3026 *inst/doc/rq.Rnw
-773ec24da56bd80620ff9da9912c74bc *inst/doc/rq.pdf
+4c67ce6b300b8a1da5c5e925ce6d2592 *inst/doc/rq.pdf
 9a96791aeb6477336abfa5db72860375 *inst/doc/rqss.Rnw
 96f5c238ade9146a10d4216b38718e35 *inst/doc/rqss.pdf
 6f27b3fb4ca90e21b7afeb4eaeceeb4e *inst/doc/rqss0.pdf
@@ -123,7 +123,7 @@ aedceed6123d738fb616aac56bcd4b4c *src/boot.f
 a0be9c29524c524d8a3427b8e2f82fee *src/cholesky.f
 6f8eae4914a61ad5babba80dc12b6f97 *src/cholesky.h
 715617e3a3e31546188a0d506c4b5d94 *src/combos.f
-69d817fd19abcbdd3ff532942c78f4f2 *src/crq.f
+1537a2151fa2814f0f27e601ebc5c61e *src/crq.f
 7527b37a98689fa775ad57b2a30d4555 *src/crqfnb.f
 a22827856f4818d9e202adee29184a11 *src/dsel05.f
 18897488444dcd8f4961107a14ae1cfb *src/etime.f
