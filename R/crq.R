@@ -200,10 +200,6 @@ coef.crq <- function(object, taus = 1:4/5, ...)
         B <- S[-1,]
         J <- length(r)
 	B <- t(cbind(B[,1],B))
-        if(object$ctype == "left") {
-	   r <- rev(r)
-	   B <- B[NROW(B):1,]
-	   }
         ts <- taus[taus > min(r) & taus < max(r)]
         bin <- findInterval(ts,r)
         wgt <- (ts - r[bin])/(r[bin + 1] - r[bin])
@@ -415,6 +411,7 @@ crq.fit.por <- function(x, y, cen, weights = NULL, grid, ctype = "right")
         if(ctype == "left") {
             B[1,] <- 1 - B[1,]
             B[-1,] <- - B[-1,]
+            B <- B[,ncol(B):1]
             }
 	dimnames(B) <- list(c("tau",dimnames(x)[[2]],"Qbar"),NULL)
 	a<-list(sol=B, Isplit=sp, tsp = tsp, status=ic, ctype = ctype)
@@ -462,6 +459,7 @@ crq.fit.pen <- function(x, y, cen, weights=NULL,grid, ctype = "right" ){
         if(ctype == "left") {
             B[1,] <- 1 - B[1,]
             B[-1,] <- - B[-1,]
+            B <- B[,ncol(B):1]
             }
         B  <- list(sol=B, ctype = ctype)
 	class(B) <- "crq"

@@ -1,9 +1,9 @@
-ae7be0547728ccea76dfef19627b21fc *DESCRIPTION
+d663b8fcbc8bace7a2932ab4227f9fe0 *DESCRIPTION
 5bb7badbce735cc7f0cb193a9600e6b7 *NAMESPACE
 832fd0744d173af3315a5554d42812de *R/anova.R
 3ad4cde5e3d0f77d3b312a9725db40fc *R/boot.R
 ce4ed5c7fd88b6cff53cf6080e1391c4 *R/combos.R
-37a2d85560655f1ae7da75c398f64a9d *R/crq.R
+d865e6a57881bd0a3b4b2406243ea78f *R/crq.R
 2103cc991cb933d3de779a79f758d0cc *R/dynrq.R
 13d99ab6094e93feb43c1a1c48de8da2 *R/khmal.R
 b1a67aeea28b2511b0301debfec906c6 *R/kuantile.R
@@ -46,10 +46,10 @@ d4d2db0e5586a013e85644b79da2c500 *inst/ChangeLog
 cb8dad7af992c8babda4ee3357d1519e *inst/doc/crq.Rnw
 f7b16169b6fa9f3e33e186105850bb3c *inst/doc/crq.pdf
 9fbde9e4d01821032c7ce55fe645cf6d *inst/doc/crq0.pdf
-720675defec88a0d6836dceff07d1362 *inst/doc/engelcoef.pdf
+2169eccce3eb5dd45718b4a7dd6d3588 *inst/doc/engelcoef.pdf
 68533db22c31b13083be528576d024ea *inst/doc/gasprice.R
 3a2d95ab6517b6b17c5bbe4e444d3026 *inst/doc/rq.Rnw
-4c67ce6b300b8a1da5c5e925ce6d2592 *inst/doc/rq.pdf
+911924faf94103d92586afe2740ed8bf *inst/doc/rq.pdf
 9a96791aeb6477336abfa5db72860375 *inst/doc/rqss.Rnw
 96f5c238ade9146a10d4216b38718e35 *inst/doc/rqss.pdf
 6f27b3fb4ca90e21b7afeb4eaeceeb4e *inst/doc/rqss0.pdf
