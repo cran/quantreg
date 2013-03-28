@@ -1,9 +1,9 @@
-d663b8fcbc8bace7a2932ab4227f9fe0 *DESCRIPTION
+e4c5b1ff4e1f8a015b4a272ffa5050fa *DESCRIPTION
 5bb7badbce735cc7f0cb193a9600e6b7 *NAMESPACE
 832fd0744d173af3315a5554d42812de *R/anova.R
 3ad4cde5e3d0f77d3b312a9725db40fc *R/boot.R
 ce4ed5c7fd88b6cff53cf6080e1391c4 *R/combos.R
-d865e6a57881bd0a3b4b2406243ea78f *R/crq.R
+3ad655794d206c119736e3d12b9d89e1 *R/crq.R
 2103cc991cb933d3de779a79f758d0cc *R/dynrq.R
 13d99ab6094e93feb43c1a1c48de8da2 *R/khmal.R
 b1a67aeea28b2511b0301debfec906c6 *R/kuantile.R
@@ -37,7 +37,7 @@ d907e0e11fd1a4007ca28a3d1b03efed *demo/engel1.R
 aa2009c3a395aee9512819bb72dbc5c1 *demo/hinged.R
 ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 54b67ce66f210821311e4453b2ec7d03 *demo/rqsslasso.R
-d4d2db0e5586a013e85644b79da2c500 *inst/ChangeLog
+7dffdd3487e20f028f827d25e3aebeb8 *inst/ChangeLog
 312d1969a8ca11db63c317dde84bb403 *inst/FAQ
 18dfe18bf74d1df0d4154280292f76b3 *inst/TODO
 2d7164fe75f5567355dcbf805047e1e9 *inst/doc/Makefile
@@ -46,10 +46,10 @@ d4d2db0e5586a013e85644b79da2c500 *inst/ChangeLog
 cb8dad7af992c8babda4ee3357d1519e *inst/doc/crq.Rnw
 f7b16169b6fa9f3e33e186105850bb3c *inst/doc/crq.pdf
 9fbde9e4d01821032c7ce55fe645cf6d *inst/doc/crq0.pdf
-2169eccce3eb5dd45718b4a7dd6d3588 *inst/doc/engelcoef.pdf
+8e569f0441d59d7d6cbe82450a1d5aa4 *inst/doc/engelcoef.pdf
 68533db22c31b13083be528576d024ea *inst/doc/gasprice.R
 3a2d95ab6517b6b17c5bbe4e444d3026 *inst/doc/rq.Rnw
-911924faf94103d92586afe2740ed8bf *inst/doc/rq.pdf
+aeeed874accae4178cb1de340ae4fc76 *inst/doc/rq.pdf
 9a96791aeb6477336abfa5db72860375 *inst/doc/rqss.Rnw
 96f5c238ade9146a10d4216b38718e35 *inst/doc/rqss.pdf
 6f27b3fb4ca90e21b7afeb4eaeceeb4e *inst/doc/rqss0.pdf

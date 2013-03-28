@@ -1148,3 +1148,26 @@ ones that should have been.
 
 2.  BIG in crq.f was changed from 1.d37 to 1.d17  which "fixes" a segfault
 condition in an example of Brian Cade's, but I have no frigging idea why.
+
+4.96
+
+For left censoring the idea of reversing the order of the taus in the solution
+array turned out to cause all sorts of havoc in my interpolation scheme for
+coef.crq....  so I've reverted to the usual ordering.
+
+4.97
+
+1. Yet another modification of coef.crq.  This time I've decided to eliminate the
+midpoint interpolation scheme that was originally motivated by the pivoting
+method for the Portnoy crq estimator, and go back to conventional linear
+interpolation.  This is more consistent with the default grid methods that are
+now being used and was endorsed at coffee by Steve.  This change was again
+stimulated by Brian Cade's careful checking of anomalies in crq output.
+
+2.  Added drop = FALSE for the coef object returned from crq.fit.[por,pen],
+to hangle the case in which there is only one column of the solution, which
+hopefully is a very rare occurrence.
+
+3.  Changed Curv to return a type object, to fix a bug introduced into the 
+Powell methods when I added ctype for left censoring for Portnoy and
+PengHuang.  Thanks to Mike Smithson for reporting this.

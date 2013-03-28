@@ -125,6 +125,7 @@ Curv <- function (y,  yc, ctype = c("left", "right"))
     ss <- cbind(y, yc)
     dimnames(ss) <- list(NULL, c("time", "ctime"))
     attr(ss, "ctype") <- ctype
+    attr(ss, "type") <- ctype
     class(ss) <- "Surv"
     ss
 }
@@ -194,12 +195,9 @@ coef.crq <- function(object, taus = 1:4/5, ...)
         ctype <- object$ctype
         r <- S[1, ]
         r <- c(r[1],r)
-        r <- (r[-1]+r[-length(r)])/2
-	r <- c(r[1],r)
 	if(is.unsorted(r)) r <- r[-length(r)] #kludge until why this happens is found
-        B <- S[-1,]
-        J <- length(r)
-	B <- t(cbind(B[,1],B))
+        B <- S[-1,,drop = FALSE]
+	B <- t(cbind(B,B[,ncol(B),drop = FALSE]))
         ts <- taus[taus > min(r) & taus < max(r)]
         bin <- findInterval(ts,r)
         wgt <- (ts - r[bin])/(r[bin + 1] - r[bin])
@@ -403,7 +401,7 @@ crq.fit.por <- function(x, y, cen, weights = NULL, grid, ctype = "right")
 	if(flag %in% c(1:4,6,7))
 		ifelse(flag <= 3,stop(msg),warning(msg))
 	J <- z$lsol
-	B <- matrix(z$sol, nrow=p+2, ncol=nsol, byrow=FALSE)[,1:J]
+	B <- matrix(z$sol, nrow=p+2, ncol=nsol, byrow=FALSE)[,1:J, drop = FALSE]
 	ic <- z$icen
 	sp <- (1:n)[ic == 1]
 	tsp <- z$tcen[sp]
@@ -452,7 +450,7 @@ crq.fit.pen <- function(x, y, cen, weights=NULL,grid, ctype = "right" ){
         	info = integer(1), PACKAGE = "quantreg")
 	J <- z$m - 1
 	B <- matrix(-z$B, p, m)
-	B <- B[,1:J]
+	B <- B[,1:J,drop = FALSE]
         qhat <- t(xbar) %*% B
         B <- rbind(grid[1:J],B,qhat)
         dimnames(B) <- list(c("tau",dimnames(x)[[2]],"Qhat"),NULL)
@@ -612,7 +610,8 @@ print.summary.crqs <- function(x, ...)
 print.summary.crq <- function (x, digits = max(5, .Options$digits - 2), ...) {
     coef <- x$coefficients
     tau <- x$tau
-    NAs <- x$NAs
+    if(length(x$NAs)) NAs <- x$NAs
+    else NAs <- 0
     cat("\ntau: ")
     print(format(round(tau, digits = digits)), quote = FALSE, ...)
     if(NAs > 0) {
