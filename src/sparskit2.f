@@ -92,7 +92,7 @@ c-----------------------------------------------------------------------
       end
 c-----------------------------------------------------------------------
       subroutine amudia (nrow,job, a, ja, ia, diag, b, jb, ib)
-      real*8 a(*), b(*), diag(nrow) 
+      real*8 a(*), b(*), diag(*) 
       integer ja(*),jb(*), ia(nrow+1),ib(nrow+1) 
 c-----------------------------------------------------------------------
 c performs the matrix by matrix product B = A * Diag  (in place) 

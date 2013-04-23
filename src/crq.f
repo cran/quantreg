@@ -472,7 +472,7 @@ C               = +1 if bound from lower grad bound
 C               = -1 if bound from upper grad bound
 C    
       IMPLICIT REAL*8(A-H,O-Z)
-      INTEGER H(N),ICEN(M),IFLAG(M)
+      INTEGER H(N),ICEN(M),IFLAG(*)
       DOUBLE PRECISION ONE
       DIMENSION X(M,N),Y(M),GUP(N),XH(N,N)
       DIMENSION R(M),TCEN(M),WA(M,N)
@@ -546,8 +546,8 @@ C
       RETURN
       END
       subroutine dgedi(a,lda,n,ipvt,det,work,job)
-      integer lda,n,ipvt(1),job
-      double precision a(lda,1),det(2),work(1)
+      integer lda,n,ipvt(*),job
+      double precision a(lda,*),det(2),work(*)
 c
 c     dgedi computes the determinant and inverse of a matrix
 c     using the factors computed by dgeco or dgefa.
@@ -674,8 +674,8 @@ c
       return
       end
       subroutine dgeco(a,lda,n,ipvt,rcond,z)
-      integer lda,n,ipvt(1)
-      double precision a(lda,1),z(1)
+      integer lda,n,ipvt(*)
+      double precision a(lda,*),z(*)
       double precision rcond
 c
 c     dgeco factors a double precision matrix by gaussian elimination
@@ -871,8 +871,8 @@ c
       subroutine dgefa(a,lda,n,ipvt,info)
 c      use numerical_libraries
 	
-      integer lda,n,ipvt(1),info
-      double precision a(lda,1)
+      integer lda,n,ipvt(*),info
+      double precision a(lda,*)
 c
 c     dgefa factors a double precision matrix by gaussian elimination.
 c

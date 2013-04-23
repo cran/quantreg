@@ -2366,9 +2366,9 @@ C
 C
 C***********************************************************************
 C
-         INTEGER    ADJNCY(1), DHEAD(1) , INVP(1)  , LLIST(1) ,
-     1              MARKER(1), PERM(1)  , QSIZE(1)
-         INTEGER    XADJ(1)
+         INTEGER    ADJNCY(*), DHEAD(*) , INVP(*)  , LLIST(*) ,
+     1              MARKER(*), PERM(*)  , QSIZE(*)
+         INTEGER    XADJ(*)
          INTEGER    DELTA , EHEAD , I     , MAXINT, MDEG  ,
      1              MDLMT , MDNODE, NEQNS , NEXTMD, NOFSUB,
      1              NUM, TAG
@@ -2893,9 +2893,9 @@ C
 C
 C***********************************************************************
 C
-         INTEGER    ADJNCY(1), DBAKW(1) , DFORW(1) , DHEAD(1) ,
-     1              LLIST(1) , MARKER(1), QSIZE(1)
-         INTEGER    XADJ(1)
+         INTEGER    ADJNCY(*), DBAKW(*) , DFORW(*) , DHEAD(*) ,
+     1              LLIST(*) , MARKER(*), QSIZE(*)
+         INTEGER    XADJ(*)
          INTEGER    ELMNT , I     , ISTOP , ISTRT , J     ,
      1              JSTOP , JSTRT , LINK  , MAXINT, MDNODE,
      1              NABOR , NODE  , NPV   , NQNBRS, NXNODE,
@@ -3079,9 +3079,9 @@ C
 C
 C***********************************************************************
 C
-         INTEGER    ADJNCY(1), DBAKW(1) , DFORW(1) , DHEAD(1) ,
-     1              LLIST(1) , MARKER(1), QSIZE(1)
-         INTEGER    XADJ(1)
+         INTEGER    ADJNCY(*), DBAKW(*) , DFORW(*) , DHEAD(*) ,
+     1              LLIST(*) , MARKER(*), QSIZE(*)
+         INTEGER    XADJ(*)
          INTEGER    FNODE , NDEG  , NEQNS , NODE
 C
 C***********************************************************************
@@ -3149,7 +3149,7 @@ C
 C
 C***********************************************************************
 C
-         INTEGER    INVP(1)  , PERM(1)  , QSIZE(1)
+         INTEGER    INVP(*)  , PERM(*)  , QSIZE(*)
          INTEGER    FATHER, NEQNS , NEXTF , NODE  , NQSIZE,
      1              NUM   , ROOT
 C
@@ -3251,9 +3251,9 @@ C
 C
 C***********************************************************************
 C
-         INTEGER    ADJNCY(1), DBAKW(1) , DFORW(1) , DHEAD(1) ,
-     1              LLIST(1) , MARKER(1), QSIZE(1)
-         INTEGER    XADJ(1)
+         INTEGER    ADJNCY(*), DBAKW(*) , DFORW(*) , DHEAD(*) ,
+     1              LLIST(*) , MARKER(*), QSIZE(*)
+         INTEGER    XADJ(*)
          INTEGER    DEG   , DEG0  , DELTA , EHEAD , ELMNT ,
      1              ENODE , FNODE , I     , IQ2   , ISTOP ,
      1              ISTRT , J     , JSTOP , JSTRT , LINK  ,
@@ -4738,8 +4738,8 @@ C
 C
 C***********************************************************************
 C
-         INTEGER    ADJNCY(1), INVP(1)  , IWORK(1) , PERM(1)
-         INTEGER    XADJ(1)
+         INTEGER    ADJNCY(*), INVP(*)  , IWORK(*) , PERM(*)
+         INTEGER    XADJ(*)
          INTEGER    DELTA , IFLAG , IWSIZ , MAXINT, NEQNS , 
      &              NOFSUB
 C
@@ -5597,7 +5597,7 @@ C       -----------
         INTEGER             ADJLEN, FLAG  , NEQNS , NOFSUB, NSUPER
         INTEGER             ADJNCY(ADJLEN), COLCNT(NEQNS) ,
      &                      INVP(NEQNS)   , MARKER(NEQNS) ,
-     &                      MRGLNK(NSUPER), LINDX(NOFSUB) , 
+     &                      MRGLNK(NSUPER), LINDX(*) , 
      &                      PERM(NEQNS)   , RCHLNK(0:NEQNS), 
      &                      SNODE(NEQNS)  , XSUPER(NSUPER+1)
         INTEGER             XADJ(NEQNS+1) , XLINDX(NSUPER+1),

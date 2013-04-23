@@ -1171,3 +1171,8 @@ hopefully is a very rare occurrence.
 3.  Changed Curv to return a type object, to fix a bug introduced into the 
 Powell methods when I added ctype for left censoring for Portnoy and
 PengHuang.  Thanks to Mike Smithson for reporting this.
+
+4.98
+
+1.  Fixed a plethora of places that the new dimension checking for fortran
+arrays identified issues.  
