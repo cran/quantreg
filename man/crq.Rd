@@ -15,7 +15,8 @@ are three distinct methods:  the first is the fixed censoring method
 of Powell (1986) as implemented by Fitzenberger (1996), the second is the random
 censoring method of Portnoy (2003).  The third method is based on Peng and Huang (2008).} 
 \usage{
-crq(formula, taus, data, subset, weights, na.action, method = c("Powell", "Portnoy", "PengHuang"), contrasts = NULL, ...)
+crq(formula, taus, data, subset, weights, na.action, 
+	method = c("Powell", "Portnoy", "PengHuang"), contrasts = NULL, ...)
 crq.fit.pow(x, y, yc, tau=0.5, weights=NULL, start, left=TRUE, maxit = 500)
 crq.fit.pen(x, y, cen, weights=NULL, grid, ctype = "right") 
 crq.fit.por(x, y, cen, weights=NULL, grid, ctype = "right") 

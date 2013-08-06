@@ -5,7 +5,11 @@
 	Automatically generates a latex formatted table from the matrix x
 	Controls rounding, alignment, etc, etc
 }
-\usage{\method{latex}{table}(x, file=as.character(substitute(x)), rowlabel=file, rowlabel.just="l", cgroup, n.cgroup, rgroup, n.rgroup=NULL, digits, dec, rdec, cdec, append=FALSE, dcolumn=FALSE, cdot=FALSE, longtable=FALSE, table.env=TRUE, lines.page=40, caption, caption.lot, label=file, double.slash=FALSE,\dots)
+\usage{\method{latex}{table}(x, file=as.character(substitute(x)), 
+	rowlabel=file, rowlabel.just="l", cgroup, n.cgroup, rgroup, n.rgroup=NULL, 
+	digits, dec, rdec, cdec, append=FALSE, dcolumn=FALSE, cdot=FALSE, 
+	longtable=FALSE, table.env=TRUE, lines.page=40, caption, caption.lot, 
+	label=file, double.slash=FALSE,\dots)
 }
 \arguments{
   \item{x}{ A matrix \code{x} with dimnames}

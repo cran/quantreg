@@ -5,7 +5,8 @@
 Auxiliary function for setting storage dimensions and other parameters rq.fit.sfn[c]
 }
 \usage{
-sfn.control(nsubmax = NULL, tmpmax = NULL, nnzlmax = NULL, cachsz = 64, small = 1e-06, maxiter = 100, warn.mesg = TRUE)
+sfn.control(nsubmax = NULL, tmpmax = NULL, nnzlmax = NULL, cachsz = 64, 
+	small = 1e-06, maxiter = 100, warn.mesg = TRUE)
 }
 \arguments{
   \item{nsubmax}{

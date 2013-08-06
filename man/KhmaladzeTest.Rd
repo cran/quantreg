@@ -10,7 +10,8 @@ for general goodness of fit problems, and adapted to quantile regression by
 Koenker and Xiao (2002).}
 
 \usage{
-KhmaladzeTest(formula, data = NULL, taus = -1, nullH = "location" ,  trim = c(0.05, 0.95), ...) 
+KhmaladzeTest(formula, data = NULL, taus = -1, nullH = "location" ,  
+	trim = c(0.05, 0.95), ...) 
 }
 \arguments{
 \item{formula}{a formula specifying the model to fit by \code{\link{rqProcess}}}
