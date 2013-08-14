@@ -1176,3 +1176,13 @@ PengHuang.  Thanks to Mike Smithson for reporting this.
 
 1.  Fixed a plethora of places that the new dimension checking for fortran
 arrays identified issues.  
+
+5.00 
+
+1.  Fixed several places with excessive line lengths in the .Rd files.
+
+2.  Purged the econometrica.bst bib style, as requested by Brian R.
+
+5.02
+
+1.  Fixed logLik.nlrq bug as noted by Erin Graham.

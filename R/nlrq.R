@@ -248,21 +248,22 @@
             if (R.Version()$os == "Win32") {flush.console()}
             nit <- nit + 1
         }
+        Rho <- function(u,tau) u * (tau - (u < 0))
+    	model$rho <- sum(Rho(model$resid(),tau))
         model
     }
-    Rho <- function(u,tau) u * (tau - (u < 0))
-    nlrq.out <- list(m=nlrq.calc(m, ctrl, trace), data=substitute(data), call=match.call(), PACKAGE = "quantreg")
-    nlrq.out$rho <- sum(Rho(nlrq.out$resid,tau))
+    nlrq.out <- list(m=nlrq.calc(m, ctrl, trace), data=substitute(data), 
+	call=match.call(), PACKAGE = "quantreg")
     nlrq.out$call$control <- ctrl
     nlrq.out$call$trace <- trace
     class(nlrq.out) <- "nlrq"
     nlrq.out
 }
 "logLik.nlrq" <- function(object,  ...){
-        n <- length(object$residuals)
-        p <- length(object$coefficients)
-        tau <- object$tau
-        fid <- object$rho
+        n <- length(object$m$resid())
+        p <- length(object$m$getPars())
+        tau <- object$m$tau()
+        fid <- object$m$rho
         val <- n * (log(tau * (1-tau)) - 1 - log(fid/n))
         attr(val,"n") <- n
         attr(val,"df") <- p

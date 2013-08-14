@@ -1,4 +1,4 @@
-64c2c2518bd30204edf5444508392d16 *DESCRIPTION
+ea6c7d5a7dac2f26b8a0cc55a897812a *DESCRIPTION
 5bb7badbce735cc7f0cb193a9600e6b7 *NAMESPACE
 832fd0744d173af3315a5554d42812de *R/anova.R
 3ad4cde5e3d0f77d3b312a9725db40fc *R/boot.R
@@ -8,7 +8,7 @@ ce4ed5c7fd88b6cff53cf6080e1391c4 *R/combos.R
 13d99ab6094e93feb43c1a1c48de8da2 *R/khmal.R
 b1a67aeea28b2511b0301debfec906c6 *R/kuantile.R
 d2f509eb6977017d1b77faae7de97a7c *R/lprq.R
-810f96ca7017659991a5174406a1b8ff *R/nlrq.R
+8e3aba1efd8a511cbf397bba9c94a0d3 *R/nlrq.R
 0d232447a4feb5a4ebf00d40cf6badac *R/quantreg.R
 d5750377456fef4ff659b1c66d46dca4 *R/rqss.R
 4e056211e41cba2c4ac92c4ad6048dbe *R/sfn.R
@@ -37,7 +37,7 @@ d907e0e11fd1a4007ca28a3d1b03efed *demo/engel1.R
 aa2009c3a395aee9512819bb72dbc5c1 *demo/hinged.R
 ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 54b67ce66f210821311e4453b2ec7d03 *demo/rqsslasso.R
-a0e196035c715553f35ec4f63654f56b *inst/ChangeLog
+e068877d1a4baf6a38239ad2b1d71c27 *inst/ChangeLog
 312d1969a8ca11db63c317dde84bb403 *inst/FAQ
 18dfe18bf74d1df0d4154280292f76b3 *inst/TODO
 f7b16169b6fa9f3e33e186105850bb3c *inst/doc/crq.pdf
