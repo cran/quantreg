@@ -205,6 +205,7 @@ d <- (y > c)
 points(x[!d],y[!d],cex = .5, col = 2)
 f <- crq(Surv(y,d,type = "left") ~ x, method = "Portnoy")
 g <- summary(f)
+for(i in 1:4) abline(coef(g[[i]])[,1])
 }
 
 \keyword{survival}

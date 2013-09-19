@@ -1186,3 +1186,8 @@ arrays identified issues.
 5.02
 
 1.  Fixed logLik.nlrq bug as noted by Erin Graham.
+2.  Changed the default bootstrap method for crq objects to the delete-d 
+jackknife method proposed recently by Portnoy.  This seems to work better
+especially when, as is ofter the case the process is "defective."
+3.  Fixed predict.crq so it would return fitted values when newdata was
+omitted, bug report by Carles Forné Izquierdo.

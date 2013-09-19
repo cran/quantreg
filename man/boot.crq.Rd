@@ -6,7 +6,7 @@ Functions used to estimated standard errors, confidence
 intervals and tests of hypotheses for censored quantile regression models
 using the Portnoy and Peng-Huang methods.  }
 \usage{
-boot.crq(x, y, c, taus, method, ctype = "right", R = 100, mboot, bmethod = "Bose", ...)
+boot.crq(x, y, c, taus, method, ctype = "right", R = 100, mboot, bmethod = "jack", ...)
 }
 \arguments{
   \item{x}{ The regression design matrix}
@@ -16,15 +16,19 @@ boot.crq(x, y, c, taus, method, ctype = "right", R = 100, mboot, bmethod = "Bose
   \item{method}{ The fitting method: either "P" for Portnoy or "PH" for Peng and Huang.}
   \item{ctype}{ Either "right" or "left"}
   \item{R}{ The number of bootstrap replications}
-  \item{bmethod}{ The method to be employed.  There are (as yet) two
-	options:  method = "xy-pair" uses the xy-pair method, that is
-	the usual multinomial resampling of xy-pairs, while  method
+  \item{bmethod}{ The bootstrap method to be employed.  There are (as yet) three
+	options:  method  = "jack" uses the delete-d jackknife method
+	described by Portnoy (2013), method = "xy-pair" uses the xy-pair method, 
+	that is the usual multinomial resampling of xy-pairs, while  method
 	= "Bose" uses the Bose and Chatterjee (2003) weighted resampling
-	method with exponential weights. This is now the default.}
-  \item{mboot}{ optional argument for the bootstrap method "xy-pair" that
-	permits subsampling (m out of n) bootstrap.  Obviously mboot
-	should be substantially larger than the column dimension of x,
-	and should be less than the sample size.}
+	method with exponential weights.  The "jack" method is now the default.}
+  \item{mboot}{ optional argument for the bootstrap method:  for bmethod = "jack"
+	 it specifies the number, d, of the delete-d jackknife, for 
+	 method = "xy-pair" it specifies the size of the bootstrap samples,
+	 that permits subsampling (m out of n) bootstrap.  By default in the
+	 former case it is set to 2 [sqrt(n)], for the latter the default is
+	 n.  Obviously mboot should be substantially larger than the column dimension 
+	 of x, and should be less than the sample size in both cases.}
   \item{...}{ Optional further arguments to control bootstrapping}
 }
 \details{
@@ -43,6 +47,8 @@ method "FP" is done via \code{\link{boot.rq}}.
  Bose, A. and S. Chatterjee, (2003) Generalized bootstrap for estimators
         of minimizers of convex functions, \emph{J. Stat. Planning and Inf}, 117,
         225-239.
+ Portnoy, S. (2013) The Jackknife's Edge:  Inference for Censored Quantile Regression,
+	\emph{CSDA}, forthcoming.
 
 }
 

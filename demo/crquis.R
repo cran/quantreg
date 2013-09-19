@@ -3,7 +3,7 @@
 data(uis)
 #estimate the Peng and Huang model using log(TIME) AFT specification
 fit <- crq(Surv(log(TIME), CENSOR) ~  ND1 + ND2 + IV3 +
-               TREAT + FRAC + RACE + AGE * SITE, method = "Peng", data = uis)
+               TREAT + FRAC + RACE + AGE * SITE, method = "Portnoy", data = uis)
 Sfit <- summary(fit,1:19/20)
 PHit <- coxph(Surv(TIME, CENSOR) ~  ND1 + ND2 + IV3 +
                TREAT + FRAC + RACE + AGE * SITE, data = uis)

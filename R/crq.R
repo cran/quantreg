@@ -144,15 +144,24 @@ QTE <- outer(dQ * (1-taus) * log(1-taus) / Qhat, coef(x))
 list(QTE = QTE , taus = taus)
 }
 boot.crq <- function(x, y, c, taus, method, ctype = "right", R=100,  
-		mboot,  bmethod = "Bose", ...)
+		mboot,  bmethod = "jack", ...)
         {
         n <- length(y)
         p <- ncol(x)
-        if(missing(mboot)) mboot <- n
+        if(missing(mboot)) {
+                if(bmethod=="jack") mboot <- 2*ceiling(sqrt(n))
+                else mboot <- n }
         A <- array(0,dim=c(p,length(taus),R))
 
         for (i in 1:R){
-                if(bmethod == "xy-pair"){
+                if(bmethod == "jack") { 
+                        s <- sample(1:n,mboot)
+                        yb <- y[-s]
+                        xb <- x[-s, ]
+                        cb <- c[-s]  
+                        w <- rep(1,n-mboot)
+                        }
+                else if(bmethod == "xy-pair"){
                         w <- table(sample(1:n,mboot,replace=TRUE))
                         s <- as.numeric(names(w))
                         w <- as.numeric(w)
@@ -178,7 +187,7 @@ boot.crq <- function(x, y, c, taus, method, ctype = "right", R=100,
                         cat(paste("bootstrap roughly ",100*(i/R)," percent complete\n"))
                 A[,,i] <- coef(a,taus)
                 }
-        list(A = A, n = length(y), mboot = mboot)
+        list(A = A, n = length(y), mboot = mboot, bmethod = bmethod)
         }
 
 coef.crq <- function(object, taus = 1:4/5, ...)
@@ -412,7 +421,10 @@ crq.fit.por <- function(x, y, cen, weights = NULL, grid, ctype = "right")
             B <- B[,ncol(B):1]
             }
 	dimnames(B) <- list(c("tau",dimnames(x)[[2]],"Qbar"),NULL)
-	a<-list(sol=B, Isplit=sp, tsp = tsp, status=ic, ctype = ctype)
+	a <- list(sol=B, Isplit=sp, tsp = tsp, status=ic, ctype = ctype)
+	fitted <- x %*% B[-c(1,dim(B)[1]),]
+	dimnames(fitted) <- list(NULL, paste("tau=",round(B[1,],4))) 
+	a$fitted.values <- fitted
 	class(a) <- "crq"
 	return(a) 
 	}
@@ -553,8 +565,10 @@ function (object, taus = 1:4/5, alpha = .05, se = "boot", covariance = TRUE, ...
        if(ctype == "right") taus <- taus[1:ncol(coef)]
        else  taus <- taus[(1 + length(taus)-ncol(coef)):length(taus)]
        B <- boot.crq(x, y, cen, taus, method = method, ctype = ctype, ...)
+       bmethod <- B$bmethod
        nas <- apply(is.na(B$A[1,,, drop = TRUE]),1,sum)
-       sqmn <- sqrt(B$mboot/B$n)
+       if(bmethod == "jack") sqmn <- sqrt((B$n-B$mboot)/B$mboot)
+       else sqmn <- sqrt(B$mboot/B$n)
        fact <-   qnorm(1 - alpha/2)/qnorm(.75)
        B <- apply(B$A, 1:2, quantile, probs = 1:3/4, na.rm = TRUE)
        D <- .5 * fact *(B[3,,]-B[1,,]) * sqmn
@@ -568,7 +582,7 @@ function (object, taus = 1:4/5, alpha = .05, se = "boot", covariance = TRUE, ...
        for(i in 1:length(taus)){
 	   tab <- cbind(coef[,i],L[,i],U[,i],S[,i],T[,i],P[,i])
 	   dimnames(tab)[[2]] <- cnames
-	   G[[i]] <- list(tau = taus[i], coefficients = tab, NAs = nas[i])
+	   G[[i]] <- list(tau = taus[i], coefficients = tab, NAs = nas[i], bmethod = bmethod)
 	   }
        class(G) <- "summary.crqs"
        return(G)

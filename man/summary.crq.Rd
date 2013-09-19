@@ -78,9 +78,11 @@ will be returned if printing is invoked.
 \details{
 For the Fitzenberger-Powell method the resampling strategy used by the
 \code{se = "boot"} method is based on the Bilias, Chen and Ying (2000) 
-proposal.  For the Portnoy and Peng-Huang methods the bootstrapping is based on 
-resampling xy pairs using either conventional multinomial resampling or using 
-exponential weighting as in Bose and Chatterjee (2003).  Note that the default
+proposal.  For the Portnoy and Peng-Huang methods the bootstrapping 
+is by default actually based on  a delete-d jackknife, as described in
+Portnoy (2013), but resampling xy pairs using either conventional multinomial 
+resampling or using exponential weighting as in Bose and Chatterjee (2003)
+can be used by specifying the \code{bmethod} argument.  Note that the default
 number of replications is set at \eqn{R = 100} a value that is obviously too small for
 most applications.  This is done merely to speed up the examples in the 
 documentation and facilitate testing. Larger, more appropriate values of \eqn{R}
@@ -98,7 +100,11 @@ when printed is also reported.
 	225-239.
 
   Bilias, Y. Chen, S. and Z. Ying, (2000) Simple resampling methods for censored
-	quantile regression, J. of Econometrics, 99, 373-386.
+	quantile regression, \emph{J. of Econometrics}, 99, 373-386.
+
+  Portnoy, S. (2013) The Jackknife's Edge:  Inference for Censored Quantile Regression,
+        \emph{CSDA}, forthcoming.
+
 }
 \seealso{
   \code{\link{crq}}, \code{\link{QTECox}}

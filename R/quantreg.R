@@ -1,10 +1,3 @@
-".onAttach" <- function(lib, pkg) {
-#    library.dynam("quantreg", pkg, lib)
-    if(interactive() || getOption("verbose")) # not in test scripts
-	packageStartupMessage(sprintf("Package %s (%s) loaded.
-		To cite, see citation(\"%s\")\n", pkg,
-		packageDescription(pkg)$Version, pkg))
-}
 
 bandwidth.rq <- function(p, n, hs = TRUE, alpha = 0.05)
 {
