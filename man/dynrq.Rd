@@ -3,6 +3,7 @@
 \alias{print.dynrq}
 \alias{print.dynrqs}
 \alias{summary.dynrq}
+\alias{summary.dynrqs}
 \alias{print.summary.dynrq}
 \alias{print.summary.dynrqs}
 \alias{time.dynrq}
@@ -15,7 +16,7 @@
 \description{
 Interface to \code{\link{rq.fit}} and \code{\link{rq.wfit}} for fitting dynamic linear 
 quantile regression models.  The interface is based very closely
-on Achim Zeileis's \code{dynlm} package.  In effect, this is 
+on Achim Zeileis's \code{dynlm} package.  In effect, this is  mainly
 ``syntactic sugar'' for formula processing, but one should never underestimate
 the value of good, natural sweeteners.
 }
@@ -142,8 +143,9 @@ that class (and no internal \code{NA}s were created by the \code{na.action}).
 ## airline data
 data("AirPassengers", package = "datasets")
 ap <- log(AirPassengers)
-ap_fm <- dynrq(ap ~ trend(ap) + season(ap))
-summary(ap_fm)
+fm <- dynrq(ap ~ trend(ap) + season(ap), tau = 1:4/5)
+sfm <- summary(fm)
+plot(sfm)
 
 ## Alternative time trend specifications:
 ##   time(ap)                  1949 + (0, 1, ..., 143)/12

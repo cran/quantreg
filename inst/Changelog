@@ -1183,7 +1183,7 @@ arrays identified issues.
 
 2.  Purged the econometrica.bst bib style, as requested by Brian R.
 
-5.02
+5.04
 
 1.  Fixed logLik.nlrq bug as noted by Erin Graham.
 2.  Changed the default bootstrap method for crq objects to the delete-d 
@@ -1191,3 +1191,14 @@ jackknife method proposed recently by Portnoy.  This seems to work better
 especially when, as is ofter the case the process is "defective."
 3.  Fixed predict.crq so it would return fitted values when newdata was
 omitted, bug report by Carles Forné Izquierdo.
+
+5.05
+
+1.  BDR suggested a fix to dynrq to avoid a ":::" usage.  This led to
+some adventures in environments that eventually led to inclusion of a model
+component in the first element of dynrqs objects so that plotting of
+summary.dynrqs objects could find the appropriate design matrix.
+
+2.  And in addition the Description file was augmented with a greatly
+expanded authors component -- which should have been done years ago
+but was greatly facilitated by the (relatively) new person() function.

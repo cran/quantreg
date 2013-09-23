@@ -1,15 +1,15 @@
-db651885eb2bbca4843dda9536895d2b *DESCRIPTION
+7f0b8afa9a5de79d6675f7954496c232 *DESCRIPTION
 5bb7badbce735cc7f0cb193a9600e6b7 *NAMESPACE
 832fd0744d173af3315a5554d42812de *R/anova.R
 3ad4cde5e3d0f77d3b312a9725db40fc *R/boot.R
 ce4ed5c7fd88b6cff53cf6080e1391c4 *R/combos.R
 559776ea32352b588a31ca4a6344694a *R/crq.R
-2103cc991cb933d3de779a79f758d0cc *R/dynrq.R
+0dc145a95025ec0b740169f316735445 *R/dynrq.R
 13d99ab6094e93feb43c1a1c48de8da2 *R/khmal.R
 b1a67aeea28b2511b0301debfec906c6 *R/kuantile.R
 d2f509eb6977017d1b77faae7de97a7c *R/lprq.R
 8e3aba1efd8a511cbf397bba9c94a0d3 *R/nlrq.R
-cba3f0be7bac674ab3eadf974c57ab9f *R/quantreg.R
+a6207d86ac3adfb58041dca6fd09a2c6 *R/quantreg.R
 d5750377456fef4ff659b1c66d46dca4 *R/rqss.R
 4e056211e41cba2c4ac92c4ad6048dbe *R/sfn.R
 ac9ba936402e6d80efa941f470b85bc4 *R/table.R
@@ -37,7 +37,7 @@ d907e0e11fd1a4007ca28a3d1b03efed *demo/engel1.R
 aa2009c3a395aee9512819bb72dbc5c1 *demo/hinged.R
 ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 54b67ce66f210821311e4453b2ec7d03 *demo/rqsslasso.R
-9eda6024274a6354dc4e1ad3c9a9dba8 *inst/ChangeLog
+4693866e6b571fd531e6b9d0a882ca39 *inst/ChangeLog
 312d1969a8ca11db63c317dde84bb403 *inst/FAQ
 18dfe18bf74d1df0d4154280292f76b3 *inst/TODO
 f7b16169b6fa9f3e33e186105850bb3c *inst/doc/crq.pdf
@@ -61,7 +61,7 @@ f0c967422ef597cf9b87bee298fc0ec9 *man/combos.Rd
 e95befd0c07043e2f858f55c43d95b51 *man/critval.Rd
 4d61e68cfc42f2b69130f265d7521724 *man/crq.Rd
 7a808195ff0171df916917d7ed31ecb7 *man/dither.Rd
-44b74a12aaddc7fba332d2ee754ced73 *man/dynrq.Rd
+27d4bb97920c2ce82c2b21216ec5e48c *man/dynrq.Rd
 1a3a7dbfb064513db6b48ce85d06524f *man/engel.Rd
 e85b7b9ab42cc28a9b8f0660b7d63408 *man/khmaladzeTest.Rd
 ae4f006622b154a304a34633f9bc56c0 *man/kuantile.Rd

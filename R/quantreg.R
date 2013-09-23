@@ -889,8 +889,14 @@ function (object, ...) {
                 xi$tau <- xi$tau[i]
                 class(xi) <- "rq"
                 xsum[[i]] <- summary(xi, ...)
+		if(class(object)[1] == "dynrqs"){
+		    class(xsum[[1]]) <- c("summary.dynrq", "summary.rq")
+	            if(i == 1) xsum[[1]]$model <- object$model
+		    }
                 }
         class(xsum) <- "summary.rqs"
+	if(class(object)[1] == "dynrqs") 
+	    class(xsum) <- c("summary.dynrqs", "summary.rqs")
         xsum
         }
 "logLik.rq" <- function(object,  ...){

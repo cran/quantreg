@@ -1,7 +1,7 @@
 dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method = "br", 
     contrasts = NULL, start = NULL, end = NULL, ...) 
 {
-    require(zoo)
+    stopifnot(require("zoo"))
     Zenv <- new.env(parent = environment(formula))
     assign("dynformula", function(x) structure(x, class = unique(c("dynformula", 
         oldClass(x)))), envir = Zenv)
@@ -78,8 +78,7 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
         args$retclass <- "list"
         args$all <- FALSE
         formula <- terms(formula)
-        attr(formula, "predvars") <- as.call(append(merge.zoo, 
-            args))
+        attr(formula, "predvars") <- as.call(append(merge.zoo, args))
         attr(formula, "predvars")[[1]] <- as.name("merge.zoo")
         NextMethod("model.frame", formula = formula)
     }, envir = Zenv)
@@ -135,7 +134,7 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
     }
     if ("ts" %in% orig.class && is.regular(mf1, strict = TRUE)) {
         for (i in 1:ncol(mf)) if (!is.factor(mf[, i])) 
-            mf[, i] <- zoo:::as.ts.zoo(mf[, i])
+            mf[, i] <- as.ts(mf[, i])
     }
     if (all(orig.class == "numeric")) {
         for (i in 1:ncol(mf)) if (!is.factor(mf[, i])) 
@@ -242,10 +241,10 @@ print.dynrqs <- function(x, ...) {
   NextMethod()
 }
 
-summary.dynrq <- function(object, vcov. = NULL, df = NULL, ...) {
+summary.dynrqs <- function(object, vcov. = NULL, df = NULL, ...) {
   rval <- NextMethod()
-  rval$frequency <- object$frequency
-  class(rval) <- c("summary.dynrq", class(rval))
+  #rval$frequency <- object$frequency
+  #class(rval) <- c("summary.dynrqs", class(rval))
   return(rval)
 }
 
@@ -258,5 +257,5 @@ print.summary.dynrq <- function(x, ...) {
   NextMethod()
 }
 print.summary.dynrqs <- function(x, ...) {
-  lapply(x, print.summary.dynrq)
+  lapply(x, print)
 }
