@@ -744,7 +744,7 @@ data(mcycle)
 attach(mcycle)
 plot(times,accel,xlab = "milliseconds", ylab = "acceleration")
 hs <- c(1,2,3,4)
-for(i in hs){
+for(i in 1:length(hs)){
         h = hs[i]
         fit <- lprq(times,accel,h=h,tau=.5)
         lines(fit$xx,fit$fv,lty=i)
@@ -825,7 +825,7 @@ package.
 The function \texttt{rqss} offers a formula interface to
 nonparametric quantile regression fitting with total variation
 roughness penalties.  Consider the running speed of mammals example
-from Chapter 7.  The objective is to estimate a model for the
+from Section 7.  The objective is to estimate a model for the
 upper envelope of the scatterplot, a model that would reflect
 best evolutionary practice in mammalian ambulatory efficiency.
 In contrast to the least squares analysis
@@ -867,7 +867,7 @@ function gradient.}
 \end{figure}
 
 Bivariate nonparametric fitting using the triogram methods described
-in Chapter 7 can be handled in a similar manner.
+in Section 7 can be handled in a similar manner.
 If we consider the Cobar mining data from \citet*{gree:silv.94}
 \begin{figure}
 \begin{center}

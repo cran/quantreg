@@ -13,3 +13,4 @@ rqsslasso	Demo for lasso penalized rqss
 arqss	Demo for automatic lambda selection
 Mammals	Demo for rqss with running speed of mammals data
 crquis	Demo for crq method using UIS data and Peng Huang method.
+RB-r	Demo for testing R beta = r using anova[.rq]

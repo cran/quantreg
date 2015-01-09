@@ -316,9 +316,10 @@ function (x, file = as.character(substitute(x)), rowlabel = file,
             else paste(sl, "label{", label, "}", sep = ""), "}", 
             sep = "")
     if (!longtable) {
-        if (table.env) 
-            cat(sl, "begin{table}[hptb]\n", sep = "", file = fi, 
-                append = TRUE)
+        if (table.env){ 
+            cat(sl, "begin{table}[hptb]\n", sep = "", file = fi, append = TRUE)
+            cat(caption, "\n", sep = "", file = fi, append = TRUE)
+	}
         cat(sl, "begin{center}\n", file = fi, sep = "", append = TRUE)
         cat(sl, "begin{tabular}{", form, "} ", sl, "hline", hline, 
             "\n", sep = "", file = fi, append = TRUE)

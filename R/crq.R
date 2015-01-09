@@ -411,6 +411,7 @@ crq.fit.por <- function(x, y, cen, weights = NULL, grid, ctype = "right")
 		ifelse(flag <= 3,stop(msg),warning(msg))
 	J <- z$lsol
 	B <- matrix(z$sol, nrow=p+2, ncol=nsol, byrow=FALSE)[,1:J, drop = FALSE]
+	if(B[1,J] < B[1,J-1]) B <- B[,-J] # SLP hack Oct 27 2014
 	ic <- z$icen
 	sp <- (1:n)[ic == 1]
 	tsp <- z$tcen[sp]
@@ -613,7 +614,7 @@ print.crq <- function(x, ...){
                 cat("Call:\n")
                 dput(cl)
 		}
-        coef <- coef(x)
+        coef <- coef(x, ...)
         cat("\nCoefficients:\n")
 	print.default(coef)
         invisible(x)

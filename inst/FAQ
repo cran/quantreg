@@ -67,6 +67,13 @@ the the sum of the weighted absolute deviations in the models ..."
    of Fit and Related Inference Processes for Quantile Regression 
    J. of Am Stat. Assoc, (1999), 94, 1296-1310. 
 
+4a.  [R^2 redux]  "I am very interested in the coefficient of determination for   
+different quantile regression models.  And, I have f1, but don't know what is f0, 
+so that I failed to run R1  in your FAQ 4.  Could you please help me solve my question?"
+
+    f0 could be any nested fit, but usually it would be rq(y ~ 1, ...) a model
+    with only an intercept that returned unconditional quantile estimates.
+
 5.  [Singular Designs]  "R crashes in some cases when fitting models with rq()."
 
    This happened in some earlier versions of the package when the design matrix
@@ -114,3 +121,13 @@ can not calculate.Why do rq.object can compute AIC?
    This is discussed many places in the literature.  Yes, it is not a "real"  
    likelihood, only a pseudo likelihood, but then the Gaussian likelihood is 
    usually not a real likelihood either most of the time....
+
+11.  I would like to know why the equivariance property is so important in the quantile 
+regression model. I have read a lot of article about it; but I don't really get the idea.
+
+    As a basic philosophical matter it really isn't that important,  the nearest star
+    is very far away and we will all die, but in math the idea that functions commute:
+    in the QR case that Q_h(Y) = h(Q_Y) is  interesting, and it doesn't hold if you 
+    replace Q by E.
+
+

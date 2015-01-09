@@ -1202,3 +1202,16 @@ summary.dynrqs objects could find the appropriate design matrix.
 2.  And in addition the Description file was augmented with a greatly
 expanded authors component -- which should have been done years ago
 but was greatly facilitated by the (relatively) new person() function.
+
+5.07 
+
+1.  Bug fix in predict.rq:  when mofn < n and percentile method the
+interval needed to be recentered and rescaled, not enough to just 
+rescale B matrix.
+
+5.08
+
+1.  Incorporated my qrisk package for portfolio selection into quantreg.
+This includes the function rq.fit.hogg() that does what Zou and Yuan
+call composite quantile regression, or more accurately a generalized 
+version of this.

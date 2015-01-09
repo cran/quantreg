@@ -263,16 +263,27 @@ function (object, newdata, type = "none", interval = c("none",
     if (length(dots$se))
         boot <- (dots$se == "boot")
     else boot <- FALSE
+    if (length(dots$mofn))
+         mofn <- dots$mofn
     interval <- match.arg(interval)
     if (!interval == "none") {
         if (interval == "confidence") {
             if (type == "percentile") {
                 if (boot) {
-                  XB <- X %*% t(summary(object, cov = TRUE, ...)$B)
-                  pl <- apply(XB, 1, function(x) quantile(x,
-                    (1 - level)/2))
-                  pu <- apply(XB, 1, function(x) quantile(x,
-                    1 - (1 - level)/2))
+		    if(exists("mofn")) {# Rescale and recenter!!
+		      n <- length(object$fitted)
+                      factor <- ifelse(mofn < n, sqrt(mofn/n), 1)
+                      XB <- X %*% t(summary(object, cov = TRUE, ...)$B)/factor
+                      pl <- apply(XB, 1, function(x) quantile(x, (1 - level)/2))
+                      pu <- apply(XB, 1, function(x) quantile(x, 1 - (1 - level)/2))
+                      pl <- pred + factor * (pl - pred)
+                      pu <- pred + factor * (pu - pred)
+                  }
+                  else {
+                      XB <- X %*% t(summary(object, cov = TRUE, ...)$B)
+                      pl <- apply(XB, 1, function(x) quantile(x, (1 - level)/2))
+                      pu <- apply(XB, 1, function(x) quantile(x, 1 - (1 - level)/2))
+                  }
                   pred <- cbind(pred, pl, pu)
                   colnames(pred) <- c("fit", "lower", "higher")
                 }
@@ -790,7 +801,7 @@ function(x, y, tau = 0.5,  Mm.factor = 0.8,
 			s <- sample(n, m)
 		else {
 			z <- rq.fit.fnb(x, y, tau = tau,  eps = eps)
-			return(list(coef = z$coef,tau = tau, resid = z$resid))
+			break
 		}
 		xx <- x[s,  ]
 		yy <- y[s]
@@ -1170,4 +1181,58 @@ function(X, y, int = TRUE)
 		PACKAGE = "quantreg")
 	bhat <- matrix(z$b, p, n)
 	return(bhat)
+}
+
+"rq.fit.hogg" <-
+function (x, y, taus = c(.1,.3,.5), weights = c(.7,.2,.1),  
+	R= NULL, r = NULL, beta = 0.99995, eps = 1e-06) 
+{
+    n <- length(y)
+    n2 <- nrow(R)
+    m <- length(taus)
+    p <- ncol(x)+m
+    if (n != nrow(x)) 
+        stop("x and y don't match n")
+    if (m != length(weights)) 
+        stop("taus and weights differ in length")
+    if (any(taus < eps) || any(taus > 1 - eps)) 
+        stop("taus outside (0,1)")
+    W <- diag(weights)
+    if(m == 1) W <- weights
+    X <- cbind(kronecker(W,rep(1,n)),kronecker(weights,x))
+    y <- kronecker(weights,y)
+    rhs <- c(weights*(1 - taus)*n, sum(weights*(1-taus)) * apply(x, 2, sum))
+    if(n2!=length(r))
+	stop("R and r of incompatible dimension")
+    if(ncol(R)!=p)
+	stop("R and X of incompatible dimension")
+    d <- rep(1, m*n)
+    u <- rep(1, m*n)
+    if(length(r)){
+       wn1 <- rep(0, 10 * m*n)
+       wn1[1:(m*n)] <- .5
+       wn2 <- rep(0,6*n2)
+       wn2[1:n2] <- 1 
+       z <- .Fortran("rqfnc", as.integer(m*n), as.integer(n2), as.integer(p), 
+           a1 = as.double(t(as.matrix(X))), c1 = as.double(-y), 
+           a2 = as.double(t(as.matrix(R))), c2 = as.double(-r), 
+           rhs = as.double(rhs), d1 = double(m*n), d2 = double(n2), 
+           as.double(u), beta = as.double(beta), eps = as.double(eps), 
+           wn1 = as.double(wn1), wn2 = as.double(wn2), wp = double((p + 3) * p), 
+	   it.count = integer(2), info = integer(1), PACKAGE = "quantreg")
+	}
+    else{
+	wn <- rep(0, 10 * m*n)
+    	wn[1:(m*n)] <- .5
+    	z <- .Fortran("rqfnb", as.integer(m*n), as.integer(p), a = as.double(t(as.matrix(X))), 
+		c = as.double(-y), rhs = as.double(rhs), d = as.double(d), as.double(u), 
+		beta = as.double(beta), eps = as.double(eps), wn = as.double(wn), 
+		wp = double((p + 3) * p), it.count = integer(2), info = integer(1),
+		PACKAGE = "quantreg")
+	}
+    if (z$info != 0) 
+        warning(paste("Info = ", z$info, "in stepy: singular design: iterations ", z$it.count[1]))
+    coefficients <- -z$wp[1:p]
+    if(any(is.na(coefficients)))stop("NA coefs:  infeasible problem?")
+    list(coefficients = coefficients, nit = z$it.count, flag = z$info)
 }
