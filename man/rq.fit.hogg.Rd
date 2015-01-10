@@ -9,7 +9,8 @@ composite quantile regression in that it permits weighting of the components of 
 objective function and also allows linear constraints on the coefficients.
 }
 \usage{
-rq.fit.hogg(x, y, taus = c(0.1, 0.3, 0.5), weights = c(0.7, 0.2, 0.1), R = NULL, r = NULL, beta = 0.99995, eps = 1e-06)
+rq.fit.hogg(x, y, taus = c(0.1, 0.3, 0.5), weights = c(0.7, 0.2, 0.1), 
+	    R = NULL, r = NULL, beta = 0.99995, eps = 1e-06)
 }
 \arguments{
   \item{x}{design matrix}
@@ -34,7 +35,7 @@ handles linear inequality constraints.  See \code{\link{qrisk}} for illustration
 of its use in portfolio allocation.
 }
 \value{
-  \item{coeficients}{estimated coefficients of the model}
+  \item{coefficients}{estimated coefficients of the model}
 }
 \references{
 Zou, Hui and and Ming Yuan (2008)  Composite quantile regression and the

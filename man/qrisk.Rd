@@ -7,14 +7,15 @@ optimal portfolio weights minimizing a Choquet risk criterion described
 in Bassett, Koenker, and Kordas (2002).
 }
 \usage{
-qrisk(x, alpha = c(0.1, 0.3), w = c(0.7, 0.3), mu = 0.07, R = NULL, r = NULL, lambda = 10000)
+qrisk(x, alpha = c(0.1, 0.3), w = c(0.7, 0.3), mu = 0.07, 
+      R = NULL, r = NULL, lambda = 10000)
 }
 \arguments{
   \item{x}{n by q matrix of historical or simulated asset returns }
   \item{alpha}{vector of alphas receiving positive weights in the Choquet criterion}
   \item{w}{weights associated with alpha in the Choquet criterion  }
   \item{mu}{targeted rate of return for the portfolio}
-  \item{R}{matrix of constraints on the parameters of the quantile regression, see below }
+  \item{R}{matrix of constraints on the parameters of the quantile regression, see below}
   \item{r}{rhs vector of the constraints described by R}
   \item{lambda}{Lagrange multiplier associated with the constraints}
 }
@@ -33,7 +34,8 @@ See examples for imposing non-negative portfolio weights.
 \references{
 http://www.econ.uiuc.edu/~roger/research/risk/risk.html
 
-Bassett, G., R. Koenker, G Kordas, (2004) Pessimistic Portfolio Allocation and Choquet Expected Utility, J. of Financial Econometrics,  2, 477-492.
+Bassett, G., R. Koenker, G Kordas, (2004) Pessimistic Portfolio Allocation and 
+Choquet Expected Utility, J. of Financial Econometrics,  2, 477-492.
 }
 \author{ R. Koenker }
 \examples{

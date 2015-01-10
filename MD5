@@ -1,4 +1,4 @@
-e0bf8b6ad5af5b0044bd3eac8567d76f *DESCRIPTION
+73de3491db3c91c61e6ff79d82314603 *DESCRIPTION
 5bb7badbce735cc7f0cb193a9600e6b7 *NAMESPACE
 832fd0744d173af3315a5554d42812de *R/anova.R
 3ad4cde5e3d0f77d3b312a9725db40fc *R/boot.R
@@ -10,7 +10,7 @@ b1a67aeea28b2511b0301debfec906c6 *R/kuantile.R
 d2f509eb6977017d1b77faae7de97a7c *R/lprq.R
 8e3aba1efd8a511cbf397bba9c94a0d3 *R/nlrq.R
 32187dc36d432d70e15151ef6aa3d890 *R/qrisk.R
-d10884317a98ae20926837058c32b3d4 *R/quantreg.R
+d625c5d87a902e7a1953b17069ace71b *R/quantreg.R
 d5750377456fef4ff659b1c66d46dca4 *R/rqss.R
 4e056211e41cba2c4ac92c4ad6048dbe *R/sfn.R
 f0b39d29269a1fee63c98087f9d3fae7 *R/table.R
@@ -82,7 +82,7 @@ ac041e0db1de2b6db2322296087d009e *man/plot.rqss.Rd
 8cec74401439269b97c489e3335af5d6 *man/predict.rqss.Rd
 686fc7e0c9f3138fd5ff01645b8e9911 *man/print.rq.Rd
 5745e185fe3d47339bd0242bdbc29e23 *man/print.summary.rq.Rd
-b94ecebb539c698a90b4120626930e8b *man/qrisk.Rd
+421e357c73d3e4113533387e4a888dbf *man/qrisk.Rd
 e76d62df1774c858985794090afe65c6 *man/qss.Rd
 a916d9f3d2bed1c77cba165f268873a6 *man/ranks.Rd
 e4a4292807cd1a251a98f57e7892e427 *man/rearrange.Rd
@@ -92,7 +92,7 @@ e4a4292807cd1a251a98f57e7892e427 *man/rearrange.Rd
 aea8247091db06872d7b0b25ff7e8184 *man/rq.fit.br.Rd
 e92924a833ccfe568134875a08f4cc9f *man/rq.fit.fnb.Rd
 d0f422911138a73ea6f7f236dc28bd8e *man/rq.fit.fnc.Rd
-372946fc95a20ab3d919b401b29ebf12 *man/rq.fit.hogg.Rd
+d9681d17118e87470b2b13c9eed7ae3e *man/rq.fit.hogg.Rd
 6a17a99c583f7cbcb0842fdec68ab6cf *man/rq.fit.lasso.Rd
 6e3579d432e00adf4021b1bf685d66b9 *man/rq.fit.pfn.Rd
 55f92799613bbb08fd10107f92a55c16 *man/rq.fit.scad.Rd

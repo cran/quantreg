@@ -1219,7 +1219,7 @@ function (x, y, taus = c(.1,.3,.5), weights = c(.7,.2,.1),
            rhs = as.double(rhs), d1 = double(m*n), d2 = double(n2), 
            as.double(u), beta = as.double(beta), eps = as.double(eps), 
            wn1 = as.double(wn1), wn2 = as.double(wn2), wp = double((p + 3) * p), 
-	   it.count = integer(2), info = integer(1), PACKAGE = "quantreg")
+	   it.count = integer(3), info = integer(1), PACKAGE = "quantreg")
 	}
     else{
 	wn <- rep(0, 10 * m*n)
