@@ -266,6 +266,8 @@ for(tau in 1:3/4){
 ###################################################
 data(Mammals)
 attach(Mammals)
+library(MatrixModels)
+library(Matrix)
 
 
 ###################################################

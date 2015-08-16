@@ -64,7 +64,7 @@ rq(formula, tau=.5, data, subset, weights, na.action,
     and may be used to compute the full quantile regression process.  It 
     also implements a scheme for computing confidence intervals for 
     the estimated parameters, based on inversion of a rank test described 
-    in Koenker(1994).  For larger problems it is advantagous to use 
+    in Koenker(1994).  For larger problems it is advantageous to use 
     the Frisch--Newton interior point method \code{"fn"}. 
     And very large problems one can use the Frisch--Newton approach after 
     preprocessing \code{"pfn"}.  Both of the latter methods are

@@ -1,7 +1,7 @@
 dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method = "br", 
     contrasts = NULL, start = NULL, end = NULL, ...) 
 {
-    stopifnot(require("zoo"))
+    stopifnot(requireNamespace("zoo"))
     Zenv <- new.env(parent = environment(formula))
     assign("dynformula", function(x) structure(x, class = unique(c("dynformula", 
         oldClass(x)))), envir = Zenv)
@@ -10,7 +10,7 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
             rval <- lapply(k, function(i) lag(x, k = -i))
             rval <- if (inherits(x, "ts")) 
                 do.call("ts.intersect", rval)
-            else do.call("merge", c(rval, list(all = FALSE)))
+            else do.call("zoo::merge", c(rval, list(all = FALSE)))
             colnames(rval) <- k
         }
         else {
@@ -29,10 +29,10 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
         else if (freq == 4) 
             paste("Q", 1:4, sep = "")
         else 1:freq
-        rval <- factor(coredata(cycle(x)), labels = freq)
+        rval <- factor(zoo::coredata(cycle(x)), labels = freq)
         if (!is.null(ref)) 
             rval <- relevel(rval, ref = ref)
-        rval <- zoo(rval, index(x), ofreq)
+        rval <- zoo::zoo(rval, zoo::index(x), ofreq)
         return(rval)
     }, envir = Zenv)
     assign("trend", function(x, scale = TRUE) {
@@ -44,7 +44,7 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
         stopifnot(freq >= 1 && identical(all.equal(freq, round(freq)), 
             TRUE))
         freq <- round(freq)
-        rval <- zoo(seq_along(index(x))/freq, index(x), frequency = ofreq)
+        rval <- zoo::zoo(seq_along(zoo::index(x))/freq, zoo::index(x), frequency = ofreq)
         return(rval)
     }, envir = Zenv)
     assign("harmon", function(x, order = 1) {
@@ -54,7 +54,7 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
         freq <- round(freq)
         order <- round(order)
         stopifnot(order <= freq/2)
-        rval <- outer(2 * pi * index(x), 1:order)
+        rval <- outer(2 * pi * zoo::index(x), 1:order)
         rval <- cbind(apply(rval, 2, cos), apply(rval, 2, sin))
         colnames(rval) <- if (order == 1) {
             c("cos", "sin")
@@ -78,7 +78,7 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
         args$retclass <- "list"
         args$all <- FALSE
         formula <- terms(formula)
-        attr(formula, "predvars") <- as.call(append(merge.zoo, args))
+        attr(formula, "predvars") <- as.call(append(zoo::merge.zoo, args))
         attr(formula, "predvars")[[1]] <- as.name("merge.zoo")
         NextMethod("model.frame", formula = formula)
     }, envir = Zenv)
@@ -97,28 +97,28 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
     mf[[2]] <- as.call(list(as.name("dynformula"), mf[[2]]))
     mf <- eval(mf, envir = Zenv)
     mfna <- attr(mf, "na.action")
-    if (length(index(mf[, 1])) > nrow(mf)) {
+    if (length(zoo::index(mf[, 1])) > nrow(mf)) {
         for (i in 1:NCOL(mf)) attr(mf[, i], "index") <- attr(mf[, 
             i], "index")[-as.vector(mfna)]
     }
     is.zoofactor <- function(x) !is.null(attr(x, "oclass")) && 
         attr(x, "oclass") == "factor"
     for (i in 1:NCOL(mf)) if (is.zoofactor(mf[, i])) 
-        mf[, i] <- coredata(mf[, i])
+        mf[, i] <- zoo::coredata(mf[, i])
     mf1 <- mf[, 1]
     start <- if (is.null(start)) 
         1
     else {
         if (length(start) > 1) 
             start <- start[1] + (start[2] - 1)/frequency(mf1)
-        start <- min(which(index(mf1) >= start))
+        start <- min(which(zoo::index(mf1) >= start))
     }
     end <- if (is.null(end)) 
         length(mf1)
     else {
         if (length(end) > 1) 
             end <- end[1] + (end[2] - 1)/frequency(mf1)
-        end <- max(which(index(mf1) <= end))
+        end <- max(which(zoo::index(mf1) <= end))
     }
     if (end < start) {
         warning("empty model frame specified")
@@ -132,7 +132,7 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
             attr(mf, "na.action") <- mfna[as.vector(mfna) >= 
                 start & as.vector(mfna) <= end]
     }
-    if ("ts" %in% orig.class && is.regular(mf1, strict = TRUE)) {
+    if ("ts" %in% orig.class && zoo::is.regular(mf1, strict = TRUE)) {
         for (i in 1:ncol(mf)) if (!is.factor(mf[, i])) 
             mf[, i] <- as.ts(mf[, i])
     }
@@ -140,7 +140,7 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
         for (i in 1:ncol(mf)) if (!is.factor(mf[, i])) 
             mf[, i] <- as.vector(mf[, i])
     }
-    rownames(mf) <- index2char(index(mf1), frequency(mf1))
+    rownames(mf) <- zoo::index2char(zoo::index(mf1), frequency(mf1))
     mt <- attr(mf, "terms")
     attr(mt, "predvars") <- NULL
     attr(mt, "dataClasses") <- NULL
@@ -201,7 +201,7 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
     rval$tau <- tau
     rval$terms <- mt
     rval$model <- mf
-    rval$index <- index(mf1)
+    rval$index <- zoo::index(mf1)
     rval$frequency <- frequency(mf1)
     rval$residuals <- drop(rval$residuals)
     rval$X <- X
@@ -213,7 +213,7 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
     return(rval)
 }
 
-index.dynrq <- time.dynrq <- function(x, ...) {
+index.dynrq <- function(x, ...) {
   x$index
 }
 
@@ -228,16 +228,16 @@ end.dynrq <- function(x, ...) {
 print.dynrq <- function(x, ...) {
   rx <- residuals(x)
   cat(paste("\nDynamic quantile regression \"", class(rx)[1], "\" data:\n", sep = ""))
-  cat(paste("Start = ", index2char(index(rx)[1], x$frequency),
-            ", End = ",   index2char(index(rx)[length(rx)], x$frequency), "\n", sep = ""))
+  cat(paste("Start = ", zoo::index2char(zoo::index(rx)[1], x$frequency),
+            ", End = ",   zoo::index2char(zoo::index(rx)[length(rx)], x$frequency), "\n", sep = ""))
   NextMethod()
 }
 print.dynrqs <- function(x, ...) {
   rx <- residuals(x)
   ix <- dimnames(rx)[[1]]
   cat(paste("\nDynamic quantile regression \"", class(rx)[1], "\" data:\n", sep = ""))
-  cat(paste("Start = ", index2char(ix[1], x$frequency),
-            ", End = ",   index2char(ix[length(ix)], x$frequency), "\n", sep = ""))
+  cat(paste("Start = ", zoo::index2char(ix[1], x$frequency),
+            ", End = ",   zoo::index2char(ix[length(ix)], x$frequency), "\n", sep = ""))
   NextMethod()
 }
 
@@ -250,10 +250,10 @@ summary.dynrqs <- function(object, vcov. = NULL, df = NULL, ...) {
 
 print.summary.dynrq <- function(x, ...) {
   rx <- residuals(x)
-  x$residuals <- coredata(x$residuals)
+  x$residuals <- zoo::coredata(x$residuals)
   cat(paste("\nDynamic quantile  regression \"", class(rx)[1], "\" data:\n", sep = ""))
-  cat(paste("Start = ", index2char(index(rx)[1], x$frequency),
-            ", End = ",   index2char(index(rx)[length(rx)], x$frequency), "\n", sep = ""))
+  cat(paste("Start = ", zoo::index2char(zoo::index(rx)[1], x$frequency),
+            ", End = ",   zoo::index2char(zoo::index(rx)[length(rx)], x$frequency), "\n", sep = ""))
   NextMethod()
 }
 print.summary.dynrqs <- function(x, ...) {

@@ -178,7 +178,12 @@ function (formula, tau = 0.5, data, subset, weights, na.action, method = "br",
 "rq.fit" <-
 function(x, y, tau = 0.5, method = "br", ...)
 {
-	fit <- switch(method,
+    if(length(tau) > 1) {
+	    tau <- tau[1]
+	    warning("Multiple taus not allowed in rq.fit: solution restricted to first element")
+	}
+
+    fit <- switch(method,
 		fn = rq.fit.fnb(x, y, tau = tau, ...),
 		fnb = rq.fit.fnb(x, y, tau = tau, ...),
 		fnc = rq.fit.fnc(x, y, tau = tau, ...),
@@ -714,8 +719,8 @@ function (x, y, tau = 0.5, alpha = 3.2, lambda = 1, start = "rq", beta = 0.9995,
     	z <- .Fortran("rqfnb", as.integer(N), as.integer(p), a = as.double(t(as.matrix(X))),
         	c = as.double(-Y), vrhs = as.double(vrhs), d = as.double(d),
         	as.double(u), beta = as.double(beta), eps = as.double(eps),
-        	wn = as.double(wn), wp = double((p + 3) * p), aa = double(p *
-            	p), it.count = integer(3), info = integer(1), PACKAGE = "quantreg")
+        	wn = as.double(wn), wp = double((p + 3) * p), 
+            	it.count = integer(3), info = integer(1), PACKAGE = "quantreg")
 	coef <- -z$wp[1:p]
 	vscad <- c(0,dscad(coef[2:p]) * sign(coef[2:p]))
 	}
@@ -800,7 +805,7 @@ function(x, y, tau = 0.5,  Mm.factor = 0.8,
 		if(m < n)
 			s <- sample(n, m)
 		else {
-			z <- rq.fit.fnb(x, y, tau = tau,  eps = eps)
+			b <- rq.fit.fnb(x, y, tau = tau,  eps = eps)$coef
 			break
 		}
 		xx <- x[s,  ]
@@ -865,11 +870,16 @@ function(x, y, tau = 0.5, weights, method = "br",  ...)
 {
 	if(any(weights < 0))
 		stop("negative weights not allowed")
+	if(length(tau) > 1) {
+	    tau <- tau[1]
+	    warning("Multiple taus not allowed in rq.wfit: solution restricted to first element")
+	}
 	contr <- attr(x, "contrasts")
 	wx <- x * weights
 	wy <- y * weights
 	fit <- switch(method,
 		fn = rq.fit.fnb(wx, wy, tau = tau, ...),
+		fnb = rq.fit.fnb(wx, wy, tau = tau, ...),
 		br = rq.fit.br(wx, wy, tau = tau, ...),
 		fnc = rq.fit.fnc(wx, wy, tau = tau, ...),
                 pfn = rq.fit.pfn(wx, wy, tau = tau, ...), {
@@ -1199,6 +1209,7 @@ function (x, y, taus = c(.1,.3,.5), weights = c(.7,.2,.1),
         stop("taus outside (0,1)")
     W <- diag(weights)
     if(m == 1) W <- weights
+    x <- as.matrix(x)
     X <- cbind(kronecker(W,rep(1,n)),kronecker(weights,x))
     y <- kronecker(weights,y)
     rhs <- c(weights*(1 - taus)*n, sum(weights*(1-taus)) * apply(x, 2, sum))

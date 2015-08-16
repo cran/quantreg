@@ -1,5 +1,6 @@
 \name{anova.rq}
 \alias{anova.rq}
+\alias{anova.rqs}
 \alias{anova.rqlist}
 \alias{print.anova.rq}
 \alias{rq.test.rank}
@@ -9,7 +10,9 @@
 	Compute test statistics for two or more quantile regression fits.
 }
 \usage{
-\method{anova}{rq}(object, ...)
+\method{anova}{rq}(object, ..., test = "Wald", joint = TRUE, score =
+                       "tau", se = "nid", R = 200, trim = NULL)
+\method{anova}{rqs}(object, ..., se = "nid", joint = TRUE)
 \method{anova}{rqlist}(object, ...,  test = "Wald", joint = TRUE, 
 	score = "tau", se = "nid", R = 200, trim = NULL)
 rq.test.rank(x0, x1, y, v = NULL, score = "wilcoxon", weights = NULL, tau=.5,
@@ -18,7 +21,9 @@ rq.test.anowar(x0,x1,y,tau,R)
 \method{print}{anova.rq}(x, ...)
 }
 \arguments{
-  \item{object, ...}{ objects of class `rq', originating from a call to `rq'. }
+  \item{object, ...}{objects of class `rq', originating from a call to `rq'. 
+	or a single object of class rqs, originating from a call to 'rq' with
+	multiple taus specified.}
   \item{test}{ A character string specifying the test statistic to use.
 	Can be either `Wald' or `rank'.}
   \item{joint}{A logical flag indicating whether tests of equality of slopes
@@ -40,7 +45,8 @@ rq.test.anowar(x0,x1,y,tau,R)
   \item{x1}{design matrix for the alternative component of the rank and anowar tests. }
   \item{y}{response vector for the alternative component of the rank and anowar tests. }
   \item{v}{optional rq process fit}
-  \item{se}{method for computing standard errors, either "nid" or "ker"}
+  \item{se}{method for computing standard errors, either "nid" or "ker", note 
+	that "boot" cannot be used for testing homogeneity of slopes.}
   \item{tau}{quantile of interest for quantile specific forms of testing.}
   \item{iid}{logical flag for quantile specific forms of testing, if TRUE the
 	test presumes that the conditional densities take identical values,
@@ -155,6 +161,9 @@ fit3 <- rq(y.net ~  lgdp2 + fse2 + gedy2 + Iy2 + gcony2, data = barro,tau=.25)
 anova(fit1,fit0)
 anova(fit1,fit2,fit3)
 anova(fit1,fit2,fit3,joint=FALSE)
+# Alternatively fitting can be done in one call:
+fit <- rq(y.net ~  lgdp2 + fse2 + gedy2 + Iy2 + gcony2, 
+	  method = "fn", tau = 1:4/5, data = barro)
 }
 \keyword{ htest }
 \keyword{ regression}

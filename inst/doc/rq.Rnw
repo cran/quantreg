@@ -614,7 +614,7 @@ To carry out the test we can either compute the test using the full
 quantile regression process or on a moderately fine grid of taus:
 
 <<label=gastest>>=
-source("gasprice.R")
+data(gasprice)
 x <- gasprice
 n <- length(x)
 p <- 5 # lag length
@@ -847,6 +847,8 @@ attach(Mammals)
 \begin{figure}
 \begin{center}
 <<label = mammals, fig=TRUE>>=
+library(MatrixModels)
+library(Matrix)
 x <- log(weight)
 y <- log(speed)
 plot(x,y, xlab="Weight in log(Kg)", ylab="Speed in log(Km/hour)",type="n")

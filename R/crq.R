@@ -132,7 +132,7 @@ Curv <- function (y,  yc, ctype = c("left", "right"))
 
 QTECox <- function(x, smooth = TRUE){
 # compute quantile treatment effect for a Cox PengHuang fit
-g <- survfit(x)
+g <- survival::survfit(x)
 if(smooth)
         g <- supsmu(1-g$surv,g$time)
 taus <- (g$x[-1] + g$x[-length(g$x)])/2
@@ -179,6 +179,8 @@ boot.crq <- function(x, y, c, taus, method, ctype = "right", R=100,
                         stop("invalid bmethod for boot.crq")
 		if(method == "Portnoy")
                 	a <- crq.fit.por(xb,yb,cb, weights = w, ctype = ctype, ... )
+		#else if(method == "Portnoy2")
+                	#a <- crq.fit.por2(xb,yb,cb, weights = w, ctype = ctype, ... )
 		else if(method == "PengHuang")
                 	a <- crq.fit.pen(xb,yb,cb, weights = w, ctype = ctype, ... )
 		else
@@ -226,9 +228,12 @@ coef.crq <- function(object, taus = 1:4/5, ...)
         }
 
 crq <- function (formula, taus, data, subset, weights, na.action, 
-	method = c("Powell","Portnoy","PengHuang"), contrasts = NULL, ...)
+	method = c("Powell","Portnoy","Portnoy2", "PengHuang"), contrasts = NULL, ...)
 {
-    require(survival)
+    if(!requireNamespace("survival", quietly = TRUE))
+	stop("crq requires survival package to be installed")
+    if(method == "Portnoy2") stop("Portnoy2 method not (yet) implemented")
+    Surv <- survival::Surv
     call <- match.call()
     mf <- match.call(expand.dots = FALSE)
     m <- match(c("formula", "data", "subset", "weights", "na.action"),
@@ -289,6 +294,17 @@ crq <- function (formula, taus, data, subset, weights, na.action,
         fit <- crq.fit.por(X, y, cen, weights, ctype = ctype,   ...)
 	class(fit) <- "crq"
 	}
+    else if(method == "Portnoy2"){
+        ctype <- "right"
+        if(attr(Y,"type") != "right"){
+            if(attr(Y,"type") == "left") ctype <- "left"
+            else stop("Only right censoring Surv objects are allowed for Portnoy method")
+            }
+        y <- Y[,1]
+        cen <-  Y[,2]
+        #fit <- crq.fit.por2(X, y, cen, weights, ctype = ctype,   ...)
+	class(fit) <- "crq"
+	}
     else if(method == "PengHuang"){
         ctype <- "right"
         if(attr(Y,"type") != "right"){
@@ -319,13 +335,14 @@ pred <-  predict.rqs(object, newdata, ...)
 predict.crq <-
 function (object, newdata,  ...) {
 method <- object$method
-if(method %in% c("Portnoy","PengHuang")){ #Kludge to make crq sol matrix look like rq sol matrix 
+if(method %in% c("Portnoy","Portnoy", "PengHuang")){ #Kludge to make crq sol matrix look like rq sol matrix 
 	p2 <- nrow(object$sol)
 	object$sol <- object$sol[c(1,p2,p2,2:(p2-1)),]
 	}
 pred <- switch(method,
 	"Powell" = predict.rq(object, newdata,  ...), 
 	"Portnoy"  = predict.rq.process(object, newdata,  ...), 
+	"Portnoy2"  = predict.rq.process(object, newdata,  ...), 
 	"PengHuang" = predict.rq.process(object, newdata,  ...) 
 	)
 }
@@ -560,7 +577,7 @@ function (object, taus = 1:4/5, alpha = .05, se = "boot", covariance = TRUE, ...
        class(object) <- "summary.crq"
        return(object)
        }
-    else if(method == "Portnoy" || method == "PengHuang") {
+    else if(method == "Portnoy" || method == "Portnoy2" || method == "PengHuang") {
        coef <- as.matrix(coef(object,taus))
        coef <- coef[,apply(coef,2,function(x) any(!is.na(x))),drop = FALSE] # Delete NA columns if any
        if(ctype == "right") taus <- taus[1:ncol(coef)]

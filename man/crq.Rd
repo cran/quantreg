@@ -16,7 +16,7 @@ of Powell (1986) as implemented by Fitzenberger (1996), the second is the random
 censoring method of Portnoy (2003).  The third method is based on Peng and Huang (2008).} 
 \usage{
 crq(formula, taus, data, subset, weights, na.action, 
-	method = c("Powell", "Portnoy", "PengHuang"), contrasts = NULL, ...)
+	method = c("Powell", "Portnoy", "Portnoy2", "PengHuang"), contrasts = NULL, ...)
 crq.fit.pow(x, y, yc, tau=0.5, weights=NULL, start, left=TRUE, maxit = 500)
 crq.fit.pen(x, y, cen, weights=NULL, grid, ctype = "right") 
 crq.fit.por(x, y, cen, weights=NULL, grid, ctype = "right") 
@@ -203,7 +203,7 @@ plot(x,y,cex = .5)
 c <- 4 + x + rnorm(n)
 d <- (y > c)
 points(x[!d],y[!d],cex = .5, col = 2)
-f <- crq(Surv(y,d,type = "left") ~ x, method = "Portnoy")
+f <- crq(survival::Surv(y,d,type = "left") ~ x, method = "Portnoy")
 g <- summary(f)
 for(i in 1:4) abline(coef(g[[i]])[,1])
 }

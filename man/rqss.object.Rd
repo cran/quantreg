@@ -76,6 +76,7 @@ Functions to reveal the inner meaning of objects created by \code{rqss} fitting.
 \seealso{ \code{\link{plot.rqss}}
 }
 \examples{
+require(MatrixModels)
 n <- 200
 x <- sort(rchisq(n,4))
 z <- x + rnorm(n)

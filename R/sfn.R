@@ -1,4 +1,4 @@
-#WARNING  --  needs considerable work to finish implementing sfn.control fix.
+# FIXME  --  needs considerable work to finish implementing sfn.control fix.
 #-----------------------------------------------------------------------------
 # Storage parameters and other controls for sfn fitting
 #	nsubmax = upper bound of dimension of lindx

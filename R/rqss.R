@@ -87,7 +87,7 @@ function(x, y, constraint = "N", lambda = 1, ndum= 0, dummies = NULL, w=rep(1,le
 #       o  lambda's
 #       o  ...
 #
-   require(tripack)
+   stopifnot(requireNamespace("tripack"))
 #
     y <- x[,2]
     x <- x[,1]
@@ -227,14 +227,14 @@ if(rug) {
 "plot.qss2" <-
 function (x, render = "contour", ncol = 100, zcol = NULL, ...)
 {
-    require(tripack)
+    stopifnot(requireNamespace("tripack"))
     y <- x[, 2]
     z <- x[, 3]
     x <- x[, 1]
-    tri <- tri.mesh(x, y)
+    tri <- tripack::tri.mesh(x, y)
     if (render == "rgl") {
-        if(!require("rgl",quietly=TRUE))
-		stop("The package rgl is missing")
+        if(!requireNamespace("rgl",quietly=TRUE))
+		stop("The package rgl is required")
         collut <- terrain.colors(ncol)
         if (!length(zcol))
             zcol <- z
@@ -243,18 +243,18 @@ function (x, render = "contour", ncol = 100, zcol = NULL, ...)
         zlim <- range(zcol)
         colz <- ncol * (z - zlim[1])/(zlim[2] - zlim[1]) + 1
         colz <- collut[colz]
-        s <- c(t(triangles(tri)[, 1:3]))
-        rgl.triangles(x[s], y[s], z[s], col = colz[s])
+        s <- c(t(tripack::triangles(tri)[, 1:3]))
+        rgl::rgl.triangles(x[s], y[s], z[s], col = colz[s])
     }
     else {
-        require(akima)
+        stopifnot(requireNamespace("akima"))
         if(render == "contour"){
                 plot(x, y, type = "n", ...)
-                contour(interp(x, y, z), add = TRUE, frame.plot = TRUE, ...)
-                convex.hull(tri, plot.it = TRUE, add = TRUE)
+                contour(akima::interp(x, y, z), add = TRUE, frame.plot = TRUE, ...)
+                tripack::convex.hull(tri, plot.it = TRUE, add = TRUE)
                 }
         else if(render == "persp")
-                persp(interp(x, y, z, ), theta = -40, phi = 20, xlab = "x",
+                persp(akima::interp(x, y, z, ), theta = -40, phi = 20, xlab = "x",
                         ylab = "y", zlab = "z", ...)
         else stop(paste("Unable to render: ",render))
     }
@@ -459,8 +459,8 @@ else if(ndum > 0){
         u <- runif(ndum); v <- runif(ndum)
         xd <- min(x) + u * (max(x)-min(x))
         yd <- min(y) + v * (max(y)-min(y))
-        T <- tri.mesh(x,y)
-        s <- in.convex.hull(T,xd,yd)
+        T <- tripack::tri.mesh(x,y)
+        s <- tripack::in.convex.hull(T,xd,yd)
         x <- c(x,xd[s])
         y <- c(y,yd[s])
         ndum <- sum(s)
@@ -473,8 +473,8 @@ list(x=x,y=y,F=z, dummies = dummies)
 "triogram.penalty" <- function (x, y, eps = .Machine$double.eps)
 {
     n <- length(x)
-    tri <- tri.mesh(x, y)
-    bnd <- on.convex.hull(tri,x,y)
+    tri <- tripack::tri.mesh(x, y)
+    bnd <- tripack::on.convex.hull(tri,x,y)
     q <- length(tri$tlist)
     m <- 13 * n
     z <- .Fortran("penalty", as.integer(n), as.integer(m), as.integer(q),
@@ -515,8 +515,8 @@ function (object, newdata, interval = "none",  level = 0.95, ...)
         PLTerms <- Terms
         m <- 0
     }
-    if(require(MatrixModels) && require(Matrix))
-        X <- as(model.Matrix(PLTerms, data = nd, sparse = TRUE),"matrix.csr")
+    if(requireNamespace("MatrixModels") && requireNamespace("Matrix"))
+        X <- as(MatrixModels::model.Matrix(PLTerms, data = nd, sparse = TRUE),"matrix.csr")
     else
         X <- model.matrix(PLTerms, data = nd)
     p <- ncol(X)
@@ -613,15 +613,15 @@ predict.qss2 <- function (object, newdata, ...)
             newy <- newdata[, 2]
         }
         else (stop("newdata matrix must have 2 columns"))
-    tri <- tri.mesh(x, y)
-    if (!all(in.convex.hull(tri, newx, newy))) 
+    tri <- tripack::tri.mesh(x, y)
+    if (!all(tripack::in.convex.hull(tri, newx, newy))) 
         stop("some newdata points outside convex hull")
     p <- length(x)
     m <- length(newx)
     V <- matrix(0, m, 3)
     B <- matrix(0, m, 3)
     for (i in 1:m) {
-        V[i, ] <- unlist(tri.find(tri, newx[i], newy[i]))
+        V[i, ] <- unlist(tripack::tri.find(tri, newx[i], newy[i]))
         v <- rbind(cbind(x[V[i, ]], y[V[i, ]]), c(newx[i], newy[i]))
         B[i, ] <- barycentric(v)
     }
@@ -682,8 +682,8 @@ resid.rqss <- function(object, ...) object$resid[1:object$n]
     weights <- model.extract(m, weights)
     process <- (tau < 0 || tau > 1)
     Y <- model.extract(m, "response")
-    if(require(MatrixModels) && require(Matrix)){
-         X <- model.Matrix(Terms, m, contrasts, sparse = TRUE)
+    if(requireNamespace("MatrixModels") && requireNamespace("Matrix")){
+         X <- MatrixModels::model.Matrix(Terms, m, contrasts, sparse = TRUE)
          vnames <- dimnames(X)[[2]]
          X <- as(X ,"matrix.csr")
          }

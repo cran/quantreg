@@ -25,10 +25,12 @@ will be returned if printing is invoked.
     \enumerate{
       \item \code{"rank"} which produces confidence intervals for the
       estimated parameters by inverting a rank test as described in
-      Koenker (1994).  The default option assumes that the errors are
-      iid, while the option iid = FALSE implements the proposal of Koenker
-      Machado (1999).  
-      See the documentation for \code{rq.fit.br} for additional arguments.
+      Koenker (1994).  This method involves solving a parametric linear
+      programming problem, and for large sample sizes can be extremely
+      slow, so by default it is only used when the sample size is less
+      than 1000, see below.  The default option assumes that the errors are
+      iid, while the option iid = FALSE implements a proposal of Koenker
+      Machado (1999).  See the documentation for \code{rq.fit.br} for additional arguments.
 
       \item \code{"iid"} which presumes that the errors are iid and computes
       an estimate of the asymptotic covariance matrix as in KB(1978).
@@ -44,8 +46,9 @@ will be returned if printing is invoked.
       \item \code{"boot"} which implements one of several possible bootstrapping
       alternatives for estimating standard errors.
     }
-    If \code{se = NULL} (the default)  and \code{covariance = FALSE}
-    then the "rank" method is used, otherwise the "nid" method is used.
+    If \code{se = NULL} (the default)  and \code{covariance = FALSE}, and
+    the sample size is less than 1001, then the "rank" method is used, 
+    otherwise the "nid" method is used.
   }
   \item{covariance}{
     logical flag to indicate whether the full covariance matrix of the 

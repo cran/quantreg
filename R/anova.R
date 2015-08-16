@@ -1,16 +1,32 @@
 "anova.rq" <-
-function (object, ...) 
+function (object, ..., test = "Wald", joint = TRUE,
+       score = "tau", se = "nid", R = 200, trim = NULL)
+
 {
     if (length(list(object, ...)) > 1) {
-        return(anova.rqlist(object, ...))
+	objects <- list(object, ...)
+        return(anova.rqlist(objects, ..., test = test, joint = joint,
+             score = score, se = se, R = R, trim = trim))
     }
     stop("Anova is only defined (yet) for lists of rq objects")
 }
+anova.rqs <- function(object, ..., se = "nid", joint = TRUE){
+    class(object) <- "rq"
+    m <- length(object$tau)
+    z <- rep(list(object), m)
+    for(i in 1:m){
+        z[[i]]$coefficients <- object$coefficients[,i]
+        z[[i]]$tau <- object$tau[i]
+        z[[i]]$rho <- object$rho[i]
+    }
+    return(anova.rqlist(z, ..., se = se, joint = joint))
+}
+
 "anova.rqlist" <-
 function (object, ..., test = "Wald", joint = TRUE, 
 		score = "tau", se = "nid", R = 200, trim = NULL) 
 {
-    objects <- list(object, ...)
+    objects <- object
     responses <- as.character(lapply(objects, function(x) formula(x)[[2]]))
     sameresp <- responses == responses[1]
     if (!all(sameresp)) 
@@ -96,6 +112,7 @@ function (object, ..., test = "Wald", joint = TRUE,
     }
     else {
         m <- length(taus)
+	n <- NROW(objects[[1]]$residuals)
         for (i in 2:m) {
             if (!setequal(names[[i]], names[[1]])) 
                 stop("Models with common tau don't have same X")
@@ -158,7 +175,8 @@ function(x,...){
     print(a)
 }
 rq.test.anowar <- function(x0,x1,y,tau,R){
-        require(logspline)
+        if(!requireNamespace("logspline", quietly = TRUE))
+	    stop("anowar test requires logspline package")
         n <- length(y)
         f0 <- rq(y ~ x0 - 1, tau = tau)
         f1 <- rq(y ~ x1 - 1, tau = tau)
@@ -172,8 +190,8 @@ rq.test.anowar <- function(x0,x1,y,tau,R){
         R1 <- Rho(y - x1 %*% B1,tau)
         W0 <- apply(R0*W, 2, sum) - apply(W * Rho(f0$resid,tau), 2, sum)
         W1 <- apply(R1*W, 2, sum) - apply(W * Rho(f1$resid,tau), 2, sum)
-        RefDistn <- logspline(W0 - W1)
-        pvalue <- 1 - plogspline(Mn,RefDistn)
+        RefDistn <- logspline::logspline(W0 - W1)
+        pvalue <- 1 - logspline::plogspline(Mn,RefDistn)
         ndf <- ncol(x1) - ncol(x0)
         ddf <- n - ncol(x1)
         list(Tn = Mn, ndf=ndf, ddf=ddf, pvalue=pvalue)
@@ -227,7 +245,7 @@ function (x0, x1, y, v = NULL, score = "wilcoxon", weights = NULL,
     if (pvalue == "F") 
         pvalue <- 1 - pf(Tn, ndf, ddf, ncp)
     else 
-        pvalue <- 1 - pchisq(Tn, ndf, ncp)
+        pvalue <- 1 - pchisq(Tn*ndf, ndf, ncp)
     list(Tn = Tn, ndf = ndf, ddf = ddf, pvalue = pvalue)
 }
 "ranks" <- 

@@ -115,6 +115,7 @@ that class (and no internal \code{NA}s were created by the \code{na.action}).
 ## Dynamic Linear Quantile Regression Models ##
 ###########################
 
+require(zoo)
 ## multiplicative median SARIMA(1,0,0)(1,0,0)_12 model fitted to UK seatbelt data
      data("UKDriverDeaths", package = "datasets")
      uk <- log10(UKDriverDeaths)

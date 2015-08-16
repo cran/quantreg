@@ -24,6 +24,7 @@ function(x, alpha=c(.1,.3), w = c(.7,.3), mu = .07, R = NULL, r = NULL, lambda =
 	f <- rq.fit.hogg(X,y,taus=alpha,weights=w,R=R,r=r)
 	fit <- f$coefficients
 	pihat <- c(1-sum(fit[-(1:m)]),fit[-(1:m)])
+	x <- as.matrix(x)
 	yhat <- x%*%pihat
 	etahat <- quantile(yhat,alpha)
 	muhat <- mean(yhat)

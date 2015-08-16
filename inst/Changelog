@@ -1,4 +1,4 @@
-Recent Revision History
+Recent Revision History (For older revision history diff the code ;-))
 
 3.04 September 19 2001  
 
@@ -1215,3 +1215,44 @@ rescale B matrix.
 This includes the function rq.fit.hogg() that does what Zou and Yuan
 call composite quantile regression, or more accurately a generalized 
 version of this.
+
+5.13  
+
+1.  Fixed several namespace problems identified by BR.
+2.  Fixed bug in qrisk code to convert data.frame X to matrix.
+
+5.16
+
+1.  Fixed bug in rq.fit.lasso whose .Fortran call had an extra argument.
+2.  Fixed bug in rq.fit.pfn to correct behavior when m > n.  Pointed out by
+Ivan Diaz (Google).  Cause of this was rather pathological but 
+((p-1)*n)^/2/3 > n can happen when p is large as it tends to be these days.
+
+5.17
+
+1.  Added anova.rqs at the suggestion of Jon Peck (IBM).  This just takes
+rq() output from a multiple tau command and converts it to something that 
+anova.rqlist can understand.  Peck is writing something on the SPSS <-> R
+interface, so I was curious to see what is going on with that.  The answer
+seems to be not too much, but there is a very annoying article here:
+http://www.ibm.com/developerworks/library/ba-call-r-spss/  --
+ugly hacks indeed!  It does make me wonder why I've spent part of my weekend
+making this extension just to accommodate a commercial implementation by IBM
+that enables SPSS to call quantreg.
+
+2.  Fixed a bug in rq.test.rank which produced the wrong p-value for the
+chi-squared version of the test.
+
+3.  Added various importFrom directives in NAMESPACE in accordance with
+Kurt's July 2015 suggestions.
+
+4.  Removed calls to crq.fit.por2 provisionally while we resolve some
+problems with the code for this new procedure.
+
+5.18
+
+1.  Added a couple of further importFrom directives in NAMESPACE at
+Kurt's suggestion.
+
+2.  Added some further cautionary verbiage about the dangers of using
+rank inversion for large problems at the suggestion of Jon Peck (IBM).

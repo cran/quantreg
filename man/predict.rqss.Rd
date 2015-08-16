@@ -64,6 +64,8 @@ title("Predicted Median Response at Mean Value of z")
 %%keep objects for inspection : do not rm(x,y,z,xz,fit)
 
 ## Bivariate example -- loads pkg "tripack"
+require(tripack)
+require(akima)
 data(CobarOre)
 fit <- rqss(z ~ qss(cbind(x,y), lambda=.08),
             data= CobarOre)
