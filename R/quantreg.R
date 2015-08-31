@@ -1023,7 +1023,7 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, ...)
     x <- model.matrix(mt, m, contrasts = object$contrasts)
     wt <- as.vector(model.weights(object$model))
     tau <- object$tau
-    eps <- .Machine$double.eps^(2/3)
+    eps <- .Machine$double.eps^(1/2)
     coef <- coefficients(object)
     if (is.matrix(coef))
         coef <- coef[, 1]

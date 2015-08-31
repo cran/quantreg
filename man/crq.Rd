@@ -1,6 +1,7 @@
 \name{crq}
 \alias{crq}
 \alias{crq.fit.por}
+\alias{crq.fit.por2}
 \alias{crq.fit.pow}
 \alias{crq.fit.pen}
 \alias{print.crq}
@@ -20,6 +21,7 @@ crq(formula, taus, data, subset, weights, na.action,
 crq.fit.pow(x, y, yc, tau=0.5, weights=NULL, start, left=TRUE, maxit = 500)
 crq.fit.pen(x, y, cen, weights=NULL, grid, ctype = "right") 
 crq.fit.por(x, y, cen, weights=NULL, grid, ctype = "right") 
+crq.fit.por2(x, y, cen, weights=NULL, grid, ctype = "right") 
 Curv(y, yc, ctype=c("left","right"))
 \method{print}{crq}(x, ...)
 \method{print}{crq}(x, ...)
@@ -133,6 +135,11 @@ Curv(y, yc, ctype=c("left","right"))
 	through this many distinct solutions and choosing the one that gives the
 	minimal Powell objective.  The algorithm used for the Portnoy 
 	method is described in considerable detail in Portnoy (2003). 
+	There is a somewhat simplified version of the Portnoy method that is
+	written in R and iterates over a discrete grid.  This version should
+	be considered somewhat experimental at this stage, but it is known to
+	avoid some difficulties with the more complicated fortran version of
+	the algorithm that can occur in degenerate problems.
 	Both the Portnoy and Peng-Huang estimators may be unable to compute
 	estimates of the conditional quantile parameters in the upper tail of
 	distribution.  Like the Kaplan-Meier estimator, when censoring is heavy

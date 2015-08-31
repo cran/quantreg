@@ -1,16 +1,16 @@
-d8d52e349cd05fbbd1766220c4ef99fc *DESCRIPTION
+68a16d8665f7968b72fed800eaca49d8 *DESCRIPTION
 3fbade5507d8da06aa212ab91f47e255 *NAMESPACE
 df3a016b4c063dd0a7e18b249f3c60e5 *R/anova.R
 3ad4cde5e3d0f77d3b312a9725db40fc *R/boot.R
 ce4ed5c7fd88b6cff53cf6080e1391c4 *R/combos.R
-43c9127c26cf9cd6295f3ea59b4ea63a *R/crq.R
+cfa4e4e266b6334d7d7cff13af52fb41 *R/crq.R
 34fe1dc5d96c3cbe74ba667cc4550f68 *R/dynrq.R
 13d99ab6094e93feb43c1a1c48de8da2 *R/khmal.R
 b1a67aeea28b2511b0301debfec906c6 *R/kuantile.R
 d2f509eb6977017d1b77faae7de97a7c *R/lprq.R
 8e3aba1efd8a511cbf397bba9c94a0d3 *R/nlrq.R
 23abbfdfe6ab274c1ebe89aaa4d825ef *R/qrisk.R
-11a7b9ef16c69ac908af366b7e240fc8 *R/quantreg.R
+4397c4ccd12716e16ff8fe371b8fdad3 *R/quantreg.R
 08a159033fbbdd33e642d089a38baaf7 *R/rqss.R
 144699f945d628eb1757ec51f3bdaeeb *R/sfn.R
 f0b39d29269a1fee63c98087f9d3fae7 *R/table.R
@@ -40,7 +40,7 @@ d907e0e11fd1a4007ca28a3d1b03efed *demo/engel1.R
 aa2009c3a395aee9512819bb72dbc5c1 *demo/hinged.R
 ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 54b67ce66f210821311e4453b2ec7d03 *demo/rqsslasso.R
-b22093c0a563b12361a8b22f55852396 *inst/ChangeLog
+5b4a4fdda144e41a4b3600fe20859ca4 *inst/ChangeLog
 e6ae163cc350b95af916079178f80e70 *inst/FAQ
 f4249290040b6cd52914a07e11a402be *inst/TODO
 36e2842c985e8094ebaa2266250c4b29 *inst/doc/abbrev.bib
@@ -73,7 +73,7 @@ ae8df01aeb7d9808e4d7d75438f0650b *man/boot.crq.Rd
 2c83f6d5ee37c4eedb85cde43e575001 *man/boot.rq.Rd
 f0c967422ef597cf9b87bee298fc0ec9 *man/combos.Rd
 e95befd0c07043e2f858f55c43d95b51 *man/critval.Rd
-36f7d29c3e3d43d15793e7aee4d56ee1 *man/crq.Rd
+fa813a599e5a4a56172025adabfbb891 *man/crq.Rd
 7a808195ff0171df916917d7ed31ecb7 *man/dither.Rd
 cf62af2b02409c2b4ddb1cb3117a1c82 *man/dynrq.Rd
 1a3a7dbfb064513db6b48ce85d06524f *man/engel.Rd
@@ -174,7 +174,7 @@ d744584d2b89363d14d0e4f03aa73e88 *src/srqfn.c
 dd4140ed687447feb307ca0e5ea1c551 *src/srqfnc.c
 2d66ab8cf738665d38eea1dca124b264 *src/srtpai.f
 a838141113a2049f3ca6b6c5914989bc *tests/panel.R
-f162d2b25357e3a0e08c8a9a5c7618ab *tests/rq.R
+62bf15687c35cd5a9fa8d05d94fe28a5 *tests/rq.R
 9010017cc909325f119ca1bc119560ab *tests/rq.fit.panel.R
 4c02c884a5046fc69cf5d40d1297ead1 *tests/run-demos.R
 36e2842c985e8094ebaa2266250c4b29 *vignettes/abbrev.bib

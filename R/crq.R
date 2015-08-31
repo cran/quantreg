@@ -232,7 +232,7 @@ crq <- function (formula, taus, data, subset, weights, na.action,
 {
     if(!requireNamespace("survival", quietly = TRUE))
 	stop("crq requires survival package to be installed")
-    if(method == "Portnoy2") stop("Portnoy2 method not (yet) implemented")
+    #if(method == "Portnoy2") stop("Portnoy2 method not (yet) implemented")
     Surv <- survival::Surv
     call <- match.call()
     mf <- match.call(expand.dots = FALSE)
@@ -302,7 +302,7 @@ crq <- function (formula, taus, data, subset, weights, na.action,
             }
         y <- Y[,1]
         cen <-  Y[,2]
-        #fit <- crq.fit.por2(X, y, cen, weights, ctype = ctype,   ...)
+        fit <- crq.fit.por2(X, y, cen, weights, ctype = ctype,   ...)
 	class(fit) <- "crq"
 	}
     else if(method == "PengHuang"){
@@ -549,6 +549,7 @@ function (object, taus = 1:4/5, alpha = .05, se = "boot", covariance = TRUE, ...
        n <- length(resid)
        p <- length(coef)
        rdf <- n - p
+       if(rdf < 1) stop("residual degrees of freedom nonpositive")
        if (se == "boot") {
            if(attr(Y,"type") == "left")
               s <- cen  <  x %*% coef
@@ -559,14 +560,15 @@ function (object, taus = 1:4/5, alpha = .05, se = "boot", covariance = TRUE, ...
            serr <- sqrt(diag(cov))
            }
        else stop("Only boot method is implemented for crq inference")
-       coef <- array(coef, c(p, 4))
-       dimnames(coef) <- list(vnames, c("Value", "Std. Error", "t value", 
-           "Pr(>|t|)"))
-       coef[, 2] <- serr
-       coef[, 3] <- coef[, 1]/coef[, 2]
-       coef[, 4] <- if(rdf > 0) 
-           2 * (1 - pt(abs(coef[, 3]),rdf)) 
-       else NA
+       coef <- array(coef, c(p, 6))
+       fact <- qt(1 - alpha/2, rdf)
+       coef[, 2] <- coef[,2] - fact * serr
+       coef[, 3] <- coef[,3] + fact * serr
+       coef[, 4] <- serr
+       coef[, 5] <- coef[, 1]/coef[, 4]
+       coef[, 6] <- 2 * (1 - pt(abs(coef[, 5]),rdf)) 
+       cnames <- c("Value","Lower Bd","Upper Bd","Std Error","T Value","Pr(>|t|)")
+       dimnames(coef) <- list(vnames, cnames)
        object <- object[c("call", "terms")]
        if (covariance == TRUE) 
            object$cov <- cov
@@ -585,6 +587,7 @@ function (object, taus = 1:4/5, alpha = .05, se = "boot", covariance = TRUE, ...
        B <- boot.crq(x, y, cen, taus, method = method, ctype = ctype, ...)
        bmethod <- B$bmethod
        nas <- apply(is.na(B$A[1,,, drop = TRUE]),1,sum)
+       Brep <- dim(B$A)[3]
        if(bmethod == "jack") sqmn <- sqrt((B$n-B$mboot)/B$mboot)
        else sqmn <- sqrt(B$mboot/B$n)
        fact <-   qnorm(1 - alpha/2)/qnorm(.75)
@@ -600,7 +603,8 @@ function (object, taus = 1:4/5, alpha = .05, se = "boot", covariance = TRUE, ...
        for(i in 1:length(taus)){
 	   tab <- cbind(coef[,i],L[,i],U[,i],S[,i],T[,i],P[,i])
 	   dimnames(tab)[[2]] <- cnames
-	   G[[i]] <- list(tau = taus[i], coefficients = tab, NAs = nas[i], bmethod = bmethod)
+	   G[[i]] <- list(tau = taus[i], coefficients = tab, NAs = nas[i], 
+			  Brep = Brep, bmethod = bmethod)
 	   }
        class(G) <- "summary.crqs"
        return(G)
@@ -646,11 +650,97 @@ print.summary.crq <- function (x, digits = max(5, .Options$digits - 2), ...) {
     else NAs <- 0
     cat("\ntau: ")
     print(format(round(tau, digits = digits)), quote = FALSE, ...)
-    if(NAs > 0) {
-       cat("         Number of NA Bootstrap Replications:  ")
-       print(format(NAs), quote = FALSE, ...)
-       }
+    if(NAs > 0) 
+       cat(paste("   Number of NA Bootstrap Replications: ", NAs, "out of", x$Brep))
     cat("\nCoefficients:\n")
     print(format(round(coef, digits = digits)), quote = FALSE, ...)
     invisible(x)
 }
+
+#  SLP: Mar 31 2015 (Revised RWK:  Aug  2015)
+#  An R version of crq.fit.por without any frills on a fixed grid.
+crq.fit.por2 <- function(x, y, cen, weights = NULL, grid, ctype = "right") {
+    method <- "fn"
+    BIG <- 1e+6
+    ztol <- 1e-6
+    n <- length(y)
+    p <- ncol(x)
+    cen <- as.logical(cen)
+    uncen <- !cen
+    if(sum(uncen) < p)  
+	stop("too few uncensored observations") 
+    sol <- matrix(NA, p+2,1)
+    if (length(weights)) {
+        if (any(weights < 0)) 
+            stop("negative weights not allowed")
+        contr <- attr(x, "contrasts")
+        x <- weights * x
+        y <- weights * y
+    }
+    w <- rep(1,n)
+    if (ctype == "left")  y <- -y
+    if(missing(grid)) { # Fixme:  else if ...
+	g0 <- 1/(2*n)
+	dg <- 1/(5 + 3*n^.4)
+	grid <- seq(g0,1-g0,by=dg)
+    }
+    repeat { # Peel censored points below g0 fit
+	z <- rq.wfit(x, y, tau = g0, weights = w, method = method)
+	J <- which(abs(z$resid) < ztol & cen)
+	if(length(J)){
+	    y <- y[-J]
+	    x <- x[-J,]
+	    w <- w[-J]
+	    cen <- cen[-J]
+	}
+	else break
+    }
+    n <- length(y)
+    U <- which(cen)
+    if(length(cen) == 0) { # No censored points left!
+	z <- rq(y ~ x - 1, tau = grid, weights = w, method = method)
+	return(coef(z))
+    }
+    else { # Data Augmentation:
+	m <- sum(cen)
+	x <- rbind(x, x[cen, ])
+	y <- c(y, rep(BIG, m))
+	w[cen] <- 0
+	w <- c(w, rep(1, m))
+    }
+    taw <- rep(0, length(y))
+    K <- NULL
+    sol <- matrix(NA, p+2, length(grid))
+    b <- z$coef
+    xbar <- apply(x, 2, mean)
+    sol[,1] <- c(0, b, sum(xbar * b))
+    for(i in 2:length(grid)){
+	tau <- grid[i]
+	if(length(K)){ # Update w
+	    w[K] <- (tau - taw[K])/(1 - taw[K])
+	    idx <- which(which(cen) %in% K)[rank(K)]
+	    w[n + idx] <- 1 - w[K]
+	}
+	z <- rq.wfit(x, y, tau = tau, weights = w, method = method)
+	b0 <- b
+	b <- z$coef
+	sol[,i] <- c(tau, b, sum(b * xbar))
+	if(any(abs(z$resid) < ztol & (y > BIG - 1))) break
+	J <- U[z$resid[U] < 0] 
+	if(length(J)){
+	    U <- setdiff(U, J)
+	    K <- union(K, J)
+	    y0 <- x[J,,drop = FALSE] %*% b0
+	    y1 <- y[J] - z$resid[J]
+	    gstep <- grid[i] - grid[i-1]
+	    taw[J] <- tau - gstep * (y1 - y[J])/(y1 - y0)
+	}
+    }
+    if (ctype == "left") {
+        sol[1, ] <- 1 - sol[1, ]
+        sol[-1, ] <- -sol[-1, ]
+    }
+    dimnames(sol) <- list(c("tau", dimnames(x)[[2]], "Qbar"), NULL)
+    return(list(sol = sol, ctype = ctype)) 
+}
+

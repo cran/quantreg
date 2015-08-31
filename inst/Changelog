@@ -1256,3 +1256,21 @@ Kurt's suggestion.
 
 2.  Added some further cautionary verbiage about the dangers of using
 rank inversion for large problems at the suggestion of Jon Peck (IBM).
+
+5.19
+
+1.  Changed the printing of the number of NAs in the crq bootstrap functions
+so that it also reported "out of" number of bootstrap replications.
+
+2.  Changed the coef matrix for the Powell crq method so that it conformed 
+to the other methods to facilitate plotting as requested by Vladimir Pazitka.
+
+3.  Changed the eps in summary.rq from .Machine$double.eps^(2/3) to
+.Machine$double.eps^(1/2).  This will reduce (somewhat) the likelihood
+of getting one or two influential f_i's that dominate a covariance matrix
+estimate.
+
+4.  Introduced the Portnoy2 method for crq, which still should be considered
+experimental.  It is a pure R rewriting of the original algorithm that
+iterates on a fixed grid.  
+
