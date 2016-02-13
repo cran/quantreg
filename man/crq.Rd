@@ -210,7 +210,7 @@ plot(x,y,cex = .5)
 c <- 4 + x + rnorm(n)
 d <- (y > c)
 points(x[!d],y[!d],cex = .5, col = 2)
-f <- crq(survival::Surv(y,d,type = "left") ~ x, method = "Portnoy")
+f <- crq(survival::Surv(pmax(y,c), d, type = "left") ~ x, method = "Portnoy")
 g <- summary(f)
 for(i in 1:4) abline(coef(g[[i]])[,1])
 }

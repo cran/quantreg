@@ -1,9 +1,9 @@
-68a16d8665f7968b72fed800eaca49d8 *DESCRIPTION
+734d2f0435285c23b13c17bd0896cfc3 *DESCRIPTION
 3fbade5507d8da06aa212ab91f47e255 *NAMESPACE
 df3a016b4c063dd0a7e18b249f3c60e5 *R/anova.R
 3ad4cde5e3d0f77d3b312a9725db40fc *R/boot.R
 ce4ed5c7fd88b6cff53cf6080e1391c4 *R/combos.R
-cfa4e4e266b6334d7d7cff13af52fb41 *R/crq.R
+bf51f8c72f984ac03e9215e1b3d6c657 *R/crq.R
 34fe1dc5d96c3cbe74ba667cc4550f68 *R/dynrq.R
 13d99ab6094e93feb43c1a1c48de8da2 *R/khmal.R
 b1a67aeea28b2511b0301debfec906c6 *R/kuantile.R
@@ -16,6 +16,7 @@ d2f509eb6977017d1b77faae7de97a7c *R/lprq.R
 f0b39d29269a1fee63c98087f9d3fae7 *R/table.R
 11102c1b9076b53ebaac51cc79b90bfb *R/tools.R
 00f6440dcfd495483f57d543f4918de0 *README
+d9f75ce091e6c0ba7c723da3535a4fd2 *build/vignette.rds
 56ef7db1af717ba44a86062560b034df *data/Bosco.rda
 403622377f41685bab4f044f2dac7785 *data/CobarOre.rda
 3d69ca4dff26067565dddb340c8d12a3 *data/Mammals.rda
@@ -40,7 +41,7 @@ d907e0e11fd1a4007ca28a3d1b03efed *demo/engel1.R
 aa2009c3a395aee9512819bb72dbc5c1 *demo/hinged.R
 ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 54b67ce66f210821311e4453b2ec7d03 *demo/rqsslasso.R
-5b4a4fdda144e41a4b3600fe20859ca4 *inst/ChangeLog
+e6562e8f1fdd76f141758d46b34f3621 *inst/ChangeLog
 e6ae163cc350b95af916079178f80e70 *inst/FAQ
 f4249290040b6cd52914a07e11a402be *inst/TODO
 36e2842c985e8094ebaa2266250c4b29 *inst/doc/abbrev.bib
@@ -69,11 +70,11 @@ a01c5ddffc18c23931262947e0ed29b2 *inst/doc/rq.Rnw
 a814f8a161c09471654c9ce1c4fb710f *man/anova.rq.Rd
 742ec68efdfbcf12a2a47e1adcfde3fe *man/bandwidth.rq.Rd
 22f0835a5d071362da4d76b2c6a38b87 *man/barro.Rd
-ae8df01aeb7d9808e4d7d75438f0650b *man/boot.crq.Rd
+9121a0c8f5ade9142d089cfb87db490b *man/boot.crq.Rd
 2c83f6d5ee37c4eedb85cde43e575001 *man/boot.rq.Rd
 f0c967422ef597cf9b87bee298fc0ec9 *man/combos.Rd
 e95befd0c07043e2f858f55c43d95b51 *man/critval.Rd
-fa813a599e5a4a56172025adabfbb891 *man/crq.Rd
+dcd1802b430960ab4da1192ef88e06a0 *man/crq.Rd
 7a808195ff0171df916917d7ed31ecb7 *man/dither.Rd
 cf62af2b02409c2b4ddb1cb3117a1c82 *man/dynrq.Rd
 1a3a7dbfb064513db6b48ce85d06524f *man/engel.Rd
@@ -100,7 +101,7 @@ e76d62df1774c858985794090afe65c6 *man/qss.Rd
 a916d9f3d2bed1c77cba165f268873a6 *man/ranks.Rd
 e4a4292807cd1a251a98f57e7892e427 *man/rearrange.Rd
 6f68d1c8d2c8cc7009c9c13f102acd27 *man/residuals.nlrq.Rd
-25551eb0e79668e1240671c70121410f *man/rq.Rd
+72782a0037dcc5be50502c3583507fc2 *man/rq.Rd
 97edf8f7e4a17a81e73bfe2889b9c899 *man/rq.fit.Rd
 aea8247091db06872d7b0b25ff7e8184 *man/rq.fit.br.Rd
 e92924a833ccfe568134875a08f4cc9f *man/rq.fit.fnb.Rd
@@ -120,7 +121,7 @@ c42b5515ccf48527ae43449357b3dfb0 *man/rq.process.object.Rd
 36405f113c992807cad627eb29a7df29 *man/rqss.object.Rd
 7a198b2a81968dc5da8b7f59ff282714 *man/sfn.control.Rd
 2dfb6597245f45ee542f157105db4bc4 *man/srisk.Rd
-19f97524d166de610191299090027d4b *man/summary.crq.Rd
+b1385340bd67e8de6e8035424e3bada7 *man/summary.crq.Rd
 bcd9fd048992c53f12cda32af3332d18 *man/summary.rq.Rd
 2cd698ce46395e6e057f5981dcbcb3b9 *man/summary.rqss.Rd
 7c19b7bc8dcaeafdb05e8fae65322c04 *man/table.rq.Rd

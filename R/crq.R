@@ -185,7 +185,7 @@ boot.crq <- function(x, y, c, taus, method, ctype = "right", R=100,
                 	a <- crq.fit.pen(xb,yb,cb, weights = w, ctype = ctype, ... )
 		else
 			stop("Invalid method for boot.crq")
-                if((i %% floor(R/10)) == 0 )
+                if((i %% floor(R/10)) == 0 & n > 3000)
                         cat(paste("bootstrap roughly ",100*(i/R)," percent complete\n"))
                 A[,,i] <- coef(a,taus)
                 }
@@ -588,13 +588,20 @@ function (object, taus = 1:4/5, alpha = .05, se = "boot", covariance = TRUE, ...
        bmethod <- B$bmethod
        nas <- apply(is.na(B$A[1,,, drop = TRUE]),1,sum)
        Brep <- dim(B$A)[3]
-       if(bmethod == "jack") sqmn <- sqrt((B$n-B$mboot)/B$mboot)
-       else sqmn <- sqrt(B$mboot/B$n)
+       p <- dim(B$A)[1]
+       if(bmethod == "jack") 
+	   sqmn <- sqrt((B$n - B$mboot - p + 1)/B$mboot)
+       else 
+	   sqmn <- sqrt(B$mboot/B$n)
        fact <-   qnorm(1 - alpha/2)/qnorm(.75)
-       B <- apply(B$A, 1:2, quantile, probs = 1:3/4, na.rm = TRUE)
-       D <- .5 * fact *(B[3,,]-B[1,,]) * sqmn
-       L <- coef - D
-       U <- coef + D
+       A <- apply(B$A, 1:2, quantile, probs = 1:3/4, na.rm = TRUE)
+       #D <- .5 * fact *(A[3,,]-A[1,,]) * sqmn
+       #L <- coef - D
+       #U <- coef + D
+       DU <- fact *(A[3,,]-A[2,,]) * sqmn
+       DL <- fact *(A[2,,]-A[1,,]) * sqmn
+       L <- coef - DL
+       U <- coef + DU
        S <- (U - L)/(2 * qnorm(1 - alpha/2))
        T <- coef/S
        P <- 2 * (1 - pnorm(abs(T)))
@@ -603,8 +610,12 @@ function (object, taus = 1:4/5, alpha = .05, se = "boot", covariance = TRUE, ...
        for(i in 1:length(taus)){
 	   tab <- cbind(coef[,i],L[,i],U[,i],S[,i],T[,i],P[,i])
 	   dimnames(tab)[[2]] <- cnames
+	   if(covariance) 
+	       cov <- var(t(B$A[,i,]), na.rm = TRUE) * sqmn^2
+	   else
+	       cov <- NULL
 	   G[[i]] <- list(tau = taus[i], coefficients = tab, NAs = nas[i], 
-			  Brep = Brep, bmethod = bmethod)
+			  cov = cov, Brep = Brep, bmethod = bmethod)
 	   }
        class(G) <- "summary.crqs"
        return(G)

@@ -35,13 +35,14 @@ boot.crq(x, y, c, taus, method, ctype = "right", R = 100, mboot, bmethod = "jack
 There are several refinements that are still unimplemented.  Percentile
 methods should be incorporated, and extensions of the methods to be used 
 in anova.rq should be made.  Note that bootstrapping for the Powell 
-method "FP" is done via \code{\link{boot.rq}}.
+method "Powell" is done via \code{\link{boot.rq}}.  For problems with
+\code{n > 3000} a message is printed indicated progress in the resampling.
 }
 \value{
   A matrix of dimension R by p is returned with the R resampled
   estimates of the vector of quantile regression parameters. When
   mofn < n for the "xy" method this matrix has been deflated by
-  the fact sqrt(m/n)
+  the factor sqrt(m/n)
 }
 \references{ 
  Bose, A. and S. Chatterjee, (2003) Generalized bootstrap for estimators

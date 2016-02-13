@@ -46,7 +46,7 @@ will be returned if printing is invoked.
    }
 }
 \value{
-  For method "FP" an object of class \code{summary.crqFP}  is returned 
+  For method "Powell" an object of class \code{summary.crq}  is returned 
   with the following components:
 \item{coefficients}{
   a p by 4 matrix consisting of the coefficients, their estimated standard
@@ -54,7 +54,7 @@ will be returned if printing is invoked.
 }
 \item{cov}{
   the estimated covariance matrix for the coefficients in the model,
-  provided that \code{cov=TRUE} in the called sequence.
+  provided that \code{covariance = TRUE} appears in the calling sequence.
 }
 \item{rdf}{
   the residual degrees of freedom
@@ -62,11 +62,7 @@ will be returned if printing is invoked.
 \item{tau}{
   the quantile estimated
 }
-\item{cov}{
-  the estimated covariance matrix for the coefficients in the model,
-  provided that \code{cov=TRUE} in the called sequence.
-}
-  For method "PH" an object of class \code{summary.crq}  is returned 
+For the other methods an object of class \code{summary.crq}  is returned 
   with the following components:
 \item{coefficients}{
   a list of  p by 6 matrix consisting of the coefficients, upper and lower bounds
@@ -74,9 +70,13 @@ will be returned if printing is invoked.
   errors, their t-statistics, and their associated p-values, one component for each
   element of the specified \code{taus} vector.
 }
+\item{cov}{
+  the estimated covariance matrix for the coefficients in the model,
+  provided that \code{covariance = TRUE} in the called sequence.
+}
 }
 \details{
-For the Fitzenberger-Powell method the resampling strategy used by the
+For the Powell method the resampling strategy used by the
 \code{se = "boot"} method is based on the Bilias, Chen and Ying (2000) 
 proposal.  For the Portnoy and Peng-Huang methods the bootstrapping 
 is by default actually based on  a delete-d jackknife, as described in
@@ -95,14 +95,14 @@ when printed is also reported.
 }
 
 \references{
-  Bose, A. and S. Chatterjee, (2003) Generalized bootstrap for estimators 
+Bose, A. and S. Chatterjee, (2003) Generalized bootstrap for estimators 
 	of minimizers of convex functions, \emph{J. Stat. Planning and Inf}, 117,
 	225-239.
 
-  Bilias, Y. Chen, S. and Z. Ying, (2000) Simple resampling methods for censored
+Bilias, Y. Chen, S. and Z. Ying, (2000) Simple resampling methods for censored
 	quantile regression, \emph{J. of Econometrics}, 99, 373-386.
 
-  Portnoy, S. (2013) The Jackknife's Edge:  Inference for Censored Quantile Regression,
+Portnoy, S. (2013) The Jackknife's Edge:  Inference for Censored Quantile Regression,
         \emph{CSDA}, forthcoming.
 
 }
