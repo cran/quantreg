@@ -1277,3 +1277,39 @@ iterates on a fixed grid.
 5.20
 
 1.  Added FAW to the rq.Rd see also list at the suggestion of Terry Therneau.
+
+5.21
+
+1.  Allowed ... to be passed in plot.summary.crqs.
+
+2.  Fixed namespace bug in dynrq, and added an Edgeworth wacky AR(1) example
+to dynrq.Rd.
+
+3.  Fixed rqss bug about length of residual vector
+
+
+5.23
+
+1.  Added a "cluster" option for summary.rq() when using the bootstrap option
+this option implements the wild gradient bootstrap method of Hagemann (2016).
+See boot.rq for further details.  [Needs further testing.]
+
+2.  Added a sfn method for rq models, and in the process modified somewhat
+the return object for both rq.fit.sfn and rq.fit.sfnc so that it is compatible
+with other rq.fit objects.
+
+5.24
+
+1.  Reverted to the old fortran versions of srqfn.f and srqfnc.f, ie removed
+Martin Maechler's C versions, in preparation for some new sparse forms of the
+bootstrapping functions.  Made a couple of slight changes in the return object 
+for these functions.
+
+2.  Fixed a sign error in the cluster option pointed out in an email of
+Andreas on May 9 2016.  
+
+3.  Added jackknife option to boot.rq for the proposal of Portnoy.
+
+4.  Adapted boot.rq and friends so that when there are multiple taus
+summary.rqs reuses the same randomization  for each of the taus to facilitate
+joint inference with the bootstrap realizations.

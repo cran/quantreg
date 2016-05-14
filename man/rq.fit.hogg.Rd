@@ -6,7 +6,7 @@ Function to estimate a regression mmodel by minimizing the weighted sum of sever
 quantile regression functions.  See Koenker(1984) for an asymptotic look at these
 estimators.  This is a slightly generalized version of what Zou and Yuan (2008) call
 composite quantile regression in that it permits weighting of the components of the
-objective function and also allows linear constraints on the coefficients.
+objective function and also allows further linear inequality constraints on the coefficients.
 }
 \usage{
 rq.fit.hogg(x, y, taus = c(0.1, 0.3, 0.5), weights = c(0.7, 0.2, 0.1), 
@@ -33,6 +33,10 @@ is either the Frisch Newton algorithm described in Portnoy and Koenker (1997),
 or the closely related algorithm described in Koenker and Ng(2002) that
 handles linear inequality constraints.  See \code{\link{qrisk}} for illustration
 of its use in portfolio allocation.
+
+Linear inequality constraints of the form \eqn{Rb \geq r} can be imposed  with
+the convention that \eqn{b} is a \eqn{m+p} where \eqn{m} is the \code{length(taus)}
+and \eqn{p} is the column dimension of \code{x} without the intercept.
 }
 \value{
   \item{coefficients}{estimated coefficients of the model}

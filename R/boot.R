@@ -1,24 +1,54 @@
 "boot.rq"<-
-function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y), ...)
+function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y), 
+	  cluster = NULL, U = NULL, ...)
 {
     n <- length(y)
     x <- as.matrix(x)
     p <- ncol(x) 
     B <- matrix(0, R, p)
     if(tau <= 0 || tau >= 1) stop("tau outside (0,1) not allowed")
+    if(length(cluster)) bsmethod <- "cluster"
     if (bsmethod == "xy") {
-	if(mofn < p || mofn > n) stop("mofn is out of range")
-        s <- matrix(sample(n, mofn * R, replace = TRUE), mofn, R)
-        B <- sqrt(mofn/n)*boot.rq.xy(x, y, s, tau)
+	if(!length(U)){
+	    if(mofn < p || mofn > n) stop("mofn is out of range")
+	    U <- matrix(sample(n, mofn * R, replace = TRUE), mofn, R)
+	}
+        B <- sqrt(mofn/n)*boot.rq.xy(x, y, U, tau)
     }   
     else if (bsmethod == "wxy") {
-        w <- matrix(rexp(n * R,1), n, R)
-        B <- boot.rq.wxy(x, y, w, tau)
+        if(!length(U)) U <- matrix(rexp(n * R,1), n, R)
+        B <- boot.rq.wxy(x, y, U, tau)
     }   
+    else if (bsmethod == "cluster"){ # Hagemann wild gradient bootstrap
+	if(!length(U)){
+	    if(length(cluster) != n) stop("cluster is wrong length")
+	    u <- unique(cluster)
+	    m <- length(u)
+	    h <- c(-(sqrt(5) - 1)/2, (sqrt(5) + 1)/2)
+	    hp <- c((sqrt(5) + 1)/sqrt(20), (sqrt(5) - 1)/sqrt(20))
+	    U <- matrix(sample(h, R * m, prob = hp, replace = TRUE), m, R)
+	    U <- apply(U, 2, function(v) v[match(cluster,u)])
+	}
+	r <- c(rq.fit(x, y, tau)$resid)
+	psi <- (r < 0) - tau
+	W <- t(x) %*% (U * psi)
+        B <- boot.rq.pwy(W, x, y, tau)
+    }
+    else if (bsmethod == "jack"){ # Portnoy proposal
+	if(!length(U)){
+	    if(missing(mofn)) mofn <- n - ceiling(2*sqrt(n))
+	    if(mofn < p || mofn > n) stop("mofn is out of range")
+	    U <- matrix(0, mofn, R)
+	    U <- apply(U, 2, function(x) sample(n, mofn))
+	}
+	B <- (mofn - p + 1)/sqrt(n * (n - mofn)) * boot.rq.xy(x, y, U, tau)
+    }
     else if (bsmethod == "pwy") {
-        U <- t(x) %*% matrix(((runif(n * R) < tau) - tau), n,
-            R)
-        B <- boot.rq.pwy(U, x, y, tau)
+	if(!length(U)){
+	    U <- matrix(runif(n * R), n, R)
+	}
+	W <- t(x) %*% ((U < tau) - tau)
+        B <- boot.rq.pwy(W, x, y, tau)
     }
     else if (bsmethod == "mcmb") {
         B <- boot.rq.mcmb(x, y, tau = tau, R = R)
@@ -36,7 +66,7 @@ function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y), ...)
     }
     else stop("your chosen bootstrap method is not allowed")
     #cat(paste("Bootstrap standard errors based on ",R," replications"))
-    B
+    list(B = B, U = U)
 }
 "boot.rq.mcmb" <-
 function (x, y, tau = 0.5, R = 200) 
@@ -165,7 +195,7 @@ function(U,X, y, tau = 0.5, tol=1e-4)
 	n <- length(y)
 	p <- ncol(X)
 	R <- ncol(U)
-	Y <- c(y,500000)
+	Y <- c(y,length(y)*max(abs(y)))
 	x <- rbind(X,0)
 	xu <- t(U)/tau
 	n <- n+1

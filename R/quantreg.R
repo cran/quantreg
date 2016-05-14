@@ -108,7 +108,15 @@ function (formula, tau = 0.5, data, subset, weights, na.action, method = "br",
     mt <- attr(mf, "terms")
     weights <- as.vector(model.weights(mf))
     Y <- model.response(mf)
-    X <- model.matrix(mt, mf, contrasts)
+    if(method == "sfn"){
+	if(requireNamespace("MatrixModels") && requireNamespace("Matrix")){
+	    X <- MatrixModels::model.Matrix(mt, data, sparse = TRUE)
+	    vnames <- dimnames(X)[[2]]
+	    X <- as(X ,"matrix.csr")
+	    }
+    }	
+    else
+	X <- model.matrix(mt, mf, contrasts)
     eps <- .Machine$double.eps^(2/3)
     Rho <- function(u,tau) u * (tau - (u < 0))
     if(length(tau)>1){
@@ -152,7 +160,8 @@ function (formula, tau = 0.5, data, subset, weights, na.action, method = "br",
 	if(process)
 		rho <- list(x = fit$sol[1,],y = fit$sol[3,])
 	else {
-		dimnames(fit$residuals) <- list(dimnames(X)[[1]],NULL)
+		if(length(dim(fit$residuals)))
+		    dimnames(fit$residuals) <- list(dimnames(X)[[1]],NULL)
                 rho <-  sum(Rho(fit$residuals,tau))
 		}
 	if(method == "lasso") class(fit) <- c("lassorq","rq")
@@ -187,6 +196,7 @@ function(x, y, tau = 0.5, method = "br", ...)
 		fn = rq.fit.fnb(x, y, tau = tau, ...),
 		fnb = rq.fit.fnb(x, y, tau = tau, ...),
 		fnc = rq.fit.fnc(x, y, tau = tau, ...),
+		sfn = rq.fit.sfn(x, y, tau = tau, ...),
 		pfn = rq.fit.pfn(x, y, tau = tau, ...),
 		br = rq.fit.br(x, y, tau = tau, ...),
 		lasso = rq.fit.lasso(x, y, tau = tau, ...),
@@ -882,6 +892,7 @@ function(x, y, tau = 0.5, weights, method = "br",  ...)
 		fnb = rq.fit.fnb(wx, wy, tau = tau, ...),
 		br = rq.fit.br(wx, wy, tau = tau, ...),
 		fnc = rq.fit.fnc(wx, wy, tau = tau, ...),
+		sfn = rq.fit.sfn(wx, wy, tau = tau, ...),
                 pfn = rq.fit.pfn(wx, wy, tau = tau, ...), {
 			what <- paste("rq.fit.", method, sep = "")
 			if(exists(what, mode = "function"))
@@ -903,13 +914,16 @@ function(x, y, tau = 0.5, weights, method = "br",  ...)
 function (object, ...) {
         taus <- object$tau
         xsum <- as.list(taus)
+	dots <- list(...)
+	U <- NULL # Reuse bootstrap randomization
         for(i in 1:length(taus)){
                 xi <- object
                 xi$coefficients <- xi$coefficients[,i]
                 xi$residuals <- xi$residuals[,i]
                 xi$tau <- xi$tau[i]
                 class(xi) <- "rq"
-                xsum[[i]] <- summary(xi, ...)
+                xsum[[i]] <- summary(xi, U = U, ...)
+                if(i == 1 && length(xsum[[i]]$U)) U <- xsum[[i]]$U 
 		if(class(object)[1] == "dynrqs"){
 		    class(xsum[[1]]) <- c("summary.dynrq", "summary.rq")
 	            if(i == 1) xsum[[1]]$model <- object$model
@@ -1006,14 +1020,15 @@ c(edf, aic)
 #		sandwich estimate using a local estimate of the sparsity.
 #	4.  "ker" which uses a kernel estimate of the sandwich as proposed
 #		by Powell.
-#	5.  "boot" which uses a bootstrap method:
+#	5.  "boot" which uses one of several flavors of  bootstrap methods:
 #		"xy"	uses xy-pair method
 #		"wxy"	uses weighted (generalized) method
 #		"pwy"	uses the parzen-wei-ying method
 #		"mcmb"	uses the Markov chain marginal bootstrap method
+#		"cluster"  uses the Hagemann clustered wild gradient method
 #
 #
-function (object, se = NULL, covariance = FALSE, hs = TRUE, ...)
+function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, ...)
 {
     if(object$method == "lasso")
          stop("no inference for lasso'd rq fitting: try rqss (if brave)")
@@ -1099,7 +1114,7 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, ...)
     }
     else if (se == "boot") {
         B <- boot.rq(x, y, tau, ...)
-        cov <- cov(B)
+        cov <- cov(B$B)
         serr <- sqrt(diag(cov))
     }
     if( se == "rank"){
@@ -1125,7 +1140,8 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, ...)
             object$scale <- scale
         }
         else if (se == "boot") {
-            object$B <- B
+            object$B <- B$B
+	    object$U <- B$U
         }
     }
     object$coefficients <- coef

@@ -498,6 +498,7 @@ function (x, nrow = 3, ncol = 3, CoxPHit = NULL, ...) {
     taus <- function(x) x$tau
     xx <- unlist(lapply(x, taus))
     coef <- lapply(x, coefficients)
+    dots <- list(...)
     p <- nrow(coef[[1]])
     k <- ncol(coef[[1]])
     if(k != 6) stop("summary.crqs object has wrong column dimension")
@@ -509,10 +510,13 @@ function (x, nrow = 3, ncol = 3, CoxPHit = NULL, ...) {
     oldpar <- par(no.readonly=TRUE)
     par(mfrow = c(nrow, ncol))
     for (i in 2:p) {
-            b  <- a[i, 1, ]
-            bl <- a[i, 2, ]
-            bu <- a[i, 3, ]
-        plot(rep(xx, 2), c(bl, bu), xlab = "", ylab = "", type = "n")
+         b  <- a[i, 1, ]
+         bl <- a[i, 2, ]
+         bu <- a[i, 3, ]
+	if(length(dots))
+	    plot(rep(xx, 2), c(bl, bu), type = "n", ...)
+	else
+	    plot(rep(xx, 2), c(bl, bu), xlab = "", ylab = "", type = "n")
         title(paste(blab[i]), cex = 0.75)
         polygon(c(xx, rev(xx)), c(bl, rev(bu)), col = "LightSkyBlue")
         points(xx, b, cex = 0.5, pch = "o", col = "blue")

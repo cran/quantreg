@@ -10,7 +10,7 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
             rval <- lapply(k, function(i) lag(x, k = -i))
             rval <- if (inherits(x, "ts")) 
                 do.call("ts.intersect", rval)
-            else do.call("zoo::merge", c(rval, list(all = FALSE)))
+            else do.call("zoo::merge.zoo", c(rval, list(all = FALSE)))
             colnames(rval) <- k
         }
         else {

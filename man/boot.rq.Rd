@@ -10,7 +10,8 @@ These functions can be used to construct standard errors, confidence
 intervals and tests of hypotheses regarding quantile regression models.
 }
 \usage{
-boot.rq(x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y), ...)
+boot.rq(x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y), 
+	cluster = NULL, U = NULL,  ...)
 }
 \arguments{
   \item{x}{ The regression design matrix}
@@ -30,6 +31,16 @@ boot.rq(x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y), ...)
 	permits subsampling (m out of n) bootstrap.  Obviously mofn
 	should be substantially larger than the column dimension of x,
 	and should be less than the sample size.}
+  \item{cluster}{If non-NULL this argument should specify cluster id
+      numbers for each observation, in which case the clustered version of 
+      the bootstrap based on the proposal of Hagemann (2016). If present
+      \code{bsmethod} is set to set to "cluster"}
+  \item{U}{If non-NULL this argument should specify an array of indices
+      or gradient evaluations to be used by the corresponding bootstrap
+      method as specified by \code{bsmethod}.  This is NOT intended as
+      a user specified input, instead it is specified in \code{summary.rqs}
+      to ensure that bootstrap samples for multiple taus use the same
+      realizations of the random sampling.}
   \item{...}{ Optional arguments to control bootstrapping}
 }
 \details{
@@ -38,13 +49,17 @@ methods should be incorporated, and extensions of the methods to be used
 in anova.rq should be made.
 }
 \value{
-  A matrix of dimension R by p is returned with the R resampled
-  estimates of the vector of quantile regression parameters. When
-  mofn < n for the "xy" method this matrix has been deflated by
-  the factor sqrt(m/n)
+A list consisting of two elements:
+  A matrix \code{B} of dimension R by p is returned with the R resampled
+	estimates of the vector of quantile regression parameters. When
+	mofn < n for the "xy" method this matrix has been deflated by
+	the factor sqrt(m/n).
+  A matrix \code{U} of sampled indices (for \code{bsmethod in c("xy", "wxy")}) 
+	or gradient evaluations (for \code{bsmethod in c("pwy", "cluster")})
+	used to generate the bootstrapped realization, and potentially reused
+	for other \code{taus} when invoked from \code{summary.rqs}.
 }
 \references{ 
-
 [1] Koenker, R. W. (1994). Confidence Intervals for regression quantiles, in
 P. Mandl and M. Huskova (eds.), \emph{Asymptotic Statistics}, 349--359,
 Springer-Verlag, New York.
@@ -53,20 +68,24 @@ Springer-Verlag, New York.
 Practical Confidence Intervals for Regression Quantiles,
 Journal of Computational and Graphical Statistics, 14, 41-55.
 
-[3] He, X. and Hu, F. (2002). Markov Chain Marginal Bootstrap.
+[3] Hagemann, A. (2016) Cluster Robust Bootstrap inference in 
+quantile regression models, Journal of the American Statistical Association , 
+forthcoming.
+
+[4] He, X. and Hu, F. (2002). Markov Chain Marginal Bootstrap.
 Journal of the American Statistical Association , Vol. 97, no. 459,
 783-795. 
 
-[4] Parzen, M. I., L. Wei,  and Z. Ying  (1994): A resampling
+[5] Parzen, M. I., L. Wei,  and Z. Ying  (1994): A resampling
 method based on pivotal estimating functions,'' Biometrika, 81, 341--350.
 
-[5] Bose, A. and S. Chatterjee, (2003) Generalized bootstrap for estimators
+[6] Bose, A. and S. Chatterjee, (2003) Generalized bootstrap for estimators
 of minimizers of convex functions, \emph{J. Stat. Planning and Inf}, 117, 225-239.
 
-[6]  Chamberlain G.  and Imbens G.W.  (2003) Nonparametric Applications of 
+[7]  Chamberlain G.  and Imbens G.W.  (2003) Nonparametric Applications of 
 Bayesian Inference, Journal of Business & Economic Statistics, 21, pp. 12-18.
 
-[7]  Feng, Xingdong, Xuming He, and Jianhua Hu (2011) Wild Bootstrap for
+[8]  Feng, Xingdong, Xuming He, and Jianhua Hu (2011) Wild Bootstrap for
 Quantile Regression, Biometrika, to appear.
 }
 

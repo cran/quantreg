@@ -1,4 +1,4 @@
-# FIXME  --  needs considerable work to finish implementing sfn.control fix.
+#WARNING  --  needs considerable work to finish implementing sfn.control fix.
 #-----------------------------------------------------------------------------
 # Storage parameters and other controls for sfn fitting
 #	nsubmax = upper bound of dimension of lindx
@@ -9,6 +9,8 @@
 #	maxiter = allowed limit for sfn iterations
 #	warn.mesg = flag to control printing of warnings
 #
+
+
 sfn.control <- function( nsubmax = NULL, tmpmax = NULL, nnzlmax = NULL, 
     cachsz = 64, small = 1e-6, maxiter=100, warn.mesg=TRUE)
     list(nsubmax = nsubmax, tmpmax = tmpmax, nnzlmax = nnzlmax, cachsz = cachsz,
@@ -21,6 +23,8 @@ sfn.control <- function( nsubmax = NULL, tmpmax = NULL, nnzlmax = NULL,
 #	tau = the desired regression quantile
 #       rhs = the rhs of the dual problem -- specify at your own risk
 #################################################################
+
+
 rq.fit.sfn <- function(a,y,tau=.5, rhs = (1-tau)*c(t(a) %*% rep(1,length(y))), control)
 {
 	y <- -y
@@ -56,7 +60,7 @@ rq.fit.sfn <- function(a,y,tau=.5, rhs = (1-tau)*c(t(a) %*% rep(1,length(y))), c
 	wwn[,1] <- r
 	wwn[,2] <- z
 	wwn[,3] <- w
-	srqfnb.o <- .Fortran("srqfn",
+	fit <- .Fortran("srqfn",
 		n = as.integer(n),
 		m = as.integer(m),
 		nnza = as.integer(nnza),
@@ -103,13 +107,17 @@ rq.fit.sfn <- function(a,y,tau=.5, rhs = (1-tau)*c(t(a) %*% rep(1,length(y))), c
 		maxiter = as.integer(ctrl$maxiter),
 		time = double(7),
 		PACKAGE = "quantreg")[c("sol","ierr","maxiter","time")]
-        ierr <- srqfnb.o$ierr
+        ierr <- fit$ierr
 	if(!(ierr==0) && ctrl$warn.mesg)
             warning(sfnMessage(ierr))
-	list(coef = -srqfnb.o$sol,
+	coefficients <- -fit$sol
+	residuals <- -y - a %*% coefficients
+	list(coefficients = coefficients,
+	     residuals = residuals,
+	     control = ctrl,
              ierr = ierr,
-             it = srqfnb.o$maxiter,
-             time = sum(srqfnb.o$time))
+             it = fit$maxiter)
+
 }
 #------------------------------------------------------------------------------
 #################################################################
@@ -122,6 +130,8 @@ rq.fit.sfn <- function(a,y,tau=.5, rhs = (1-tau)*c(t(a) %*% rep(1,length(y))), c
 #	tau = the desired regression quantile
 #       rhs = the rhs of the dual problem -- specify at your own risk
 #################################################################
+
+
 rq.fit.sfnc <- function(x, y, R, r, tau = 0.5,
                         rhs = (1-tau)*c(t(x) %*% rep(1,length(y))),control)
 {
@@ -175,7 +185,7 @@ rq.fit.sfnc <- function(x, y, R, r, tau = 0.5,
 	wwn1[,2] <- w
 	wwn2 <- matrix(0,n2,7)
 	wwn2[,2] <- z2
-	srqfnc.o <- .Fortran("srqfnc",
+	fit <- .Fortran("srqfnc",
 		n1 = as.integer(n1),
 		m = as.integer(m),
 		nnzx = as.integer(nnzx),
@@ -242,16 +252,18 @@ rq.fit.sfnc <- function(x, y, R, r, tau = 0.5,
 		maxiter = as.integer(ctrl$maxiter),
 		time = double(7),
 		PACKAGE = "quantreg")[c("sol","ierr","maxiter","time")]
-        ierr <- srqfnc.o$ierr
+        ierr <- fit$ierr
 	if(ierr == 13)# stop()
             stop("Increase nnzh.factor")
 	if(!(ierr==0) && ctrl$warn.mesg)
             warning(sfnMessage(ierr))
-
-	list(coef = -srqfnc.o$sol,
+	coefficients <- -fit$sol
+	residuals <- -y - x %*% coefficients
+	list(coefficients = coefficients,
+	     residuals = residuals,
+	     control = ctrl,
              ierr = ierr,
-             it = srqfnc.o$maxiter,
-             time = sum(srqfnc.o$time))
+             it = fit$maxiter)
 }
 "sfnMessage" <- function(ierr){
    switch(ierr,

@@ -785,11 +785,11 @@ resid.rqss <- function(object, ...) object$resid[1:object$n]
     else {
         X <- as.matrix.csr(X)
         nrA <- 0
-        if (method == "lasso") {
+        if (method == "lasso") { #Pure lasso case
             rhs <- t(rbind((1 - tau) * X, 0.5 * L)) %*% rep(1, nrow(X) + nrow(L))
             X <- rbind(X, L)
             Y <- c(Y, rep(0, nrL))
-            nrA <- c(nrA, nrL)
+            #nrA <- c(nrA, nrL) # Why was this here?
         }
         else
             rhs <- NULL

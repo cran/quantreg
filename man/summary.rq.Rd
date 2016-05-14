@@ -10,7 +10,7 @@ Returns a summary list for a quantile regression fit.  A null value
 will be returned if printing is invoked.
 }
 \usage{
-\method{summary}{rq}(object, se = NULL, covariance=FALSE, hs = TRUE,  ...)
+\method{summary}{rq}(object, se = NULL, covariance=FALSE, hs = TRUE,  U = NULL, ...)
 \method{summary}{rqs}(object, ...)
 }
 \arguments{
@@ -31,7 +31,6 @@ will be returned if printing is invoked.
       than 1000, see below.  The default option assumes that the errors are
       iid, while the option iid = FALSE implements a proposal of Koenker
       Machado (1999).  See the documentation for \code{rq.fit.br} for additional arguments.
-
       \item \code{"iid"} which presumes that the errors are iid and computes
       an estimate of the asymptotic covariance matrix as in KB(1978).
       
@@ -44,7 +43,8 @@ will be returned if printing is invoked.
       as proposed by Powell(1990).
 
       \item \code{"boot"} which implements one of several possible bootstrapping
-      alternatives for estimating standard errors.
+      alternatives for estimating standard errors.  See \code{\link{boot.rq}} for
+      further details.
     }
     If \code{se = NULL} (the default)  and \code{covariance = FALSE}, and
     the sample size is less than 1001, then the "rank" method is used, 
@@ -58,6 +58,8 @@ will be returned if printing is invoked.
     Use Hall Sheather bandwidth for sparsity estimation
     If false revert to Bofinger bandwidth.
    }
+   \item{U}{Resampling indices or gradient evaluations used for bootstrap,
+       see \code{\link{boot.rq}}.}
   \item{...}{
     Optional arguments to summary, e.g. bsmethod to use bootstrapping.
     see \code{\link{boot.rq}}.  When using the "rank" method for confidence
@@ -92,7 +94,10 @@ will be returned if printing is invoked.
     \code{se == "boot"}.  (Note that to make the Huber sandwich you need to add the 
     tau (1-tau) mayonnaise yourself.)
     }
+\item{B}{Matrix of bootstrap realizations.}
+\item{U}{Matrix of bootstrap randomization draws.}
 }
+
 \details{
 When the default summary method is used, it tries to estimate a sandwich
 form of the asymptotic covariance matrix and this involves estimating
@@ -108,7 +113,11 @@ an indication that some additional nonlinearity in the covariates
 would be helpful, for instance quadratic effects.
 Note that the default \code{se} method is rank, unless the sample size exceeds
 1001, in which case the \code{rank} method is used.
-}
+There are several options for alternative resampling methods.  When
+\code{summary.rqs} is invoked, that is when \code{summary} is called
+for a \code{rqs} object consisting of several \code{taus}, the \code{B}
+components of the returned object can be used to construct a joint covariance
+matrix for the full object.}
  
 
 \references{

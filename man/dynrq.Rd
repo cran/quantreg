@@ -153,6 +153,25 @@ plot(sfm)
 ##   trend(ap)                 (1, 2, ..., 144)/12
 ##   trend(ap, scale = FALSE)  (1, 2, ..., 144)
 
+###############################
+## An Edgeworth (1886) Problem##
+###############################
+# DGP
+fye <- function(n, m = 20){
+    a <- rep(0,n)
+    s <- sample(0:9, m, replace = TRUE)
+    a[1] <- sum(s)
+    for(i in 2:n){
+       s[sample(1:20,1)] <- sample(0:9,1)
+       a[i] <- sum(s)
+    }
+    zoo::zoo(a)
+}
+x <- fye(1000)
+f <- dynrq(x ~ L(x,1))
+plot(x,cex = .5, col = "red")
+lines(fitted(f), col = "blue")
+
 }
 
 \keyword{regression}
