@@ -1,7 +1,7 @@
-2cb218cd3295eeaeca9f250565333d9f *DESCRIPTION
-3fbade5507d8da06aa212ab91f47e255 *NAMESPACE
+41f2be7a1601f5633ec98b7905f33026 *DESCRIPTION
+f9863ea3b8839367f962f00a347fe2ac *NAMESPACE
 df3a016b4c063dd0a7e18b249f3c60e5 *R/anova.R
-5436830fe475ef6755cb4cfdc09ad569 *R/boot.R
+7fdfdc67d994523fc66eacdd4ddffeea *R/boot.R
 ce4ed5c7fd88b6cff53cf6080e1391c4 *R/combos.R
 561dcaf634824b7688f50447ab045f7d *R/crq.R
 620fb4bb4c3212ff9da361581ab7a74a *R/dynrq.R
@@ -10,8 +10,8 @@ b1a67aeea28b2511b0301debfec906c6 *R/kuantile.R
 d2f509eb6977017d1b77faae7de97a7c *R/lprq.R
 8e3aba1efd8a511cbf397bba9c94a0d3 *R/nlrq.R
 23abbfdfe6ab274c1ebe89aaa4d825ef *R/qrisk.R
-1c2c897f79237c911ffd08db7290473b *R/quantreg.R
-ebd67834b74f7fc419ae9558277bbbea *R/rqss.R
+d167c023bb1d3abdbf163f899cfc3567 *R/quantreg.R
+8f2f4aa43a25cbbfb2c2f56d4dcb78e3 *R/rqss.R
 f423c9b33f22cd11b1f7396ca50f42eb *R/sfn.R
 f0b39d29269a1fee63c98087f9d3fae7 *R/table.R
 11102c1b9076b53ebaac51cc79b90bfb *R/tools.R
@@ -24,11 +24,12 @@ f0b39d29269a1fee63c98087f9d3fae7 *R/table.R
 2cb41ec2ee5de9777a3577f2e441e17c *data/engel.rda
 693ec4307b3dbdd7bf234215b8d65ffc *data/gasprice.rda
 175e672761a8912f1c6221e232f3d088 *data/uis.rda
-8ca702629922394d6168f7c944c67004 *demo/00Index
+56ec2f8a801b13d3d84eb38f4b482596 *demo/00Index
 45e5019ec3600dddc740bd9c6b5435e3 *demo/Frank.R
 0164b0ceaae29163b4ce3c46a8f807bd *demo/KMvCRQ.R
 999f285311986ba48839f973b543ccbb *demo/Mammals.R
 20da13dfab3e9eae91c267a73bba1218 *demo/Mel.R
+8871644563874ecaf6184266985d5e72 *demo/Polson.R
 420943269f138f13cb31acdf9e3e5b2a *demo/RB-r.R
 a9cc1e5271ab2c9f1311705ac34b0401 *demo/arqss.R
 26ecfe31ed74ce740509838190dc7b50 *demo/cobar.R
@@ -39,8 +40,8 @@ d907e0e11fd1a4007ca28a3d1b03efed *demo/engel1.R
 78f40706cc851b261deee90781785c0d *demo/engel2.R
 aa2009c3a395aee9512819bb72dbc5c1 *demo/hinged.R
 ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
-54b67ce66f210821311e4453b2ec7d03 *demo/rqsslasso.R
-35fc122e1c6596fc52a9fd0170bab585 *inst/ChangeLog
+94d79fd77a45e9a9c3cacaf467cba52b *demo/rqsslasso.R
+baef8cbd91ef197f4a734367d1fc4dbd *inst/ChangeLog
 e6ae163cc350b95af916079178f80e70 *inst/FAQ
 f4249290040b6cd52914a07e11a402be *inst/TODO
 36e2842c985e8094ebaa2266250c4b29 *inst/doc/abbrev.bib
@@ -70,7 +71,7 @@ a814f8a161c09471654c9ce1c4fb710f *man/anova.rq.Rd
 742ec68efdfbcf12a2a47e1adcfde3fe *man/bandwidth.rq.Rd
 22f0835a5d071362da4d76b2c6a38b87 *man/barro.Rd
 9121a0c8f5ade9142d089cfb87db490b *man/boot.crq.Rd
-a5bc5f0602fd45f6bfba7d0f6497cbfe *man/boot.rq.Rd
+877b9acc0eb25e317831bae35ca58c9c *man/boot.rq.Rd
 f0c967422ef597cf9b87bee298fc0ec9 *man/combos.Rd
 e95befd0c07043e2f858f55c43d95b51 *man/critval.Rd
 dcd1802b430960ab4da1192ef88e06a0 *man/crq.Rd
@@ -89,7 +90,7 @@ f0fb5464e8dc6dc0de17d2e11cdae24f *man/lprq.Rd
 d2e7a73053e94b9a0444af290d0a19a1 *man/nlrq.control.Rd
 aa5102d7ad3c26a1eb17570d8e712134 *man/plot.rq.process.Rd
 585b11e2a458ebe2f58a208203df3660 *man/plot.rqs.Rd
-ac041e0db1de2b6db2322296087d009e *man/plot.rqss.Rd
+654996811ad4e00cb5e8e28f8c8c068c *man/plot.rqss.Rd
 941dcf59933be6c98c071ba99b1af498 *man/plot.summary.rqs.Rd
 677f4fe78b9ad9d1356157d5147c3306 *man/predict.rq.Rd
 38f8211e75ddd09e034c941900229461 *man/predict.rqss.Rd
@@ -121,7 +122,7 @@ c42b5515ccf48527ae43449357b3dfb0 *man/rq.process.object.Rd
 7a198b2a81968dc5da8b7f59ff282714 *man/sfn.control.Rd
 2dfb6597245f45ee542f157105db4bc4 *man/srisk.Rd
 b1385340bd67e8de6e8035424e3bada7 *man/summary.crq.Rd
-a72bf1010730826f2264d12a7f614adc *man/summary.rq.Rd
+aa162b973358396cb21686003bbad7b9 *man/summary.rq.Rd
 2cd698ce46395e6e057f5981dcbcb3b9 *man/summary.rqss.Rd
 7c19b7bc8dcaeafdb05e8fae65322c04 *man/table.rq.Rd
 f5a8859d2b97685d09b1e5bc77f27194 *man/uis.Rd
@@ -145,7 +146,7 @@ ca9cfb6521802b5cf5379350235c82c7 *src/kuantile.f
 6c73f8d751b81292bd687f5c4a38e24c *src/mcmb.c
 31bc1ee0336ad85bd71347646dd0ccf3 *src/penalty.f
 1f4de469cb42514e3f1ecb9601079c5c *src/powell.f
-46bf13f7c4ee9e2d0f1193437b62d908 *src/ratfor/README
+71d83107425821d2d48361f6881ac71d *src/ratfor/README
 cd61c65c6bf442a570bf6d3f7c736385 *src/ratfor/akj.r
 94215308d5710f542795197eeb00d6c1 *src/ratfor/boot.r
 abc8e4125098a8ec492c6d56a2e990ed *src/ratfor/brute.r
@@ -162,8 +163,7 @@ e099085dee267a7810af461acfd90bfd *src/ratfor/rqfnb.r
 2c72c86d700f2261d262370809c4e00c *src/ratfor/rqfnc.r
 6b34a4c3ddbc92462cc5f9df01852bdf *src/ratfor/rqs.r
 4161ceda0c447830b498ddde749eef35 *src/ratfor/sboot.f
-5bef4d3888226b434624628da9cf865a *src/ratfor/sboot.r
-7cee823f5d103f57dee438d74eaa7511 *src/ratfor/spwy.R
+02aa17f541cfc7f516c279392d147759 *src/ratfor/spwy.r
 1f7ca8e2e1c1020ca72d6ce14d5f52c0 *src/rls.f
 5a11e9b4b1a7addecc8c3530c490b1ee *src/rq0.f
 17329efdf297d541911e0de2a7fb960d *src/rq1.f
@@ -173,7 +173,7 @@ e099085dee267a7810af461acfd90bfd *src/ratfor/rqfnb.r
 43a088b9403c8f82de378b2fc002edc6 *src/rqfnc.f
 cdb9d9dcf135b468f2c2b7f4b9148ff4 *src/rqs.f
 0fe6466ffc4f14f59af647309147590b *src/sparskit2.f
-1f622284f3a2fb0ce220c6418b5b90ff *src/srqfn.f
+b77fce2a38039997d290e2ef2f3842af *src/srqfn.f
 8c3ed7e318fc5f49330b58c224fae473 *src/srqfnc.f
 2d66ab8cf738665d38eea1dca124b264 *src/srtpai.f
 a838141113a2049f3ca6b6c5914989bc *tests/panel.R

@@ -43,8 +43,9 @@ will be returned if printing is invoked.
       as proposed by Powell(1990).
 
       \item \code{"boot"} which implements one of several possible bootstrapping
-      alternatives for estimating standard errors.  See \code{\link{boot.rq}} for
-      further details.
+      alternatives for estimating standard errors including a variate of the wild
+      bootstrap for clustered response.  See \code{\link{boot.rq}} for
+      further details.  
     }
     If \code{se = NULL} (the default)  and \code{covariance = FALSE}, and
     the sample size is less than 1001, then the "rank" method is used, 

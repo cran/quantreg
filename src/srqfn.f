@@ -103,8 +103,8 @@ c     u -- an n-vector of upper bound for x
 c     c -- an n-vector, usually the "negative" of
 c          the pseudo response
 c     y -- an m-vector, the initial dual solution 
-c     b -- an n-vector, usualy the rhs of the equality constraint
-c          X'a = (1-tau)X'e in the rq setting
+c     b -- an n-vector, the rhs of the equality constraint
+c          usually X'a = (1-tau)X'e in the rq setting
 c     r -- an n-vector of residuals
 c     z -- an n-vector of the dual slack variable
 c     w -- an n-vector 

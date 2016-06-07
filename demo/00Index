@@ -14,3 +14,4 @@ arqss	Demo for automatic lambda selection
 Mammals	Demo for rqss with running speed of mammals data
 crquis	Demo for crq method using UIS data and Peng Huang method.
 RB-r	Demo for testing R beta = r using anova[.rq]
+Polson	Demo to compare rqss fit with Polson-Scott ADMM fit

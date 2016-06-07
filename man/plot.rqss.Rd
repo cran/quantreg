@@ -16,10 +16,11 @@ to plot {summary.rqss}  objects just generates a warning message.
 }
 \usage{
 \method{plot}{rqss}(x, rug = TRUE, jit = TRUE, bands = NULL, coverage = 0.95,
-	add = FALSE, shade = TRUE, select = NULL, pages = 0, titles = NULL, \dots)
+	add = FALSE, shade = TRUE, select = NULL, pages = 0, titles = NULL, 
+	bcol = NULL, \dots)
 \method{plot}{qss1}(x, rug = TRUE, jit = TRUE, add = FALSE, \dots)
 \method{plot}{qss2}(x, render = "contour", ncol = 100, zcol = NULL, \dots)
-\method{plot}{summary.rqss}(x, ...)
+\method{plot}{summary.rqss}(x, \dots)
 }
 \arguments{
   \item{x}{a fitted \code{rqss} object produced by \code{\link{rqss}()}.}
@@ -40,6 +41,7 @@ to plot {summary.rqss}  objects just generates a warning message.
   \item{shade}{if TRUE then shade the confidence band}
   \item{titles}{title(s) as vector of character strings, by default titles are chosen for
 	each plot as "Effect of CovariateName"}
+  \item{bcol}{vector of two colors for confidence bands}
   \item{ncol, zcol}{Only for \code{render = "rgl"}: number of colors and
     z values for color construction.}%% FIXME: be more specific
 }

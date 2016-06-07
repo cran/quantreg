@@ -3,7 +3,7 @@ function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y),
 	  cluster = NULL, U = NULL, ...)
 {
     n <- length(y)
-    x <- as.matrix(x)
+    if(class(x) != "matrix.csr") x <- as.matrix(x)
     p <- ncol(x) 
     B <- matrix(0, R, p)
     if(tau <= 0 || tau >= 1) stop("tau outside (0,1) not allowed")
@@ -31,8 +31,11 @@ function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y),
 	}
 	r <- c(rq.fit(x, y, tau)$resid)
 	psi <- (r < 0) - tau
-	W <- t(x) %*% (U * psi)
-        B <- boot.rq.pwy(W, x, y, tau)
+	W <- as.matrix(t(x) %*% (U * psi))
+	if(class(x) == "matrix.csr") 
+	    B <- boot.rq.spwy(W, x, y, tau)
+	else
+	    B <- boot.rq.pwy(W, x, y, tau)
     }
     else if (bsmethod == "jack"){ # Portnoy proposal
 	if(!length(U)){
@@ -219,3 +222,30 @@ function(U,X, y, tau = 0.5, tol=1e-4)
 		PACKAGE = "quantreg")
 	return(t(matrix(z$coef, p, R)))
 }
+
+#################################################################
+#	NB:  In an ideal world the loop would be in fortran
+#################################################################
+
+
+boot.rq.spwy <- function(W, a, y, tau=.5, control)
+{
+	y <- c(y, length(y) * max(abs(y)))
+	n <- length(y)
+	m <- a@dimension[2]
+	a <- rbind(a, as.matrix.csr(t(rep(1,m))))
+	nra <- length(a@ra)
+	W <- W/tau
+	k <- ncol(W) # Number of resampling realizations
+	if(m != nrow(W)) 
+	    stop("W row dimension not compatible with design matrix")
+	if(n != a@dimension[1])
+	     stop("Dimensions of design matrix and the response vector not compatible")
+	for(i in 1:k){
+	    a@ra[(nra - m + 1):nra] <- W[,i]
+	    W[,i] <- rq.fit.sfn(a,y,tau = tau)$coef
+	}
+	B <- t(W)
+	B
+}
+

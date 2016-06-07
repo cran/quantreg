@@ -1313,3 +1313,19 @@ Andreas on May 9 2016.
 4.  Adapted boot.rq and friends so that when there are multiple taus
 summary.rqs reuses the same randomization  for each of the taus to facilitate
 joint inference with the bootstrap realizations.
+
+5.25
+
+1.  When method = "sfn"  store model$x in sparse form.  Then when
+bootstrapping use method = "sfn" rather than the usual "br" method.
+
+2.  When using the "cluster" option for bootstrap allow "sfn" as above.
+
+3.  When na.action = "omit"  and length(fit$na.action) > 0, then omit
+these values from the strata indicator "cluster".  This would seem to
+help bring together the survey package and quantreg as desired by
+email correspondance with donald706.
+
+5.26
+
+1.  Fixed long line per Kurt's suggestion.

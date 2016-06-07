@@ -13,7 +13,7 @@ importFrom("grDevices", "dev.interactive", "devAskNewPage", "gray",
 importFrom("graphics", "abline", "contour", "lines", "matlines",
      "matplot", "par", "persp", "plot", "points", "polygon", "title")
 importFrom("methods", "as", "hasArg", "new")
-importFrom("utils", "flush.console")
+importFrom("utils", "flush.console", "modifyList")
 importFrom("stats", ".checkMFClasses", ".getXlevels", "AIC", "approx",
      "as.formula", "as.ts", "coef", "coefficients", "cycle",
      "model.matrix", "model.response",

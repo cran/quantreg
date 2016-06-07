@@ -113,6 +113,7 @@ function (formula, tau = 0.5, data, subset, weights, na.action, method = "br",
 	    X <- MatrixModels::model.Matrix(mt, data, sparse = TRUE)
 	    vnames <- dimnames(X)[[2]]
 	    X <- as(X ,"matrix.csr")
+	    mf$x <- X
 	    }
     }	
     else
@@ -1031,11 +1032,15 @@ c(edf, aic)
 function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, ...)
 {
     if(object$method == "lasso")
-         stop("no inference for lasso'd rq fitting: try rqss (if brave)")
+         stop("no inference for lasso'd rq fitting: try rqss (if brave, or credulous)")
     mt <- terms(object)
     m <- model.frame(object)
     y <- model.response(m)
-    x <- model.matrix(mt, m, contrasts = object$contrasts)
+    dots <- list(...)
+    if(object$method == "sfn")
+	x <- object$model$x
+    else
+	x <- model.matrix(mt, m, contrasts = object$contrasts)
     wt <- as.vector(model.weights(object$model))
     tau <- object$tau
     eps <- .Machine$double.eps^(1/2)
@@ -1113,7 +1118,16 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, ...)
         serr <- sqrt(diag(cov))
     }
     else if (se == "boot") {
-        B <- boot.rq(x, y, tau, ...)
+	if("cluster" %in% names(dots)) {
+	    bargs <- modifyList(list(x = x, y = y, tau = tau), dots)
+	    if(length(object$na.action)) {
+	         cluster <- dots$cluster[-object$na.action]
+	         bargs <- modifyList(bargs, list(cluster = cluster))
+	    }
+	B <- do.call(boot.rq, bargs)
+	}
+	else
+	    B <- boot.rq(x, y, tau, ...)
         cov <- cov(B$B)
         serr <- sqrt(diag(cov))
     }

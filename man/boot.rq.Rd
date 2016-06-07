@@ -3,6 +3,7 @@
 \alias{boot.rq.xy}
 \alias{boot.rq.wxy}
 \alias{boot.rq.pwy}
+\alias{boot.rq.spwy}
 \alias{boot.rq.mcmb}
 \title{ Bootstrapping Quantile Regression}
 \description{
@@ -34,7 +35,18 @@ boot.rq(x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y),
   \item{cluster}{If non-NULL this argument should specify cluster id
       numbers for each observation, in which case the clustered version of 
       the bootstrap based on the proposal of Hagemann (2016). If present
-      \code{bsmethod} is set to set to "cluster"}
+      \code{bsmethod} is set to set to "cluster". If this option is used
+      and the fitting method for the original call was "sfn" then the
+      bootstrapping will be carried out with the "sfn" as well.  This
+      is usually substantially quicker than the older version which
+      employed the "br" variant of the simplex method.  Use of "sfn"
+      also applies to the "pwy" method when the original fitting 
+      was done with "sfn".  Finally, if \code{na.action = "omit"} and
+      \code{length(object$na.action) > 0} then these elements are also
+      removed from the \code{cluster} variable.  Consequently, the 
+      length of the \code{cluster} variable should always be the same
+      as the length of the original response variable before any 
+      \code{na.action} takes place.  }
   \item{U}{If non-NULL this argument should specify an array of indices
       or gradient evaluations to be used by the corresponding bootstrap
       method as specified by \code{bsmethod}.  This is NOT intended as

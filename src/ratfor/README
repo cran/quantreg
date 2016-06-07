@@ -47,3 +47,8 @@ the SEP version of ratfor77, which seems to work ok on this
 function.  It is installed in my $HOME/bin directory and the
 build is in the Rinstall directory.  Note that now on yzzy
 ratfor is called ratfor77.
+
+Note added May 14, 2016
+
+Contrary to the last note, it appears that my $HOME/bin/ratfor
+command works and $HOME/bin/ratfor77 does not.

@@ -260,8 +260,8 @@ function (x, render = "contour", ncol = 100, zcol = NULL, ...)
     }
 }
 plot.rqss <-
-function (x, rug = TRUE, jit = TRUE, bands = NULL, coverage = 0.95, 
-    add = FALSE, shade = TRUE, select = NULL, pages = 0, titles = NULL, ...) 
+function (x, rug = TRUE, jit = TRUE, bands = NULL, coverage = 0.95, add = FALSE, 
+	  shade = TRUE, select = NULL, pages = 0, titles = NULL, bcol = NULL, ...) 
 {
     SetLayout <- function(m, p) {
             # Shamelessly cribbed from mgcv
@@ -368,13 +368,13 @@ function (x, rug = TRUE, jit = TRUE, bands = NULL, coverage = 0.95,
                 cv <- B$cv
                 B <- B$pred
                 B$y <- B$y + x$coef["(Intercept)"]
-                bandcol <- c("grey85","grey65")
+                if(!length(bcol)) bcol <- c("grey85","grey65")
 		for(k in 1:length(cv)){
                  if (add || k > 1) 
                   if(shade){
                      polygon(c(B$x,rev(B$x)),
                         c(B$y - cv[k] * B$se,rev(B$y + cv[k] * B$se)),
-			col = bandcol[k], border = FALSE)
+			col = bcol[k], border = FALSE)
 			}
                   else
                     matlines(B$x, cbind(B$y, B$y + cv[k] * cbind(-B$se, 
@@ -386,7 +386,7 @@ function (x, rug = TRUE, jit = TRUE, bands = NULL, coverage = 0.95,
                   if(shade){
                      polygon(c(B$x,rev(B$x)),
                         c(B$y - cv[k] * B$se,rev(B$y + cv[k] * B$se)),
-			col = bandcol[k], border = FALSE)
+			col = bcol[k], border = FALSE)
 			}
                   else{
                      lines(B$x, B$y + cv * B$se, lty = 2, ...)
