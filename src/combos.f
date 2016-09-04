@@ -1,6 +1,6 @@
 C Output from Public domain Ratfor, version 1.0
       subroutine combin(r,n,m,a,c,e,last)
-      integer r,n,m,t,k,j,m0,mj
+      integer r,n,m,t,k,j,m0,mj,s
       integer a(n,m),c(r),e(r),last(r)
       logical odd
       m0 = r-n

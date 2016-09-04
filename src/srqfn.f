@@ -64,7 +64,7 @@ c     dsub -- the values of e excluding the diagonal elements
 c     jdsub -- the indices to dsub
 c     nsubmax -- upper bound of the dimension of lindx
 c     lindx -- an nsub-vector of interger which contains, in 
-c           column major oder, the row subscripts of the nonzero
+c           column major order, the row subscripts of the nonzero
 c           entries in L in a compressed storage format
 c     xlindx -- an (m+1)-vector of integer of pointers for lindx
 c     nnzlmax -- the upper bound of the non-zero entries in 

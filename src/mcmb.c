@@ -218,7 +218,7 @@ sum_right, double sumxij, double sumabsxij, int j, int pp, int nn){
 
   pwtsum=0; i=1;
   ans=z[1];
-  while(pwtsum<=taustar & i<nn+1){
+  while((pwtsum<=taustar) & (i<nn+1)){
     pwtsum=pwtsum+wt[i];
     ans=z[i];
     i++;

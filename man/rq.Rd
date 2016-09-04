@@ -66,10 +66,17 @@ rq(formula, tau=.5, data, subset, weights, na.action,
     the estimated parameters, based on inversion of a rank test described 
     in Koenker(1994).  For larger problems it is advantageous to use 
     the Frisch--Newton interior point method \code{"fn"}. 
-    And very large problems one can use the Frisch--Newton approach after 
+    And for very large problems one can use the Frisch--Newton approach after 
     preprocessing \code{"pfn"}.  Both of the latter methods are
-    described in detail in Portnoy and Koenker(1997).   
-    There is a fifth option \code{"fnc"} that enables the user to specify
+    described in detail in Portnoy and Koenker(1997), this method is
+    primarily well-suited for large n, small p problems where the parametric
+    dimension of the model is modest.  For large problems with  large
+    parametric dimension it is usually advantageous to use method \code{"sfn"}
+    which uses the Frisch-Newton algorithm, but exploits sparse algebra
+    to compute iterates.  This is typically helpful when the model includes
+    factor variables that, when expanded, generate design matrices that
+    are very sparse.
+    A sixth option \code{"fnc"} that enables the user to specify
     linear inequality constraints on the fitted coefficients; in this
     case one needs to specify the matrix \code{R} and the vector \code{r}
     representing the constraints in the form \eqn{Rb \geq r}.  See the

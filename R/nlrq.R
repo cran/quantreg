@@ -24,7 +24,7 @@
 "nlrqModel" <- function (form, tau, data, start) 
 {
     thisEnv <- environment()
-    env <- new.env()
+    env <- new.env(parent = environment(form))
     for (i in names(data)) {
         assign(i, data[[i]], envir = env)
     }

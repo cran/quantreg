@@ -7,3 +7,5 @@ anova.rq to do more general testing.  (Portnoy:  January, 2012)
 
 3.  Add error for models with lasso when there aren't coefs to penalize, see example in
 tests/tong/test2.R.
+
+4.  Allow predict.rqs to do confidence bands see tests/fischer/test.R  August 30 2016.

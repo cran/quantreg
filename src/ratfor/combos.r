@@ -8,7 +8,7 @@
 
 subroutine combin(r,n,m,a,c,e,Last)
 
-integer r,n,m,t,k,j,M0,Mj
+integer r,n,m,t,k,j,M0,Mj,s
 integer A(n,m),c(r),e(r),Last(r)
 logical odd
 	

@@ -1,7 +1,7 @@
 c----------------------------------------------------------------------c
        subroutine amub (nrow,ncol,job,a,ja,ia,b,jb,ib,
      *                  c,jc,ic,nzmax,iw,ierr) 
-      real*8 a(*), b(*), c(*) 
+      double precision a(*), b(*), c(*) 
       integer ja(*),jb(*),jc(*),ia(nrow+1),ib(*),ic(*),iw(ncol)
 c-----------------------------------------------------------------------
 c performs the matrix by matrix product C = A B 
@@ -48,7 +48,7 @@ c   The row dimension of B is not needed. However there is no checking
 c   on the condition that ncol(A) = nrow(B). 
 c
 c----------------------------------------------------------------------- 
-      real*8 scal 
+      double precision scal 
       logical values
       values = (job .ne. 0) 
       len = 0
@@ -92,7 +92,7 @@ c-----------------------------------------------------------------------
       end
 c-----------------------------------------------------------------------
       subroutine amudia (nrow,job, a, ja, ia, diag, b, jb, ib)
-      real*8 a(*), b(*), diag(*) 
+      double precision a(*), b(*), diag(*) 
       integer ja(*),jb(*), ia(nrow+1),ib(nrow+1) 
 c-----------------------------------------------------------------------
 c performs the matrix by matrix product B = A * Diag  (in place) 
@@ -147,7 +147,7 @@ c-----------end-of-amudiag----------------------------------------------
       end 
 c----------------------------------------------------------------------c
       subroutine amux (n, x, y, a,ja,ia) 
-      real*8  x(*), y(*), a(*) 
+      double precision  x(*), y(*), a(*) 
       integer n, ja(*), ia(*)
 c-----------------------------------------------------------------------
 c         A times a vector
@@ -170,7 +170,7 @@ c
 c-----------------------------------------------------------------------
 c local variables
 c
-      real*8 t
+      double precision t
       integer i, k
 c-----------------------------------------------------------------------
       do 100 i = 1,n
@@ -192,7 +192,7 @@ c
 c-----------------------------------------------------------------------
       subroutine aplb (nrow,ncol,job,a,ja,ia,b,jb,ib,
      *     c,jc,ic,nzmax,iw,ierr)
-      real*8 a(*), b(*), c(*) 
+      double precision a(*), b(*), c(*) 
       integer ja(*),jb(*),jc(*),ia(nrow+1),ib(nrow+1),ic(nrow+1),
      *     iw(ncol)
 c-----------------------------------------------------------------------
@@ -281,7 +281,7 @@ c------------end of aplb -----------------------------------------------
 c-----------------------------------------------------------------------
       end
       subroutine csrmsr (n,a,ja,ia,ao,jao,wk,iwk,nnzao,ierr)
-      real*8 a(*),ao(*),wk(n)
+      double precision a(*),ao(*),wk(n)
       integer ia(n+1),ja(*),jao(*),iwk(n+1),nnzao,ierr
 c----------------------------------------------------------------------- 
 c Compressed Sparse Row   to      Modified - Sparse Row 

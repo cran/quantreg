@@ -23,7 +23,7 @@ C     The algorithm  is a slightly modified version of Algorithm AS 229
 C     described in Koenker and D'Orey, "Computing Regression Quantiles,
 C     Applied Statistics, pp. 383-393. 
 C
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT DOUBLE PRECISION(A-H,O-Z)
       INTEGER I,J,K,KL,KOUNT,KR,M,M1,M2,M3,M4,M5,IFT
       INTEGER MDIM,N,N1,N2,OUT,S(MDIM)
       LOGICAL STAGE,TEST,INIT,IEND

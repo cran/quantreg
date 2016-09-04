@@ -14,9 +14,7 @@ function (formula, data, taus, nullH = "location", ...)
        ntaus <- length(taus)
        coefs <- matrix(0, ntaus, p)
        Cov <- array(0, c(p, p, ntaus))
-       cat("taus: ")
        for (i in 1:ntaus) {
-           cat(taus[i], " ")
            z <- summary(rq(formula, data = data, tau = taus[i], method = "fn"), 
 		covariance = TRUE, ...)
            coefs[i, ] <- z$coef[, 1]

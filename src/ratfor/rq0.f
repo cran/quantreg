@@ -22,11 +22,11 @@ C     The algorithm  is a slightly modified version of Algorithm AS 229
 C     described in Koenker and D'Orey, "Computing Regression Quantiles,
 C     Applied Statistics, pp. 383-393. 
 C
-      IMPLICIT DOUBLE PRECISION(A-H,O-Z)
       INTEGER I,J,K,KL,KOUNT,KR,M,M1,M2,M3,M4,M5,IFT
       INTEGER N,N1,N2,OUT,S(M)
       LOGICAL STAGE,TEST,INIT,IEND
-      DOUBLE PRECISION MIN,MAX
+      DOUBLE PRECISION MIN,MAX,BIG,ONE,ZERO,HALF,TWO,AUX,D,DIF,B1,SMAX
+      DOUBLE PRECISION TNT,PIVOT,SUM,A1,T
       DOUBLE PRECISION B(M),A(M,N),X(N),WA(M5,N2),WB(M),E(M)
       DATA BIG/1.D37/
       DATA ZERO/0.00D0/

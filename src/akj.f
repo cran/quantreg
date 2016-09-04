@@ -13,15 +13,15 @@ C nx--number of pts in x
 C nz--number of pts in z
 C iker--kernel
 C          0=gaussian
-C	   1=cauchy
+C          1=cauchy
 C h--initial window size (overall)--choose zero for default
 C kappa--constant determining initial (default) window width
 C xlam--Silverman's lambda, window adjustment for each x
-      double precision dens(nz),score(nz),psi(nz),h,kappa
+      double precision dens(nz),score(nz),psi(nz),g,h,kappa
       double precision z(nz),x(nx),xlam(nx),p(nx),qrange,pi
-      double precision con1,sum,sqsum,xsd,a,fifth,hinv,half
+      double precision con1,sum,sqsum,xsd,a,fifth,hinv,half,ginv
       double precision xn,xker,dxker,ddxker,fact,xponen,alpha,glog,zero,
-     *     one,two
+     *     one,two,four
       parameter( zero = 0.d0)
       parameter( one = 1.d0)
       parameter( two = 2.d0)

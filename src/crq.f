@@ -58,7 +58,7 @@ C     WD = list of first MPLUS tau values at which degeneracy
 C          may have occurred (and weighted RQ was called)
 C     H(1) = number of calls to weighted RQ (apparent degeneracy)
 C
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT DOUBLE PRECISION(A-H,O-Z)
       INTEGER H(N),ICEN(M),C(M),IA(MPLUS)
       LOGICAL APC, DEG
       DOUBLE PRECISION ONE
@@ -471,7 +471,7 @@ C    IFLAG(1:N) = sign(grad denom)
 C               = +1 if bound from lower grad bound
 C               = -1 if bound from upper grad bound
 C    
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT DOUBLE PRECISION(A-H,O-Z)
       INTEGER H(N),ICEN(M),IFLAG(*)
       DOUBLE PRECISION ONE
       DIMENSION X(M,N),Y(M),GUP(N),XH(N,N)

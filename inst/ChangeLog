@@ -1329,3 +1329,18 @@ email correspondance with donald706.
 5.26
 
 1.  Fixed long line per Kurt's suggestion.
+
+2.  Added some comments about method "sfn" in the man page for rq.
+
+5.27
+
+1.  removed lines that cat'd taus from rqprocess in the khmal.R
+
+2.  fixed environment problem in nlrq, according to suggestion of 
+Vaidotas Zemlys-Balevicius email August 9 2016.
+
+5.28 
+
+1.  Cleaned up the fortran source a bit in accordance with Kurt's mandate
+of late August 2016.  There are still some offensive items mainly in crq.f
+that should be dealt with, but I wasn't able to dig into this at the moment.
