@@ -130,4 +130,19 @@ regression model. I have read a lot of article about it; but I don't really get 
     in the QR case that Q_h(Y) = h(Q_Y) is  interesting, and it doesn't hold if you 
     replace Q by E.
 
+12.  My recent paper used quantile regression model which is interesting for plant 
+physiologists, the reviewers questioned that my independent (x) and dependent (y) 
+variable should be exchanged as OLS showed. In my research, x=stomatal conductance, 
+y=stomatal density, however, the reviewer suggested to plot as x= stomatal density, 
+y=stomatal conductance. But, the meanings of x and y in quantile regression model 
+should be different with OLS, what are the differences? Could you kindly give me 
+some indications?
 
+  From a predictive point of view, the question is straightforward:  both QR and LS
+  answer the question how would you predict y given information on x, QR by delivering
+  an entire conditional distribution function, LS by producing a mean of that distribution
+  at each x.
+  
+  More difficult is the usual causal question:  if we imagine an intervention that changes
+  x and ask: what is the consequence for the distribution of y?  If this formulation doesn’t
+  make sense for a particular choice of x,y then one might consider reversing them.

@@ -236,8 +236,7 @@ function(x, y, tau = 0.5, tol = 0.0001)
                 resid = double(n),
                 integer(n),
                 double((n + 5) * (p + 2)),
-                double(n),
-                PACKAGE = "quantreg")
+                double(n))
         if(sum(z$flag)>0){
                 if(any(z$flag)==2)
                         warning(paste(sum(z$flag==2),"out of",m,
@@ -344,7 +343,7 @@ function (object, newdata, type = "none", interval = c("none",
 function (object, newdata, type = "Qhat", stepfun = FALSE, na.action = na.pass, ...)
 {
    ## with all defaults
-   if(missing(newdata) & !stepfun) return(object$fitted)
+   if(missing(newdata) && !stepfun && (type == "Qhat")) return(object$fitted)
 
    ## otherwise
    tt <- delete.response(terms(object))
@@ -352,75 +351,97 @@ function (object, newdata, type = "Qhat", stepfun = FALSE, na.action = na.pass, 
        na.action = na.action, xlev = object$xlevels)
    if(!is.null(cl <- attr(tt, "dataClasses"))) .checkMFClasses(cl, m)
    X <- model.matrix(tt, m, contrasts = object$contrasts)
-   pred <- X %*% object$coefficients
+   pred <- t(X %*% object$coefficients)
+   taus <- object$tau
+   M <- NCOL(pred)
 
    ## return stepfun or matrix
    if(stepfun) {
-       pred <- t(pred)
-       taus <- object$tau
        if(type == "Qhat"){
-          if(ncol(pred) > 1) {
-              f <- as.list(1:ncol(pred))
-              for(i in 1:ncol(pred)) f[[i]] <- stepfun(taus, c(pred[1,i], pred[,i]))
-          } else
+	   pred <- rbind(pred[1,],pred)
+          if(M > 1) 
+	      f <- apply(pred, 2, function(y) stepfun(taus, y))
+          else
               f <- stepfun(taus, c(pred[1,1], pred[,1]))
           }
        else if(type == "Fhat"){
-          if(ncol(pred) > 1) {
-              f <- as.list(1:ncol(pred))
-              for(i in 1:ncol(pred)) {
-                   o <- order(pred[,i])
-                   f[[i]] <- stepfun(pred[o,i],c(taus[1],taus[o]))
-                   }
-          } else
-              f <- stepfun(pred[,1],c(taus[1],taus))
-          }
-       else stop("type must be either 'Qhat' or 'Fhat'")
+	   taus <- c(taus[1], taus)
+           if(M > 1) 
+	       f <- apply(pred, 2, function(y) {
+                        o <- order(y)
+                        stepfun(y[o], taus[c(1,o)])})
+          else
+              f <- stepfun(pred[,1],taus)
+       }
+       else stop("Stepfuns must be either 'Qhat' or 'Fhat'\n")
        return(f)
-   } else {
-       return(pred)
-   }
+   } 
+   else if(type == "fhat"){
+	akjfun <- function(z, p, d = 10, g = 300, ...) {
+            mz <- sum(z * p)
+            sz <- sqrt(sum((z - mz)^2 * p))
+            hz <- seq(mz - d * sz, mz + d * sz, length = g)
+            fz <- akj(z, hz, p = p, ...)$dens
+            approxfun(hz, fz)
+        }
+        p <- diff(taus)
+        if (M > 1) 
+            f <- apply(pred[-1, ], 2, function(z) akjfun(z, p, ...))
+        else akjfun(pred[, 1], p, ...)
+        return(f)
+    }
+  else return(t(pred))
 }
 
 
 "predict.rq.process" <-
 function (object, newdata, type = "Qhat", stepfun = FALSE, na.action = na.pass, ...)
 {
-    if (missing(newdata))
-        return(object$fitted)
-    else {
-        tt <- terms(object)
-        Terms <- delete.response(tt)
-        m <- model.frame(Terms, newdata, na.action = na.action,
-            xlev = object$xlevels)
-        if (!is.null(cl <- attr(Terms, "dataClasses")))
-            .checkMFClasses(cl, m)
-        X <- model.matrix(Terms, m, contrasts = object$contrasts)
-    }
-    pred <- t(X %*% object$sol[-(1:3),])
+    if(missing(newdata) && !stepfun && (type == "Qhat")) return(object$fitted)
+    tt <- terms(object)
+    Terms <- delete.response(tt)
+    m <- model.frame(Terms, newdata, na.action = na.action,
+        xlev = object$xlevels)
+    if (!is.null(cl <- attr(Terms, "dataClasses"))) .checkMFClasses(cl, m)
+    X <- model.matrix(Terms, m, contrasts = object$contrasts)
+    if(!length(X)) X <- rep(1, NROW(object$dsol)) # intercept only hack
+    pred <- t(X %*% object$sol[-(1:3),, drop = FALSE])
+    taus <- object$sol[1,]
+    M <- NCOL(pred)
     if(stepfun){
-    	taus <- object$sol[1,]
        if(type == "Qhat"){
-          if(ncol(pred) > 1) {
-              f <- as.list(1:ncol(pred))
-              for(i in 1:ncol(pred)) f[[i]] <- stepfun(taus, c(pred[1,i], pred[,i]))
-          } else
-              f <- stepfun(taus, c(pred[1,1], pred[,1]))
+	  pred <- rbind(pred[1,], pred)
+          if(M > 1)
+	      f <- apply(pred,2,function(y) stepfun(taus, y))
+          else
+              f <- stepfun(taus, pred[,1])
           }
        else if(type == "Fhat"){
-          if(ncol(pred) > 1) {
-              f <- as.list(1:ncol(pred))
-              for(i in 1:ncol(pred)) {
-                  o <- order(pred[,i])
-                  f[[i]] <- stepfun(pred[,i],c(taus[1],taus))
-                  }
-          } else
+	  taus <- c(taus[1],taus)
+          if(M > 1) 
+	      f <- apply(pred,2,function(y) stepfun(y,t))
+          else
               f <- stepfun(pred[,1],c(taus[1],taus))
           }
-       else stop("type must be either 'Qhat' or 'Fhat'")
+       else stop("Stepfuns must be either 'Qhat' or 'Fhat'")
        return(f)
+    }
+    else if(type == "fhat"){
+	akjfun <- function(z, p, d = 10, g = 300, ...){
+	   mz <- sum(z * p)
+	   sz <- sqrt(sum((z - mz)^2 * p))
+           hz <- seq(mz -  d * sz, mz+ d * sz, length = g)
+           fz <- akj(z, hz, p = p, ...)$dens
+           approxfun(hz,fz)
 	}
-    return(pred)
+	p <- diff(taus)
+        if(M > 1) 
+	    f <- apply(pred[-1,], 2, function(z) akjfun(z, p, ...))
+        else
+	   akjfun(pred[,1], p, ...)
+       return(f)
+       }
+    else return(t(pred))
 }
 "rearrange"  <- function (f, xmin, xmax)
 # Revised Version September 11 2007.
@@ -569,7 +590,7 @@ function (x, y, tau = 0.5, alpha = 0.1, ci = FALSE, iid = TRUE,
         sol = double((p + 3) * nsol), dsol = double(n * ndsol),
         lsol = as.integer(0), h = integer(p * nsol), qn = as.double(qn),
         cutoff = as.double(cutoff), ci = double(4 * p), tnmat = double(4 *
-            p), as.double(big), as.logical(lci1), PACKAGE = "quantreg")
+            p), as.double(big), as.logical(lci1))
     if (z$flag != 0)
         warning(switch(z$flag, "Solution may be nonunique", "Premature end - possible conditioning problem in x"))
     if (tau < 0 || tau > 1) {
@@ -624,7 +645,7 @@ function (x, y, tau = 0.5, alpha = 0.1, ci = FALSE, iid = TRUE,
 }
 
 "rq.fit.fnb" <-
-function (x, y, tau = 0.5, beta = 0.99995, eps = 1e-06)
+function (x, y, tau = 0.5, rhs = (1-tau)*apply(x,2,sum), beta = 0.99995, eps = 1e-06)
 {
     n <- length(y)
     p <- ncol(x)
@@ -632,7 +653,6 @@ function (x, y, tau = 0.5, beta = 0.99995, eps = 1e-06)
         stop("x and y don't match n")
     if (tau < eps || tau > 1 - eps)
         stop("No parametric Frisch-Newton method.  Set tau in (0,1)")
-    rhs <- (1 - tau) * apply(x, 2, sum)
     d   <- rep(1,n)
     u   <- rep(1,n)
     wn <- rep(0,10*n)
@@ -641,7 +661,7 @@ function (x, y, tau = 0.5, beta = 0.99995, eps = 1e-06)
         c = as.double(-y), rhs = as.double(rhs), d = as.double(d),as.double(u),
         beta = as.double(beta), eps = as.double(eps),
         wn = as.double(wn), wp = double((p + 3) * p),
-        it.count = integer(3), info = integer(1),PACKAGE= "quantreg")
+        it.count = integer(3), info = integer(1))
     if (z$info != 0)
         stop(paste("Error info = ", z$info, "in stepy: singular design"))
     coefficients <- -z$wp[1:p]
@@ -676,7 +696,7 @@ function (x, y, R, r, tau = 0.5, beta = 0.9995, eps = 1e-06)
 	rhs = as.double(rhs), d1 = double(n1), d2 = double(n2),
 	as.double(u), beta = as.double(beta), eps = as.double(eps),
         wn1 = as.double(wn1), wn2 = as.double(wn2), wp = double((p + 3) * p),
-        it.count = integer(3), info = integer(1), PACKAGE = "quantreg")
+        it.count = integer(3), info = integer(1))
     if (z$info != 0)
         stop(paste("Error info = ", z$info, "in stepy2: singular design"))
     coefficients <- -z$wp[1:p]
@@ -731,7 +751,7 @@ function (x, y, tau = 0.5, alpha = 3.2, lambda = 1, start = "rq", beta = 0.9995,
         	c = as.double(-Y), vrhs = as.double(vrhs), d = as.double(d),
         	as.double(u), beta = as.double(beta), eps = as.double(eps),
         	wn = as.double(wn), wp = double((p + 3) * p), 
-            	it.count = integer(3), info = integer(1), PACKAGE = "quantreg")
+            	it.count = integer(3), info = integer(1))
 	coef <- -z$wp[1:p]
 	vscad <- c(0,dscad(coef[2:p]) * sign(coef[2:p]))
 	}
@@ -775,8 +795,8 @@ function (x, y, tau = 0.5, lambda = 1, beta = 0.9995, eps = 1e-06)
     z <- .Fortran("rqfnb", as.integer(N), as.integer(p), a = as.double(t(as.matrix(X))),
         c = as.double(-Y), rhs = as.double(rhs), d = as.double(d),
         as.double(u), beta = as.double(beta), eps = as.double(eps),
-        wn = as.double(wn), wp = double((p + 3) * p), aa = double(p *
-            p), it.count = integer(3), info = integer(1), PACKAGE = "quantreg")
+        wn = as.double(wn), wp = double((p + 3) * p), 
+            it.count = integer(3), info = integer(1))
     if (z$info != 0)
         stop(paste("Error info = ", z$info, "in stepy2: singular design"))
     coefficients <- -z$wp[1:p]
@@ -1027,9 +1047,10 @@ c(edf, aic)
 #		"pwy"	uses the parzen-wei-ying method
 #		"mcmb"	uses the Markov chain marginal bootstrap method
 #		"cluster"  uses the Hagemann clustered wild gradient method
+#		"BLB"	uses the Bag of Little Boostraps method
 #
 #
-function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, ...)
+function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.7, ...)
 {
     if(object$method == "lasso")
          stop("no inference for lasso'd rq fitting: try rqss (if brave, or credulous)")
@@ -1131,6 +1152,19 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, ...)
         cov <- cov(B$B)
         serr <- sqrt(diag(cov))
     }
+   else if (se == "BLB"){ # Bag of Little Bootstraps
+        n <- length(y)
+        b <- ceiling(n^gamma)
+        S <- n %/% b
+        V <- matrix(sample(1:n, b * S), b, S)
+        Z <- matrix(0, NCOL(x), S)
+        for(i in 1:S){
+            v <- V[,i]
+	    B <- boot.rq(x[v,], y[v], tau, bsmethod = "BLB", blbn = n, ...)
+            Z[,i] <- sqrt(diag(cov(B$B)))
+        }
+        serr <- apply(Z, 1, mean)
+    }
     if( se == "rank"){
 	coef <- f$coef
 	}
@@ -1191,8 +1225,7 @@ akj <- function(x,
 	     h = as.double(h),
 	     as.double(alpha),
 	     as.double(kappa),
-	     double(nx),
-	     PACKAGE = "quantreg")[c("dens", "psi", "score", "h")]
+	     double(nx))[c("dens", "psi", "score", "h")]
 }
 
 "lm.fit.recursive" <-
@@ -1217,8 +1250,7 @@ function(X, y, int = TRUE)
 		as.double(y),
 		b = as.double(b),
 		as.double(A),
-		as.double(Ax),
-		PACKAGE = "quantreg")
+		as.double(Ax))
 	bhat <- matrix(z$b, p, n)
 	return(bhat)
 }
@@ -1260,7 +1292,7 @@ function (x, y, taus = c(.1,.3,.5), weights = c(.7,.2,.1),
            rhs = as.double(rhs), d1 = double(m*n), d2 = double(n2), 
            as.double(u), beta = as.double(beta), eps = as.double(eps), 
            wn1 = as.double(wn1), wn2 = as.double(wn2), wp = double((p + 3) * p), 
-	   it.count = integer(3), info = integer(1), PACKAGE = "quantreg")
+	   it.count = integer(3), info = integer(1))
 	}
     else{
 	wn <- rep(0, 10 * m*n)
@@ -1268,8 +1300,7 @@ function (x, y, taus = c(.1,.3,.5), weights = c(.7,.2,.1),
     	z <- .Fortran("rqfnb", as.integer(m*n), as.integer(p), a = as.double(t(as.matrix(X))), 
 		c = as.double(-y), rhs = as.double(rhs), d = as.double(d), as.double(u), 
 		beta = as.double(beta), eps = as.double(eps), wn = as.double(wn), 
-		wp = double((p + 3) * p), it.count = integer(2), info = integer(1),
-		PACKAGE = "quantreg")
+		wp = double((p + 3) * p), it.count = integer(2), info = integer(1))
 	}
     if (z$info != 0) 
         warning(paste("Info = ", z$info, "in stepy: singular design: iterations ", z$it.count[1]))

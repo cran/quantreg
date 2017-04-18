@@ -31,7 +31,7 @@ function (object, ..., test = "Wald", joint = TRUE,
     sameresp <- responses == responses[1]
     if (!all(sameresp)) 
         stop("Models don't all have the same response variable")
-    n <- length(objects[[1]]$y)
+    n <- length(objects[[1]]$resid)
     models <- as.character(lapply(objects, function(x) formula(x)))
     nobjects <- length(objects)
     dimp <- lapply(objects, function(x) length(coef(x)))

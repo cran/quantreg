@@ -557,9 +557,8 @@ C 699    FORMAT(1X,' FOUND ',I6,' TINY DIAGONALS; REPLACED WITH INF')
 C
 C SET IFLAG TO -1 TO INDICATE PRESENCE OF TINY DIAGONALS
 C
-	IF(NTINY .NE. 0) IFLAG = -17
-C PN(4/16/09): IFLAG was -1 but is set to -17 to be consistent with 
-C the C version. 
+	IF(NTINY .NE. 0) IFLAG = 17
+C PN(4/16/09): IFLAG was -1 but set to 17 to be consistent with ierr
 CxPCxPCxPCxPCxPCxPCxPCxPCxPCxPCxPCxPCxPCxPCxPCxPCxPCxPCxPCxPCxPCxPCxPC
         RETURN
       END

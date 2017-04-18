@@ -12,7 +12,7 @@ intervals and tests of hypotheses regarding quantile regression models.
 }
 \usage{
 boot.rq(x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y), 
-	cluster = NULL, U = NULL,  ...)
+	blbn = NULL, cluster = NULL, U = NULL,  ...)
 }
 \arguments{
   \item{x}{ The regression design matrix}
@@ -32,6 +32,7 @@ boot.rq(x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y),
 	permits subsampling (m out of n) bootstrap.  Obviously mofn
 	should be substantially larger than the column dimension of x,
 	and should be less than the sample size.}
+  \item{blbn}{orginal sample size for the BLB model}
   \item{cluster}{If non-NULL this argument should specify cluster id
       numbers for each observation, in which case the clustered version of 
       the bootstrap based on the proposal of Hagemann (2016). If present
@@ -58,7 +59,8 @@ boot.rq(x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y),
 \details{
 Their are several refinements that are still unimplemented.  Percentile
 methods should be incorporated, and extensions of the methods to be used 
-in anova.rq should be made.
+in anova.rq should be made.  And more flexibility about what algorithm is
+used would also be good. 
 }
 \value{
 A list consisting of two elements:

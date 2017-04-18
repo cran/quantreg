@@ -10,7 +10,7 @@ Returns a summary list for a quantile regression fit.  A null value
 will be returned if printing is invoked.
 }
 \usage{
-\method{summary}{rq}(object, se = NULL, covariance=FALSE, hs = TRUE,  U = NULL, ...)
+\method{summary}{rq}(object, se = NULL, covariance=FALSE, hs = TRUE,  U = NULL, gamma = 0.7, ...)
 \method{summary}{rqs}(object, ...)
 }
 \arguments{
@@ -21,7 +21,7 @@ will be returned if printing is invoked.
   }
   \item{se}{
     specifies the method used to compute standard standard errors.  There
-    are currently five available methods:  
+    are currently six available methods:  
     \enumerate{
       \item \code{"rank"} which produces confidence intervals for the
       estimated parameters by inverting a rank test as described in
@@ -46,6 +46,13 @@ will be returned if printing is invoked.
       alternatives for estimating standard errors including a variate of the wild
       bootstrap for clustered response.  See \code{\link{boot.rq}} for
       further details.  
+
+      \item \code{"BLB"} which implements the bad of little bootstraps method
+      proposed in Kleiner, et al (2014).  The sample size of the little bootstraps
+      is controlled by the parameter \code{gamma}, see below.  At present only
+      \code{bsmethod = "xy"} is sanction, and even that is experimental.  This
+      option is intended for applications with very large n where other flavors
+      of the bootstrap can be slow.
     }
     If \code{se = NULL} (the default)  and \code{covariance = FALSE}, and
     the sample size is less than 1001, then the "rank" method is used, 
@@ -61,6 +68,9 @@ will be returned if printing is invoked.
    }
    \item{U}{Resampling indices or gradient evaluations used for bootstrap,
        see \code{\link{boot.rq}}.}
+   \item{gamma}{parameter controlling the effective sample size of the'bag
+       of little bootstrap samples that will be \code{b = n^gamma} where
+       \code{n} is the sample size of the original model.}
   \item{...}{
     Optional arguments to summary, e.g. bsmethod to use bootstrapping.
     see \code{\link{boot.rq}}.  When using the "rank" method for confidence
@@ -126,6 +136,10 @@ matrix for the full object.}
 
   Bilias, Y. Chen, S. and Z. Ying, Simple resampling methods for censored
 	quantile regression, \emph{J. of Econometrics}, 99, 373-386.
+
+  Kleiner, A., Talwalkar, A., Sarkar, P. and Jordan, M.I. (2014) A Scalable
+	bootstrap for massive data, \emph{JRSS(B)}, 76, 795-816.
+
 }
 \seealso{
   \code{\link{rq}}

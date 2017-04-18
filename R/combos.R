@@ -24,7 +24,6 @@
 		a = integer(p*m),
 		integer(n),
 		integer(n),
-		integer(n),
-		PACKAGE = "quantreg")
+		integer(n))
 	matrix(z$a,p)
 	}

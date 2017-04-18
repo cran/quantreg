@@ -1344,3 +1344,49 @@ Vaidotas Zemlys-Balevicius email August 9 2016.
 1.  Cleaned up the fortran source a bit in accordance with Kurt's mandate
 of late August 2016.  There are still some offensive items mainly in crq.f
 that should be dealt with, but I wasn't able to dig into this at the moment.
+
+5.29
+
+1.  I'd botched the fixup of rq0.f which was only revealed by a test from
+the package Qtools as discovered by CRAN checking and reported by Duncan
+Murdoch.
+
+5.30  
+
+1.  Removed Y argument in crq GRAD subroutine, which seems to be superflous.
+
+5.31  
+
+1.  Added bag of little bootstraps option to summary.rq.  Needs further
+testing.
+
+5.32  
+
+1.  Modified the BLB code to use boot.rq.wxy so that the inner loop was all
+in fortran, would be nicer if this loop were done with "fn" rather than "br".
+See the note in boot.rq above boot.rq.spwy.
+
+2.  modified the crq.pdf file to fix a mento in the description of the Peng
+Huang algorithm. 
+
+5.33
+
+1.  Added option to return density estimates from predict.rqs
+
+2.  modified rq.fit.fnb to include a rhs input argument.
+
+3.  modified boot.crq to properly deal with only one tau requests
+and also changed the default for printing progress report to n - 100,000.
+Both suggested by Steve Portnoy.
+
+4.  modified boot.rq so it returns cov(B$B) not cov(B)  as reported
+by Marco Geraci
+
+5.  Fixed bug in anova.rqlist to correct error when "fn" method was used
+and no $y component was returned.  Reported by Tom LaBone.
+
+6.  Fixed bug in summary.rqss -- control parameters weren't getting 
+passed to chol call properly.  (Reparted by Geoffrey Shideler (NOAA).)
+
+7.  Added init.c to register .Fortran calls and removed the package =
+"quantreg"  argument.

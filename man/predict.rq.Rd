@@ -27,10 +27,12 @@ Prediction based on fitted quantile regression model
     estimates is used.  Further arguments to determine the choice of bootstrap
     method or covariance matrix estimate can be passed via the \dots argument.
     For \code{predict.rqs} and \code{predict.rq.process} when \code{stepfun = TRUE},
-    \code{type} is either "Qhat" or "Fhat" depending  on whether the user would
-    like to have estimates of the conditional quantile or distribution functions
-    respectively.  As noted below such estimates can be monotonized with the function
-    \code{rearrange}.}
+    \code{type} is "Qhat", "Fhat" or "fhat" depending  on whether the user would
+    like to have estimates of the conditional quantile, distribution or density  functions
+    respectively.  As noted below the two former estimates can be monotonized with the 
+    function \code{rearrange}.  When the "fhat" option is invoked, a list of conditional
+    density functions is returned based on Silverman's adaptive kernel method as
+    implemented in \code{akj} and \code{approxfun}.}
   \item{stepfun}{If 'TRUE' return stepfunctions otherwise return matrix of predictions.
     these functions can be estimates of either the conditional quantile or distribution
     functions depending upon the \code{type} argument.  When \code{stepfun = FALSE}

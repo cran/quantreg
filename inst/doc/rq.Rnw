@@ -614,7 +614,7 @@ To carry out the test we can either compute the test using the full
 quantile regression process or on a moderately fine grid of taus:
 
 <<label=gastest>>=
-data(gasprice)
+source("gasprice.R")
 x <- gasprice
 n <- length(x)
 p <- 5 # lag length
@@ -744,7 +744,7 @@ data(mcycle)
 attach(mcycle)
 plot(times,accel,xlab = "milliseconds", ylab = "acceleration")
 hs <- c(1,2,3,4)
-for(i in 1:length(hs)){
+for(i in hs){
         h = hs[i]
         fit <- lprq(times,accel,h=h,tau=.5)
         lines(fit$xx,fit$fv,lty=i)
@@ -825,7 +825,7 @@ package.
 The function \texttt{rqss} offers a formula interface to
 nonparametric quantile regression fitting with total variation
 roughness penalties.  Consider the running speed of mammals example
-from Section 7.  The objective is to estimate a model for the
+from Chapter 7.  The objective is to estimate a model for the
 upper envelope of the scatterplot, a model that would reflect
 best evolutionary practice in mammalian ambulatory efficiency.
 In contrast to the least squares analysis
@@ -847,8 +847,6 @@ attach(Mammals)
 \begin{figure}
 \begin{center}
 <<label = mammals, fig=TRUE>>=
-library(MatrixModels)
-library(Matrix)
 x <- log(weight)
 y <- log(speed)
 plot(x,y, xlab="Weight in log(Kg)", ylab="Speed in log(Km/hour)",type="n")
@@ -857,7 +855,7 @@ points(x[specials],y[specials],pch = "s", col="blue")
 others <- (!hoppers & !specials)
 points(x[others],y[others], col="black",cex = .75)
 fit <- rqss(y ~ qss(x, lambda = 1),tau = .9)
-plot(fit)
+plot(fit, add = TRUE)
 @
 \end{center}
 \caption{Maximal Running Speed of Terrestial Mammals:  The figure
@@ -869,7 +867,7 @@ function gradient.}
 \end{figure}
 
 Bivariate nonparametric fitting using the triogram methods described
-in Section 7 can be handled in a similar manner.
+in Chapter 7 can be handled in a similar manner.
 If we consider the Cobar mining data from \citet*{gree:silv.94}
 \begin{figure}
 \begin{center}

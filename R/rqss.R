@@ -480,8 +480,8 @@ list(x=x,y=y,F=z, dummies = dummies)
     z <- .Fortran("penalty", as.integer(n), as.integer(m), as.integer(q),
         as.double(x), as.double(y), as.integer(bnd),as.integer(tri$tlist),
         as.integer(tri$tlptr), as.integer(tri$tlend), rax = double(m),
-	jax = integer(m), ned = integer(1), as.double(eps), ierr = integer(1),
-	PACKAGE = "quantreg")[c("rax", "jax", "iax", "ned", "ierr")]
+	jax = integer(m), ned = integer(1), as.double(eps), 
+	ierr = integer(1))[c("rax", "jax", "iax", "ned", "ierr")]
     if (z$ierr == 1)
         stop("collinearity in ggap")
     nnz <- 4 * z$ned
@@ -841,6 +841,7 @@ resid.rqss <- function(object, ...) object$resid[1:object$n]
     ncA <- object$ncA
     nrL <- object$nrL
     tau <- object$tau
+    cntl <- object$control
     X <- object$X
     p <- ncol(object$X)
     m <- length(ncA)
@@ -855,7 +856,8 @@ resid.rqss <- function(object, ...) object$resid[1:object$n]
         (quantile(uhat, 0.75) - quantile(uhat, 0.25))/1.34))
     f <- c(dnorm(uhat/h)/h,rep(1, length(resid) - n))
     D <- t(X) %*% (f * X)
-    D <- chol(.5 * (D + t(D)), ...)
+    D <- chol(.5 * (D + t(D)), nsubmax = cntl$nsubmax,
+             nnzlmax = cntl$nnzlmax, tmpmax = cntl$tmpmax)
     D <- backsolve(D,diag(p))
     D0 <- tau * (1 - tau) * t(X) %*% X
     V <- D %*% D0 %*% D

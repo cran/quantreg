@@ -7,9 +7,11 @@ hinged  Demo for a simple rqss bivariate fitting  of hinge function
 engel1  Demo of QR fitting of Engel curves
 engel2  Demo of estimated conditional quantile functions for Engel data.
 Mel	Demo of conditional density estimation using Melbourne daily temperature.
+Mel2	Demo of Melbourne daily temperature.
 KMvCRQ  Demo to compare Kaplan Meier and Portnoy's crq estimation in one-sample case.
 predemo Demo for prediction and confidence intervals 
 rqsslasso	Demo for lasso penalized rqss
+stack	Demo with Stackloss data from Brownlee
 arqss	Demo for automatic lambda selection
 Mammals	Demo for rqss with running speed of mammals data
 crquis	Demo for crq method using UIS data and Peng Huang method.

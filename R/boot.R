@@ -1,6 +1,6 @@
 "boot.rq"<-
 function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y), 
-	  cluster = NULL, U = NULL, ...)
+	  blbn = NULL, cluster = NULL, U = NULL, ...)
 {
     n <- length(y)
     if(class(x) != "matrix.csr") x <- as.matrix(x)
@@ -17,6 +17,11 @@ function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y),
     }   
     else if (bsmethod == "wxy") {
         if(!length(U)) U <- matrix(rexp(n * R,1), n, R)
+        B <- boot.rq.wxy(x, y, U, tau)
+    }   
+    else if (bsmethod == "BLB") {
+	b <- length(y)
+        if(!length(U)) U <- rmultinom(R, blbn, rep(1/b, b))
         B <- boot.rq.wxy(x, y, U, tau)
     }   
     else if (bsmethod == "cluster"){ # Hagemann wild gradient bootstrap
@@ -101,7 +106,7 @@ function (x, y, tau = 0.5, R = 200)
 		as.double(sumxij), as.double(sumabsxij), 
 		as.integer(n), as.integer(p), success = as.integer(1), 
 		theta = as.double(rep(0, R * p + p), as.integer(c(p, R + 1))), 
-		as.integer(R), PACKAGE = "quantreg")
+		as.integer(R))
 	if (zstar$success == 0) 
 		return(list(success = 0))
 	else{
@@ -140,8 +145,7 @@ function(x, y, s, tau = 0.5, tol = 0.0001)
 		double(m),
 		xx = double(m * p),
 		yy = double(m),
-		as.integer(s),
-		PACKAGE = "quantreg")
+		as.integer(s))
 	if(sum(z$flag)>0){
 		if(any(z$flag)==2) 
 			warning(paste(sum(z$flag==2),"out of",R, 
@@ -178,8 +182,7 @@ function(x, y, w, tau = 0.5, tol = 0.0001)
                 double(m),
                 xx = double(m * p),
                 yy = double(m),
-                as.double(w),
-                PACKAGE = "quantreg")
+                as.double(w))
         if(sum(z$flag)>0){
                 if(any(z$flag)==2)
                         warning(paste(sum(z$flag==2),"out of",R,
@@ -218,13 +221,15 @@ function(U,X, y, tau = 0.5, tol=1e-4)
 		resid = double(n),
 		integer(n),
 		double((n + 5) * (p + 2)),
-		double(n),
-		PACKAGE = "quantreg")
+		double(n))
 	return(t(matrix(z$coef, p, R)))
 }
 
 #################################################################
-#	NB:  In an ideal world the loop would be in fortran
+#	NB:  In an ideal world the loop below would be in fortran, in a
+#		a really ideal world all of this resampling code
+#		would be able to adapt to the "fn" or "sfn" etc
+#		method used by the original fitting scheme.
 #################################################################
 
 

@@ -105,8 +105,7 @@ rq.fit.sfn <- function(a,y,tau=.5, rhs = (1-tau)*c(t(a) %*% rep(1,length(y))), c
 		small = as.double(ctrl$small),
 		ierr = integer(1),
 		maxiter = as.integer(ctrl$maxiter),
-		time = double(7),
-		PACKAGE = "quantreg")[c("sol","ierr","maxiter","time")]
+		time = double(7))[c("sol","ierr","maxiter","time")]
         ierr <- fit$ierr
 	if(!(ierr==0) && ctrl$warn.mesg)
             warning(sfnMessage(ierr))
@@ -250,8 +249,7 @@ rq.fit.sfnc <- function(x, y, R, r, tau = 0.5,
 		small = as.double(ctrl$small),
 		ierr = integer(1),
 		maxiter = as.integer(ctrl$maxiter),
-		time = double(7),
-		PACKAGE = "quantreg")[c("sol","ierr","maxiter","time")]
+		time = double(7))[c("sol","ierr","maxiter","time")]
         ierr <- fit$ierr
 	if(ierr == 13)# stop()
             stop("Increase nnzh.factor")

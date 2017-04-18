@@ -51,8 +51,7 @@ f <- .Fortran("brutpow",
         double(p),
         double(p),
         kminz = integer(1),
-        nflag = as.integer(0),
-        PACKAGE = "quantreg")
+        nflag = as.integer(0))
 if(f$nflag!=0)
         warning(switch(f$nflag,
                 "Error in pivot:  hout not in h",
@@ -94,8 +93,8 @@ f <- .Fortran("powell",
 	double(p),
 	double(p),
 	as.integer(maxit), 
-	nflag = as.integer(0), 
-	PACKAGE = "quantreg")
+	nflag = as.integer(0))
+	
 if(f$nflag!=0) 
 	warning(switch(f$nflag, "Max iterations reached",
 		"Solution may be nonunique",
@@ -151,8 +150,10 @@ boot.crq <- function(x, y, c, taus, method, ctype = "right", R=100,
         if(missing(mboot)) {
                 if(bmethod=="jack") mboot <- 2*ceiling(sqrt(n))
                 else mboot <- n }
-        A <- array(0,dim=c(p,length(taus),R))
-
+	if(length(taus) > 1)
+	    A <- array(0,dim=c(p,length(taus),R))
+	else
+	    A <- matrix(0,p,R)
         for (i in 1:R){
                 if(bmethod == "jack") { 
                         s <- sample(1:n,mboot)
@@ -185,9 +186,12 @@ boot.crq <- function(x, y, c, taus, method, ctype = "right", R=100,
                 	a <- crq.fit.pen(xb,yb,cb, weights = w, ctype = ctype, ... )
 		else
 			stop("Invalid method for boot.crq")
-                if((i %% floor(R/10)) == 0 & n > 3000)
+                if((i %% floor(R/10)) == 0 & n > 100000)
                         cat(paste("bootstrap roughly ",100*(i/R)," percent complete\n"))
-                A[,,i] <- coef(a,taus)
+		if(length(taus) > 1)
+		    A[,,i] <- coef(a,taus)
+		else
+		    A[,i] <- coef(a,taus)
                 }
         list(A = A, n = length(y), mboot = mboot, bmethod = bmethod)
         }
@@ -406,8 +410,7 @@ crq.fit.por <- function(x, y, cen, weights = NULL, grid, ctype = "right")
                 lsol = integer(1),
 		icen = integer(n),
 		tcen = double(n),
-		lcen = integer(1),
-		PACKAGE = "quantreg")
+		lcen = integer(1))
 	nw <- z$h[1]
 	flag <- z$ift
 	msg <- switch(flag,
@@ -477,7 +480,7 @@ crq.fit.pen <- function(x, y, cen, weights=NULL,grid, ctype = "right" ){
 		g = as.double(grid),m = as.integer(m), as.double(r), 
 		as.double(s), as.double(d), as.double(u),
         	wn = double(n1 * 9), wp = double((p + 3) * p),
-        	info = integer(1), PACKAGE = "quantreg")
+        	info = integer(1))
 	J <- z$m - 1
 	B <- matrix(-z$B, p, m)
 	B <- B[,1:J,drop = FALSE]
@@ -560,7 +563,7 @@ function (object, taus = 1:4/5, alpha = .05, se = "boot", covariance = TRUE, ...
            else
               s <- cen  >  x %*% coef
            B <- boot.rq(x[s, ], y[s], tau, ...)
-           cov <- cov(B)
+           cov <- cov(B$B)
            serr <- sqrt(diag(cov))
            }
        else stop("Only boot method is implemented for crq inference")

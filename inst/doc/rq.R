@@ -266,8 +266,6 @@ for(tau in 1:3/4){
 ###################################################
 data(Mammals)
 attach(Mammals)
-library(MatrixModels)
-library(Matrix)
 
 
 ###################################################
@@ -282,7 +280,7 @@ points(x[specials],y[specials],pch = "s", col="blue")
 others <- (!hoppers & !specials)
 points(x[others],y[others], col="black",cex = .75)
 fit <- rqss(y ~ qss(x, lambda = 1),tau = .9)
-plot(fit)
+plot(fit, add = TRUE)
 
 
 ###################################################

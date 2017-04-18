@@ -19,7 +19,8 @@ qss(x, constraint = "N", lambda = 1, ndum = 0, dummies = NULL, w = rep(1, length
 	x is a matrix with two columns then  the qss
 	function will construct a penalized triogram term.}
   \item{lambda}{The smoothing parameter governing the tradeoff between
-	fidelity and the penalty component for this term.  In future
+	fidelity and the penalty component for this term.  Larger lambdas
+	produce smoother fits. In future
 	versions there should be an automatic mechanism for default
 	choice of the lambdas.  For now, this is the responsibility
 	of the user.}

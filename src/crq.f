@@ -183,7 +183,7 @@ C
 C  BEGIN PIVOTING; WD = GRAD UPPER BD, IA = SIGN(GRAD DENOM)
 C
  200  CONTINUE
-      CALL GRAD(X,Y,M,N,H,ICEN,TCEN,XH,WE,TOLER,IA,WC,WD)
+      CALL GRAD(X,M,N,H,ICEN,TCEN,XH,WE,TOLER,IA,WC,WD)
       KL = 0
       KM = 1
       S = WD(1)
@@ -446,11 +446,10 @@ C
  670  SOL(N+2,I) = S
       RETURN
       END
-      SUBROUTINE GRAD(X,Y,M,N,H,ICEN,TCEN,XH,
+      SUBROUTINE GRAD(X,M,N,H,ICEN,TCEN,XH,
      * R,TOL,IFLAG,WA,GUP)
 C
 C  X matrix (M BY N)
-C  Y vector (M)
 C  M = Number of Observations
 C  N = Number of Parameters
 C  H = basis, integer(N) vector 
@@ -474,7 +473,7 @@ C
       IMPLICIT DOUBLE PRECISION(A-H,O-Z)
       INTEGER H(N),ICEN(M),IFLAG(*)
       DOUBLE PRECISION ONE
-      DIMENSION X(M,N),Y(M),GUP(N),XH(N,N)
+      DIMENSION X(M,N),GUP(N),XH(N,N)
       DIMENSION R(M),TCEN(M),WA(M,N)
       DATA  ZERO/0.00D0/, ONE/1.0d0/
 C

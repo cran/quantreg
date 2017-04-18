@@ -62,8 +62,7 @@ function(x,k){
         	k = as.integer(k),
         	m = as.integer(m),
         	n = as.integer(n),
-        	x = as.double(x),
-		PACKAGE = "quantreg")
+        	x = as.double(x))
     return(z$x[z$k])
     }
 "kunique" <-

@@ -8,7 +8,7 @@ This is a lower level routine called by \code{rq()} to compute quantile
 regression methods using the Frisch-Newton algorithm.
 }
 \usage{
-rq.fit.fnb(x, y, tau=0.5, beta=0.99995, eps=1e-06)
+rq.fit.fnb(x, y, tau=0.5, rhs = (1-tau)*apply(x,2,sum), beta=0.99995, eps=1e-06)
 }
 \arguments{
 \item{x}{
@@ -19,6 +19,9 @@ The response vector
 }
 \item{tau}{
 The quantile of interest, must lie in (0,1)
+}
+\item{rhs}{
+The right hand size of the dual equality constraint, modify at your own risk.
 }
 \item{beta}{
 technical step length parameter -- alter at your own risk!

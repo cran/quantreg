@@ -253,7 +253,7 @@
         model
     }
     nlrq.out <- list(m=nlrq.calc(m, ctrl, trace), data=substitute(data), 
-	call=match.call(), PACKAGE = "quantreg")
+	call=match.call())
     nlrq.out$call$control <- ctrl
     nlrq.out$call$trace <- trace
     class(nlrq.out) <- "nlrq"
