@@ -1260,7 +1260,7 @@ function (x, y, taus = c(.1,.3,.5), weights = c(.7,.2,.1),
 	R= NULL, r = NULL, beta = 0.99995, eps = 1e-06) 
 {
     n <- length(y)
-    n2 <- nrow(R)
+    n2 <- NROW(R)
     m <- length(taus)
     p <- ncol(x)+m
     if (n != nrow(x)) 

@@ -5,6 +5,7 @@ function (x, y, tau = 0.5, method = "sfn", rhs = NULL, control, ...)
     else tau <- 0.5
     fit <- switch(method,
 	sfn = rq.fit.sfn(x, y, tau = tau,  rhs = rhs, control = control, ...),
+	lasso = rq.fit.sfn(x, y, tau = tau,  rhs = rhs, control = control, ...),
         sfnc = rq.fit.sfnc(x, y, tau = tau,  rhs = rhs, control = control, ...), {
             what <- paste("rq.fit.", method, sep = "")
             if (exists(what, mode = "function"))
@@ -799,7 +800,19 @@ resid.rqss <- function(object, ...) object$resid[1:object$n]
             X <- X * weights
             Y <- Y * weights
         }
-        fit <- rqss.fit(X, Y, tau = tau,  rhs = rhs, control = control, ...)
+	XpX <- t(X) %*% X
+        nnzdmax <- XpX@ia[length(XpX@ia)] - 1
+        if (is.null(control[["nsubmax"]]))
+            control[["nsubmax"]] <- max(nnzdmax, floor(1000 +
+                exp(-1.6) * nnzdmax^1.2))
+        if (is.null(control[["nnzlmax"]]))
+            control[["nnzlmax"]] <- floor(2e+05 - 2.8 * nnzdmax +
+                7e-04 * nnzdmax^2)
+        if (is.null(control[["tmpmax"]]))
+            control[["tmpmax"]] <- floor(1e+05 + exp(-12.1) *
+                nnzdmax^2.35)
+        fit <- rqss.fit(X, Y, tau = tau,  rhs = rhs, control = control, 
+			method = method, ...)
         fit$nrA <- nrA
     }
     names(fit$coef) <- vnames

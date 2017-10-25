@@ -352,6 +352,10 @@ pred <- switch(method,
 }
 crq.fit.por <- function(x, y, cen, weights = NULL, grid, ctype = "right")
 {
+      if(!is.matrix(x))
+	  stop("x must be a matrix")
+      if(!length(dimnames(x)))
+	  dimnames(x)[[2]] <- paste("V",1:p)
       p <- ncol(x)
       n <- length(y) 
       cen <- 1 - cen #NB: Fortran routine wants censoring indicator flipped (!!!)
@@ -380,7 +384,7 @@ crq.fit.por <- function(x, y, cen, weights = NULL, grid, ctype = "right")
 		nsol <- 3*n
 		ginit <- 1/(2*n)
 		gstep <- 1/(2*n)
-		mw <- 20
+		mw <- min(10, mp) # Somewhat arbitrary see crq.f
 		}
       else 
 		stop("Invalid grid")

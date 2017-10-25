@@ -9,7 +9,7 @@ data(engel)
 ## Poor is defined as at the .1 quantile of the sample distn
 ## Rich is defined as at the .9 quantile of the sample distn
 x.poor <- quantile(engel[,"income"], .10)
-x.rich <- quantile(engel[,"foodexp"], .90)
+x.rich <- quantile(engel[,"income"], .90)
 
 z <- rq(foodexp ~ income, tau= -1, data = engel)
 

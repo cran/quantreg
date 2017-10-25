@@ -146,3 +146,17 @@ some indications?
   More difficult is the usual causal question:  if we imagine an intervention that changes
   x and ask: what is the consequence for the distribution of y?  If this formulation doesn’t
   make sense for a particular choice of x,y then one might consider reversing them.
+
+13.  "My student has discovered a couple of corner cases that hang inside
+the Fortran code when trying to find bootstrap CIs on quantile
+regression fits."
+
+   This seems to be invariably due to repeated values of the response variable that
+   create degeneracy of the solution to the LP problem.  In the dual simplex algorithm
+   (method = "br") this can lead to cycling.  There are two work arounds:
+
+    1.  Use method equal "fn" in rq() since the interior point algorithm isn't 
+    bothered by such difficulties (since it only approaches vertices from the inside
+    of the constraint set).
+
+    2.  Use dither() to perturb the y observations slightly.

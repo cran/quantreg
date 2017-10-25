@@ -1387,32 +1387,3 @@ and no $y component was returned.  Reported by Tom LaBone.
 
 6.  Fixed bug in summary.rqss -- control parameters weren't getting 
 passed to chol call properly.  (Reparted by Geoffrey Shideler (NOAA).)
-
-7.  Added init.c to register .Fortran calls and removed the package =
-"quantreg"  argument.
-
-5.34
-
-1.  Fix a bug in rqss to allow control parameters to be passed to rqss.fit 
-when the method is "lasso"  (pointed out by Heracles Apergis.)
-
-2.  changed nrow(R) to NROW(R) in rq.fit.hogg thanks to Paul Newell for bug
-report.
-
-3.  fixed axis label typo in demo engel2.
-
-4.  Added Panel.R demo to illustrate fixed effect panel estimation, a la
-Galvao job market talk.
-
-5.  Some changes to crq.fit.por as suggested by SLP:
-
-    line 1: add an input variable mw (the error messages suggest changing mw if
-    there are  problems with resolving degeneracies or trying to pivot too far,
-    and so it  should be possible to do this without getting into the deep part of
-    the code)
-    
-    lines 3 and 5: test that x is a matrix and add column names if they are
-    missing
-    
-    line 39: define mw so that the fortran constraint is satisfied 
-    
