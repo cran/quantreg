@@ -1,7 +1,6 @@
 library(quantreg)
 
 (dDIR <- system.file("demo", package = "quantreg"))
-setwd(dDIR)
 set.seed(1) # since some demos randomly generate
 
 cat("Running demos from package 'quantreg' : \n\n")

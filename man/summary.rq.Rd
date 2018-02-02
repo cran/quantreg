@@ -47,7 +47,7 @@ will be returned if printing is invoked.
       bootstrap for clustered response.  See \code{\link{boot.rq}} for
       further details.  
 
-      \item \code{"BLB"} which implements the bad of little bootstraps method
+      \item \code{"BLB"} which implements the bag of little bootstraps method
       proposed in Kleiner, et al (2014).  The sample size of the little bootstraps
       is controlled by the parameter \code{gamma}, see below.  At present only
       \code{bsmethod = "xy"} is sanction, and even that is experimental.  This
@@ -90,7 +90,8 @@ will be returned if printing is invoked.
 }
 \item{cov}{
   the estimated covariance matrix for the coefficients in the model,
-  provided that \code{cov=TRUE} in the called sequence.
+  provided that \code{cov=TRUE} in the called sequence.  This option
+  is not available when se = "rank".
 }
 \item{Hinv}{
   inverse of the estimated Hessian matrix returned if \code{cov=TRUE} and

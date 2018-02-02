@@ -1,4 +1,4 @@
-adc82ec8cbed55ee894d23fbf5f7c72e *DESCRIPTION
+f0b8d3050a0e99abb2182073fd44f777 *DESCRIPTION
 0049c7c3b3bd0184b258c2652df17244 *NAMESPACE
 b0e304ccc995dae2b2dd0d391d9b5326 *R/anova.R
 bed18ae268c04c97f1a4d675e407d273 *R/boot.R
@@ -10,7 +10,7 @@ da4415e7d515e46fffcd11f3b0601d8e *R/kuantile.R
 d2f509eb6977017d1b77faae7de97a7c *R/lprq.R
 74e57bf2387ac9e764dfc185bec65980 *R/nlrq.R
 23abbfdfe6ab274c1ebe89aaa4d825ef *R/qrisk.R
-fb422f665c72f23b89caa1f5803d8d0d *R/quantreg.R
+d66ecc19bcff911d3e8d07e92c4ec9a3 *R/quantreg.R
 cc0342047ea92798ea515e7957d71317 *R/rqss.R
 ac869526f59c56603dcfd8e900686daa *R/sfn.R
 f0b39d29269a1fee63c98087f9d3fae7 *R/table.R
@@ -27,7 +27,7 @@ f0b39d29269a1fee63c98087f9d3fae7 *R/table.R
 175e672761a8912f1c6221e232f3d088 *data/uis.rda
 409044f786ff5d3404393ec2990bc54e *demo/00Index
 45e5019ec3600dddc740bd9c6b5435e3 *demo/Frank.R
-0164b0ceaae29163b4ce3c46a8f807bd *demo/KMvCRQ.R
+5264e9798b77f8c83153b37fa71e1a4c *demo/KMvCRQ.R
 999f285311986ba48839f973b543ccbb *demo/Mammals.R
 20da13dfab3e9eae91c267a73bba1218 *demo/Mel.R
 20e9763ed7c84ee09247563560ea46bb *demo/Mel2.R
@@ -38,7 +38,7 @@ a9cc1e5271ab2c9f1311705ac34b0401 *demo/arqss.R
 26ecfe31ed74ce740509838190dc7b50 *demo/cobar.R
 4288d49cb3eb56ec86798b28da27e791 *demo/combos.R
 f859ed7e3664566f9d74636d537b8762 *demo/cpoint.R
-94a4a70a621239a9ed28fa995e631031 *demo/crquis.R
+6c55988db9dee0d6dbde385185967de2 *demo/crquis.R
 d907e0e11fd1a4007ca28a3d1b03efed *demo/engel1.R
 66c9a9b4a33a03bba9805d4b6dbd1cbb *demo/engel2.R
 aa2009c3a395aee9512819bb72dbc5c1 *demo/hinged.R
@@ -52,7 +52,7 @@ a3f4a3a776bc39d6aa852ffc0c2ec0b4 *inst/FAQ
 93797c4a80befc8c1aec756519abcbd1 *inst/chlog
 36e2842c985e8094ebaa2266250c4b29 *inst/doc/abbrev.bib
 03ed3d131f6af04a6bed879b10e988f6 *inst/doc/book.bib
-59011ef6b92e4460dfaacbc3a9b0dee7 *inst/doc/crq.pdf
+3fb70411ec441d151dcae73d63a5e018 *inst/doc/crq.pdf
 e3c7cf6c2a5d76e77e4bcc96b6ea4451 *inst/doc/engelcoef.pdf
 fb3638ea679fba5a1925da742595b289 *inst/doc/rq-Frankplot.pdf
 aa864f91024885ac1d754d0fe87205f8 *inst/doc/rq-cobar.pdf
@@ -64,7 +64,7 @@ aa864f91024885ac1d754d0fe87205f8 *inst/doc/rq-cobar.pdf
 2dbe8a2172be9c51f27284b0b41ca86e *inst/doc/rq-regspline.pdf
 c5ebfc6fd2920e7554d9befb126d234b *inst/doc/rq.R
 a6741cfa6b4d47c00c9002e111bc9364 *inst/doc/rq.Rnw
-bb83449182c83900ff2664780c9a2b5b *inst/doc/rq.pdf
+1b66de7acb70b025086e616a695d8c55 *inst/doc/rq.pdf
 96f5c238ade9146a10d4216b38718e35 *inst/doc/rqss.pdf
 64449a66c0d80474c7aefef8907b8f05 *man/Bosco.Rd
 768cf6c848f78a1862b44371c1f3e2a4 *man/CobarOre.Rd
@@ -128,7 +128,7 @@ c42b5515ccf48527ae43449357b3dfb0 *man/rq.process.object.Rd
 7a198b2a81968dc5da8b7f59ff282714 *man/sfn.control.Rd
 2dfb6597245f45ee542f157105db4bc4 *man/srisk.Rd
 b1385340bd67e8de6e8035424e3bada7 *man/summary.crq.Rd
-fc22d416582e3de21ca13c3ac77020c6 *man/summary.rq.Rd
+30353f089e3617332231f5f65a937134 *man/summary.rq.Rd
 2cd698ce46395e6e057f5981dcbcb3b9 *man/summary.rqss.Rd
 7c19b7bc8dcaeafdb05e8fae65322c04 *man/table.rq.Rd
 f5a8859d2b97685d09b1e5bc77f27194 *man/uis.Rd
@@ -187,7 +187,7 @@ cdb9d9dcf135b468f2c2b7f4b9148ff4 *src/rqs.f
 a838141113a2049f3ca6b6c5914989bc *tests/panel.R
 62bf15687c35cd5a9fa8d05d94fe28a5 *tests/rq.R
 9010017cc909325f119ca1bc119560ab *tests/rq.fit.panel.R
-4c02c884a5046fc69cf5d40d1297ead1 *tests/run-demos.R
+88bcffa8d0464bf62f7535f89c4a9e7f *tests/run-demos.R
 36e2842c985e8094ebaa2266250c4b29 *vignettes/abbrev.bib
 4a49a7fb2dd1f77eb527f9124a15a423 *vignettes/book.bib
 68533db22c31b13083be528576d024ea *vignettes/gasprice.R

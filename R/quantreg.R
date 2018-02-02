@@ -1163,6 +1163,7 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.
 	    B <- boot.rq(x[v,], y[v], tau, bsmethod = "BLB", blbn = n, ...)
             Z[,i] <- sqrt(diag(cov(B$B)))
         }
+	cov <- cov(B$B)
         serr <- apply(Z, 1, mean)
     }
     if( se == "rank"){
