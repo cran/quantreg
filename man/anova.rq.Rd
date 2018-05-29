@@ -11,10 +11,10 @@
 }
 \usage{
 \method{anova}{rq}(object, ..., test = "Wald", joint = TRUE, score =
-                       "tau", se = "nid", R = 200, trim = NULL)
-\method{anova}{rqs}(object, ..., se = "nid", joint = TRUE)
+                       "tau", se = "nid", iid = TRUE, R = 200, trim = NULL)
+\method{anova}{rqs}(object, ..., se = "nid", iid = TRUE, joint = TRUE)
 \method{anova}{rqlist}(object, ...,  test = "Wald", joint = TRUE, 
-	score = "tau", se = "nid", R = 200, trim = NULL)
+	score = "tau", se = "nid", iid = TRUE, R = 200, trim = NULL)
 rq.test.rank(x0, x1, y, v = NULL, score = "wilcoxon", weights = NULL, tau=.5,
         iid = TRUE, delta0 = rep(0,NCOL(x1)), omega = 1, trim = NULL, pvalue = "F")
 rq.test.anowar(x0,x1,y,tau,R)

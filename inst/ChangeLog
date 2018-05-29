@@ -1391,7 +1391,7 @@ passed to chol call properly.  (Reparted by Geoffrey Shideler (NOAA).)
 7.  Added init.c to register .Fortran calls and removed the package =
 "quantreg"  argument.
 
-5.34
+5.35
 
 1.  Fix a bug in rqss to allow control parameters to be passed to rqss.fit 
 when the method is "lasso"  (pointed out by Heracles Apergis.)
@@ -1416,3 +1416,8 @@ Galvao job market talk.
     
     line 39: define mw so that the fortran constraint is satisfied 
     
+
+5.36
+
+1.  added an iid argument to anova.rq and friends to allow one to specify iid
+= FALSE when using rank tests, at the suggestion of Brian Cade.

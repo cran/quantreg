@@ -1,6 +1,6 @@
-f0b8d3050a0e99abb2182073fd44f777 *DESCRIPTION
+968b1addfa4874683ade4c3c14d2049c *DESCRIPTION
 0049c7c3b3bd0184b258c2652df17244 *NAMESPACE
-b0e304ccc995dae2b2dd0d391d9b5326 *R/anova.R
+51a75894511088bb25d7256048d9cfad *R/anova.R
 bed18ae268c04c97f1a4d675e407d273 *R/boot.R
 0f5c733522683d9f88c7487515bc52de *R/combos.R
 ee9f0440dfe29b2fd298606d2c971c04 *R/crq.R
@@ -46,7 +46,7 @@ aa2009c3a395aee9512819bb72dbc5c1 *demo/hinged.R
 ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 94d79fd77a45e9a9c3cacaf467cba52b *demo/rqsslasso.R
 5235d61a73c80e7eb83777d7d923d144 *demo/stack.R
-01086a5b674db46f402950069a9ab759 *inst/ChangeLog
+ec69c4a4631d1b5d94a7def58bb04a94 *inst/ChangeLog
 a3f4a3a776bc39d6aa852ffc0c2ec0b4 *inst/FAQ
 4b949300e47e3048f24ff664431023d7 *inst/TODO
 93797c4a80befc8c1aec756519abcbd1 *inst/chlog
@@ -73,7 +73,7 @@ a6741cfa6b4d47c00c9002e111bc9364 *inst/doc/rq.Rnw
 1c55b05cfde94862b2503523ccca1998 *man/Peirce.Rd
 114a06055c68efb323cb9dd8a7278050 *man/QTECox.Rd
 9d5c7b53fc04bbbbe5820d2d616e31b5 *man/akj.Rd
-a814f8a161c09471654c9ce1c4fb710f *man/anova.rq.Rd
+a303a4ced70b992220472a10f79fa65c *man/anova.rq.Rd
 742ec68efdfbcf12a2a47e1adcfde3fe *man/bandwidth.rq.Rd
 22f0835a5d071362da4d76b2c6a38b87 *man/barro.Rd
 9121a0c8f5ade9142d089cfb87db490b *man/boot.crq.Rd

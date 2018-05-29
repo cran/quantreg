@@ -1,16 +1,16 @@
 "anova.rq" <-
 function (object, ..., test = "Wald", joint = TRUE,
-       score = "tau", se = "nid", R = 200, trim = NULL)
+       score = "tau", se = "nid", iid = TRUE, R = 200, trim = NULL)
 
 {
     if (length(list(object, ...)) > 1) {
 	objects <- list(object, ...)
         return(anova.rqlist(objects, ..., test = test, joint = joint,
-             score = score, se = se, R = R, trim = trim))
+             score = score, se = se, iid = iid, R = R, trim = trim))
     }
     stop("Anova is only defined (yet) for lists of rq objects")
 }
-anova.rqs <- function(object, ..., se = "nid", joint = TRUE){
+anova.rqs <- function(object, ..., se = "nid", iid = TRUE, joint = TRUE){
     class(object) <- "rq"
     m <- length(object$tau)
     z <- rep(list(object), m)
@@ -19,12 +19,12 @@ anova.rqs <- function(object, ..., se = "nid", joint = TRUE){
         z[[i]]$tau <- object$tau[i]
         z[[i]]$rho <- object$rho[i]
     }
-    return(anova.rqlist(z, ..., se = se, joint = joint))
+    return(anova.rqlist(z, ..., se = se, iid = iid, joint = joint))
 }
 
 "anova.rqlist" <-
 function (object, ..., test = "Wald", joint = TRUE, 
-		score = "tau", se = "nid", R = 200, trim = NULL) 
+		score = "tau", se = "nid", iid = TRUE, R = 200, trim = NULL) 
 {
     objects <- object
     responses <- as.character(lapply(objects, function(x) formula(x)[[2]]))
@@ -84,7 +84,7 @@ function (object, ..., test = "Wald", joint = TRUE,
                 X0 <- model.matrix(objects[[i]], mf,contrasts=objects[[i]]$contrasts)
 		if(score == "tau") tau <- taus[[1]]
                 Htest <- rq.test.rank(X0, X1, y, score = score, weights = weights, 
-			tau = tau, trim = trim)
+			iid = iid, tau = tau, trim = trim)
                 ndf[i - 1] <- Htest$ndf
                 Tn[i - 1] <- Htest$Tn
                 ddf[i - 1] <- Htest$ddf
