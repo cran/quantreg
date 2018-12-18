@@ -196,6 +196,8 @@ There is also recent information available at the URL:
   \code{\link{FAQ}}, 
   \code{\link{summary.rq}}, 
   \code{\link{nlrq}},
+  \code{\link{rq.fit}},
+  \code{\link{rq.wfit}},
   \code{\link{rqss}},
   \code{\link{rq.object}},
   \code{\link{rq.process.object}}

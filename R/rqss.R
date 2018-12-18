@@ -596,7 +596,7 @@ predict.qss2 <- function (object, newdata, ...)
         b[1] <- tri.area(v[c(4, 2, 3), ])/Area
         b[2] <- tri.area(v[c(1, 4, 3), ])/Area
         b[3] <- tri.area(v[c(1, 2, 4), ])/Area
-        if (any(b < 0 || b > 1)) 
+        if (any(b < 0) || any(b > 1)) 
             stop("barycentric snafu")
         b
     }

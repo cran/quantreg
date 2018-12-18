@@ -1181,7 +1181,7 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.
 	}
     object <- object[c("call", "terms")]
     if (covariance == TRUE) {
-        object$cov <- cov
+        if(se != "rank") object$cov <- cov
         if(se == "iid") object$scale <- scale
         if(se %in% c("nid", "ker")) {
             object$Hinv <- fxxinv
@@ -1278,8 +1278,9 @@ function (x, y, taus = c(.1,.3,.5), weights = c(.7,.2,.1),
     rhs <- c(weights*(1 - taus)*n, sum(weights*(1-taus)) * apply(x, 2, sum))
     if(n2!=length(r))
 	stop("R and r of incompatible dimension")
-    if(ncol(R)!=p)
-	stop("R and X of incompatible dimension")
+    if(!is.null(R))
+	if(ncol(R)!=p)
+	    stop("R and X of incompatible dimension")
     d <- rep(1, m*n)
     u <- rep(1, m*n)
     if(length(r)){

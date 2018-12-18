@@ -44,7 +44,7 @@ function (object, ..., test = "Wald", joint = TRUE,
     else
     	names <- lapply(objects, function(x) names(coef(x)))
     if (test == "Wald") 
-        objects <- lapply(objects, function(x) summary(x,se=se,covariance = TRUE))
+        objects <- lapply(objects, function(x) summary(x,se=se,R=R,covariance = TRUE))
     sametaus <- taus == taus[[1]]
     if (all(sametaus)) {
         Tn <- rep(0, nobjects - 1)
