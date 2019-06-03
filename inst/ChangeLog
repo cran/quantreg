@@ -1439,3 +1439,12 @@ problems with an unresolved header file.
 1.  changed if (any(b < 0 || b > 1)) to if (any(b < 0) || any(b > 1))
 in barycentric() in response to CRAN Debian ERROR.  Is this something
 new?
+
+5.39
+
+1.  Reintroduced mcmb.c after a fix of the clang6 setup.
+
+5.40
+
+1.  Removed superfluous BLAS routines from crq.f, and declared ddot double in
+boot.f at the suggestion of BDR.

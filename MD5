@@ -1,4 +1,4 @@
-4211e4e415eed9fe668bd1068e05cb7e *DESCRIPTION
+fce962c107a2ffb3b74100655427c6b4 *DESCRIPTION
 0049c7c3b3bd0184b258c2652df17244 *NAMESPACE
 9b8bcd519f37330271dfda84d9590474 *R/anova.R
 bed18ae268c04c97f1a4d675e407d273 *R/boot.R
@@ -16,7 +16,7 @@ ac869526f59c56603dcfd8e900686daa *R/sfn.R
 f0b39d29269a1fee63c98087f9d3fae7 *R/table.R
 11102c1b9076b53ebaac51cc79b90bfb *R/tools.R
 00f6440dcfd495483f57d543f4918de0 *README
-af732f8cac699d076dbf6f3f162143e2 *build/vignette.rds
+792d42f006ca677506b893915d98b8b9 *build/vignette.rds
 56ef7db1af717ba44a86062560b034df *data/Bosco.rda
 403622377f41685bab4f044f2dac7785 *data/CobarOre.rda
 3d69ca4dff26067565dddb340c8d12a3 *data/Mammals.rda
@@ -46,7 +46,7 @@ aa2009c3a395aee9512819bb72dbc5c1 *demo/hinged.R
 ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 94d79fd77a45e9a9c3cacaf467cba52b *demo/rqsslasso.R
 5235d61a73c80e7eb83777d7d923d144 *demo/stack.R
-70cbd7c93a85b9b490c475ab1df4a79f *inst/ChangeLog
+e444005181ea8b049337addd6ee8251a *inst/ChangeLog
 a3f4a3a776bc39d6aa852ffc0c2ec0b4 *inst/FAQ
 dae4b2dd9cd4919231b5089d9a725723 *inst/TODO
 93797c4a80befc8c1aec756519abcbd1 *inst/chlog
@@ -55,7 +55,7 @@ dae4b2dd9cd4919231b5089d9a725723 *inst/TODO
 3fb70411ec441d151dcae73d63a5e018 *inst/doc/crq.pdf
 7193abc012faeab0fffb661e8baff6a4 *inst/doc/rq.R
 78679341a9a5fd79687d36844550df08 *inst/doc/rq.Rnw
-357c32bbaff242436dfe7778c76c642b *inst/doc/rq.pdf
+c61647345a1a9bae18802ec3b50f7ccf *inst/doc/rq.pdf
 96f5c238ade9146a10d4216b38718e35 *inst/doc/rqss.pdf
 64449a66c0d80474c7aefef8907b8f05 *man/Bosco.Rd
 768cf6c848f78a1862b44371c1f3e2a4 *man/CobarOre.Rd
@@ -125,14 +125,14 @@ b1385340bd67e8de6e8035424e3bada7 *man/summary.crq.Rd
 f5a8859d2b97685d09b1e5bc77f27194 *man/uis.Rd
 bda0ebc1c480b97ce4c9cb3b2ddaf9a9 *src/Makevars
 e88ea1eb7b0c561139079eb722e85b05 *src/akj.f
-aedceed6123d738fb616aac56bcd4b4c *src/boot.f
+2936a17ae908e8fa5f95e2d4290283d1 *src/boot.f
 bb6fb4e8354bba1c16aeaf0cf5f9768e *src/bound.f
 f3a2629172dbce899d97b55d42490e5f *src/boundc.f
 3d549e7a0a2ffbd019a0e597ba56677d *src/brute.f
 227e77b85b2278a98a0f434a0106d858 *src/chlfct.f
 9257929d6019540ef9f8d3f2a4867b7d *src/cholesky.f
 d3404f28dcec8f7d4b7a5ecd8ac54110 *src/combos.f
-8fad67b3637204490d1ae823a80ab826 *src/crq.f
+942c01772c33e0f6967a72792d476c60 *src/crq.f
 195f6976670a61b9be9da5213e2bf058 *src/crqfnb.f
 a22827856f4818d9e202adee29184a11 *src/dsel05.f
 18897488444dcd8f4961107a14ae1cfb *src/etime.f
@@ -140,6 +140,8 @@ a22827856f4818d9e202adee29184a11 *src/dsel05.f
 ebcf4bf9967db6f738fa56684414627f *src/idmin.f
 64caadde39f4c814949c37af379fb270 *src/iswap.f
 ca9cfb6521802b5cf5379350235c82c7 *src/kuantile.f
+6a35c6d0e19a3d9bce819025b8b487af *src/linpack.f
+1105b24ecac68d2d4a6132c6037d8f33 *src/mcmb.c
 31bc1ee0336ad85bd71347646dd0ccf3 *src/penalty.f
 1f4de469cb42514e3f1ecb9601079c5c *src/powell.f
 71d83107425821d2d48361f6881ac71d *src/ratfor/README
