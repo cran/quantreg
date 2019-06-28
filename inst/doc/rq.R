@@ -161,7 +161,7 @@ n <- length(x)
 p <- 5 # lag length
 X <- cbind(x[(p-1):(n-1)], x[(p-2):(n-2)], x[(p-3):(n-3)], x[(p-4):(n-4)])
 y <- x[p:n]
-T1 <- KhmaladzeTest(y ~ X,taus = -1, nullH="location")
+T1 <- KhmaladzeTest(y ~ X,taus = 1:99/100, nullH="location")
 T2 <- KhmaladzeTest(y ~ X,taus = 10:290/300, nullH="location",se="ker")
 
 

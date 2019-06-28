@@ -1,4 +1,4 @@
-subroutine akj(x,z,p,iker,dens,psi,score,nx,nz,h,alpha,kappa,xlam)
+subroutine sakj(x,z,p,iker,dens,psi,score,nx,nz,h,alpha,kappa,xlam)
 # univariate kernel density-score estimator
 # the algorithm is basically from Silverman as adapted for Portnoy and Koenker
 # Annals paper on adaptive L-estimation in regression.

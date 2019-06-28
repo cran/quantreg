@@ -58,7 +58,7 @@ function(x, probs = seq(0,1, 0.25),na.rm = FALSE,
 function(x,k){
     n <- length(x)
     m <- length(k)
-    z <- .Fortran("kuantile",
+    z <- .Fortran("kuantiles",
         	k = as.integer(k),
         	m = as.integer(m),
         	n = as.integer(n),

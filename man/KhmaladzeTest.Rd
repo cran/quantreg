@@ -1,17 +1,15 @@
 \name{KhmaladzeTest}
 \alias{KhmaladzeTest}
-\alias{khmaladzize}
-\alias{qdensity}
 \title{ Tests of Location and Location Scale Shift Hypotheses for Linear Models}
 \description{Tests of the hypothesis that a linear model specification
 is of the location shift or location-scale shift form.  The tests are based 
 on the Doob-Meyer Martingale transformation approach proposed by Khmaladze(1981)
-for general goodness of fit problems, and adapted to quantile regression by 
+for general goodness of fit problems as adapted to quantile regression by 
 Koenker and Xiao (2002).}
 
 \usage{
-KhmaladzeTest(formula, data = NULL, taus = -1, nullH = "location" ,  
-	trim = c(0.05, 0.95), ...) 
+KhmaladzeTest(formula, data = NULL, taus = 1:99/100, nullH = "location" ,  
+	trim = c(0.05, 0.95), h = 1, ...) 
 }
 \arguments{
 \item{formula}{a formula specifying the model to fit by \code{\link{rqProcess}}}
@@ -24,6 +22,7 @@ process is computed.}
 \item{trim}{ a vector indicating the lower and upper bound of the quantiles to
 included in the computation of the test statistics (only, not
 estimates).  }
+\item{h}{an initial bandwidth for the call to \code{\link{akj}}.} 
 \item{...}{other arguments to be passed to \code{\link{summary.rq}.}}
 }
 \value{
@@ -43,8 +42,9 @@ parameters satisfy the null hypothesis.
 
 \examples{
 data(barro)
-KhmaladzeTest( y.net ~ lgdp2 + fse2 + gedy2 + Iy2 + gcony2, 
+T = KhmaladzeTest( y.net ~ lgdp2 + fse2 + gedy2 + Iy2 + gcony2, 
 		data = barro, taus = seq(.05,.95,by = .01))
+plot(T)
 }
 \keyword{htest}
 \references{

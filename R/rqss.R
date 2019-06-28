@@ -861,10 +861,7 @@ resid.rqss <- function(object, ...) object$resid[1:object$n]
     n <- length(resid) - nrL - nrA[m]
     uhat <- resid[1:n]
     h <- bandwidth.rq(tau, n, hs = TRUE)
-    if(tau + h > 1)
-       stop("tau + h > 1:  error in summary.rq")
-    if(tau - h < 0)
-       stop("tau - h < 0:  error in summary.rq")
+    while((tau - h < 0) || (tau + h > 1)) h <- h/2
     h <- (qnorm(tau + h) - qnorm(tau - h)) * max(ztol,min(sqrt(var(uhat)),
         (quantile(uhat, 0.75) - quantile(uhat, 0.25))/1.34))
     f <- c(dnorm(uhat/h)/h,rep(1, length(resid) - n))

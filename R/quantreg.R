@@ -1102,10 +1102,7 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.
     }
     else if (se == "nid") {
         h <- bandwidth.rq(tau, n, hs = hs)
-        if (tau + h > 1)
-            stop("tau + h > 1:  error in summary.rq")
-        if (tau - h < 0)
-            stop("tau - h < 0:  error in summary.rq")
+	while((tau - h < 0) || (tau + h > 1)) h <- h/2
         bhi <- rq.fit.fnb(x, y, tau = tau + h)$coef
         blo <- rq.fit.fnb(x, y, tau = tau - h)$coef
         dyhat <- x %*% (bhi - blo)
@@ -1122,10 +1119,7 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.
     }
     else if (se == "ker") {
         h <- bandwidth.rq(tau, n, hs = hs)
-        if (tau + h > 1)
-            stop("tau + h > 1:  error in summary.rq")
-        if (tau - h < 0)
-            stop("tau - h < 0:  error in summary.rq")
+	while((tau - h < 0) || (tau + h > 1)) h <- h/2
         uhat <- c(y - x %*% coef)
         h <- (qnorm(tau + h) - qnorm(tau - h))*
 		min(sqrt(var(uhat)), ( quantile(uhat,.75)- quantile(uhat, .25))/1.34 )
@@ -1213,7 +1207,7 @@ akj <- function(x,
     nz <- length(z)
     if(is.unsorted(x))
 	x <- sort(x)
-    .Fortran("akj",
+    .Fortran("sakj",
 	     as.double(x),
 	     as.double(z),
 	     as.double(p),

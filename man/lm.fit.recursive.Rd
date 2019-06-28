@@ -3,7 +3,7 @@
 \title{ Recursive Least Squares }
 \description{
 This function fits a linear model by recursive least squares.  It is
-a utility routine for the \code{\link{khmaladzize}} function of the quantile regression
+a utility routine for the \code{\link{KhmaladzeTest}} function of the quantile regression
 package.
 }
 \usage{
@@ -20,6 +20,5 @@ ith column gives the solution up to "time" i.
 }
 \references{ A. Harvey, (1993) Time Series Models, MIT }
 \author{ R. Koenker }
-\seealso{khmaladzize }
 
 \keyword{methods}

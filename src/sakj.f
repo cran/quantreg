@@ -1,5 +1,6 @@
 C Output from Public domain Ratfor, version 1.01
-      subroutine akj(x,z,p,iker,dens,psi,score,nx,nz,h,alpha,kappa,xlam)
+      subroutine sakj(x,z,p,iker,dens,psi,score,nx,nz,h,alpha,kappa,
+     *    xlam)
 C univariate kernel density-score estimator
 C the algorithm is basically from Silverman as adapted for Portnoy and Koenker
 C Annals paper on adaptive L-estimation in regression.

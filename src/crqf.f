@@ -1,6 +1,6 @@
 C  Comments, bug reports, etc. should be sent to:  portnoy@stat.uiuc.edu
 C
-      SUBROUTINE CRQ(M,N,MPLUS,N2,X,Y,C,TZERO,MAXW,STEP,IFT,H,XH,
+      SUBROUTINE CRQF(M,N,MPLUS,N2,X,Y,C,TZERO,MAXW,STEP,IFT,H,XH,
      * WA,WB,WC,WD,WE,WF,IA,NSOL,SOL,LSOL,ICEN,TCEN,LCEN)
 C
 C     M = number of Observations

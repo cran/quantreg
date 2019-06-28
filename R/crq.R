@@ -388,7 +388,7 @@ crq.fit.por <- function(x, y, cen, weights = NULL, grid, ctype = "right")
 		}
       else 
 		stop("Invalid grid")
-	z <- .Fortran("crq",
+	z <- .Fortran("crqf",
 		as.integer(n),
 		as.integer(p),
                 as.integer(mp), 
