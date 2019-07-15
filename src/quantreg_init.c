@@ -4,7 +4,8 @@
 
 
 /* .C calls */
-extern void bootnp(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void bootnp(double *x, double *y,  double *tau, double *theta_tilda, double *A, double *zstar, double *sumxij, double *sumabsxij, int *n, int *p, int *success, double *theta, int *MAXK);
+
 
 /* .Fortran calls */
 extern void F77_NAME(brutpow)(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);

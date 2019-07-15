@@ -246,7 +246,7 @@ sum_right, double sumxij, double sumabsxij, int j, int pp, int nn){
 
 
 void bootnp(double *x, double *y,  double *tau, double *theta_tilda, double *A, double *zstar, 
-	    double *sumxij, double *sumabsxij, int *n, int *p, int *success, double *theta, int *MAXK, int *seed){
+	    double *sumxij, double *sumabsxij, int *n, int *p, int *success, double *theta, int *MAXK){
   
   int i, j,  jj, k, nn, pp;
   double sum, s[MAXP],tau2, tTilda[MAXP];

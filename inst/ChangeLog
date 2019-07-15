@@ -1466,3 +1466,14 @@ testing.  This was motivated by an email from Andres Manzanares (ECB) that repor
 poor coverage when n was large.  Remains to see how/whether reasonable
 defaults can be found for this.  Presumably, the taus grid should get finer and
 the trimming can be less aggressive as n gets larger, but how?
+
+5.42
+
+1.  Removed seed argument in mcmb.f -- thanks to Brian Ripley for finding
+this!
+
+2.  Removed rq.Rnw and friends from the vignette directory in response to a
+still mysterious  GCC 9 problem identified in the CRAN check on Debian.
+Possible indexing overrun??  See email from Brian.
+
+3.  Removed two data statements from dynrq.Rd.

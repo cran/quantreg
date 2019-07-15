@@ -117,7 +117,6 @@ that class (and no internal \code{NA}s were created by the \code{na.action}).
 
 require(zoo)
 ## multiplicative median SARIMA(1,0,0)(1,0,0)_12 model fitted to UK seatbelt data
-     data("UKDriverDeaths", package = "datasets")
      uk <- log10(UKDriverDeaths)
      dfm <- dynrq(uk ~ L(uk, 1) + L(uk, 12))
      dfm
@@ -142,11 +141,12 @@ require(zoo)
 ###############################
 
 ## airline data
-data("AirPassengers", package = "datasets")
+\dontrun{
 ap <- log(AirPassengers)
 fm <- dynrq(ap ~ trend(ap) + season(ap), tau = 1:4/5)
 sfm <- summary(fm)
 plot(sfm)
+}
 
 ## Alternative time trend specifications:
 ##   time(ap)                  1949 + (0, 1, ..., 143)/12

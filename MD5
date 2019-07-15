@@ -1,4 +1,4 @@
-6d0a31cc0565e4c3f4e32c2a9f72bc43 *DESCRIPTION
+3a9c2f3bb18b301227aff0dec61c1750 *DESCRIPTION
 83ce9949b099595fdf5ef163815bc49b *NAMESPACE
 9b8bcd519f37330271dfda84d9590474 *R/anova.R
 bed18ae268c04c97f1a4d675e407d273 *R/boot.R
@@ -16,7 +16,7 @@ ac869526f59c56603dcfd8e900686daa *R/sfn.R
 f0b39d29269a1fee63c98087f9d3fae7 *R/table.R
 11102c1b9076b53ebaac51cc79b90bfb *R/tools.R
 00f6440dcfd495483f57d543f4918de0 *README
-792d42f006ca677506b893915d98b8b9 *build/vignette.rds
+59569a14219af5b8865b5f33e57b6354 *build/vignette.rds
 56ef7db1af717ba44a86062560b034df *data/Bosco.rda
 403622377f41685bab4f044f2dac7785 *data/CobarOre.rda
 3d69ca4dff26067565dddb340c8d12a3 *data/Mammals.rda
@@ -46,14 +46,13 @@ aa2009c3a395aee9512819bb72dbc5c1 *demo/hinged.R
 ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 94d79fd77a45e9a9c3cacaf467cba52b *demo/rqsslasso.R
 5235d61a73c80e7eb83777d7d923d144 *demo/stack.R
-9d2b9cb63212ad3fd2853aba5c48f27d *inst/ChangeLog
+63700e6ba121e46d3d1750b5fd2064eb *inst/ChangeLog
 a3f4a3a776bc39d6aa852ffc0c2ec0b4 *inst/FAQ
 f2732c4ab5eb2f4ca3421239a030f0ee *inst/TODO
 3fb70411ec441d151dcae73d63a5e018 *inst/doc/crq.pdf
-20e396564b2b9b58276215b96718d49f *inst/doc/rq.R
-511adc0c4d0f84cf80fcba75334d0c7e *inst/doc/rq.Rnw
+48b99baf4f65ac9b9a820769d55a75f0 *inst/doc/crq.pdf.asis
 8d7109abf013b827de1f1cb7a2854a34 *inst/doc/rq.pdf
-96f5c238ade9146a10d4216b38718e35 *inst/doc/rqss.pdf
+8faba626ac2f6a7ca45473bca52e2e67 *inst/doc/rq.pdf.asis
 64449a66c0d80474c7aefef8907b8f05 *man/Bosco.Rd
 768cf6c848f78a1862b44371c1f3e2a4 *man/CobarOre.Rd
 5701d2b99e27ab58a510d8d2d9a7832e *man/FAQ.Rd
@@ -71,7 +70,7 @@ f0c967422ef597cf9b87bee298fc0ec9 *man/combos.Rd
 e95befd0c07043e2f858f55c43d95b51 *man/critval.Rd
 dcd1802b430960ab4da1192ef88e06a0 *man/crq.Rd
 7a808195ff0171df916917d7ed31ecb7 *man/dither.Rd
-c2dd9d3bf498c7a93d3cabd1e0072092 *man/dynrq.Rd
+b98230577b8d1fd213c734e509be4672 *man/dynrq.Rd
 1a3a7dbfb064513db6b48ce85d06524f *man/engel.Rd
 1d469f209e0a9ce8a5f0d81ca45c37c0 *man/gasprice.Rd
 ae4f006622b154a304a34633f9bc56c0 *man/kuantile.Rd
@@ -139,10 +138,10 @@ ebcf4bf9967db6f738fa56684414627f *src/idmin.f
 64caadde39f4c814949c37af379fb270 *src/iswap.f
 c8ebe6f08e7707d93c6a8e20eafa6dd3 *src/kuantiles.f
 6a35c6d0e19a3d9bce819025b8b487af *src/linpack.f
-1105b24ecac68d2d4a6132c6037d8f33 *src/mcmb.c
+bd367d08c640378ec21e2cc69f8bd8bb *src/mcmb.c
 31bc1ee0336ad85bd71347646dd0ccf3 *src/penalty.f
 1f4de469cb42514e3f1ecb9601079c5c *src/powell.f
-c7d5448b9ed8bfd170d25148a344afb0 *src/quantreg_init.c
+660bc4ff506dc2106236384f53f96d8c *src/quantreg_init.c
 71d83107425821d2d48361f6881ac71d *src/ratfor/README
 4cd175de2489a75b3975fbb87fbf9a61 *src/ratfor/akj.r
 94215308d5710f542795197eeb00d6c1 *src/ratfor/boot.r
@@ -179,6 +178,5 @@ a838141113a2049f3ca6b6c5914989bc *tests/panel.R
 62bf15687c35cd5a9fa8d05d94fe28a5 *tests/rq.R
 9010017cc909325f119ca1bc119560ab *tests/rq.fit.panel.R
 88bcffa8d0464bf62f7535f89c4a9e7f *tests/run-demos.R
-36e2842c985e8094ebaa2266250c4b29 *vignettes/abbrev.bib
-4a49a7fb2dd1f77eb527f9124a15a423 *vignettes/book.bib
-511adc0c4d0f84cf80fcba75334d0c7e *vignettes/rq.Rnw
+48b99baf4f65ac9b9a820769d55a75f0 *vignettes/crq.pdf.asis
+8faba626ac2f6a7ca45473bca52e2e67 *vignettes/rq.pdf.asis
