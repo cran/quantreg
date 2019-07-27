@@ -137,7 +137,7 @@ abline(rq(foodexp ~ income), col="blue")
 legend(3000,500,c("mean (LSE) fit", "median (LAE) fit"),
 	col = c("red","blue"),lty = c(2,1))
 #Example of plotting of coefficients and their confidence bands
-plot(summary(rq(foodexp~income,tau = 1:49/50,data=engel)))
+try(plot(summary(rq(foodexp~income,tau = 1:49/50,data=engel))))
 #Example to illustrate inequality constrained fitting
 n <- 100
 p <- 5

@@ -1,4 +1,4 @@
-3a9c2f3bb18b301227aff0dec61c1750 *DESCRIPTION
+e14c0297f5285c8bde060c2b8f1213af *DESCRIPTION
 83ce9949b099595fdf5ef163815bc49b *NAMESPACE
 9b8bcd519f37330271dfda84d9590474 *R/anova.R
 bed18ae268c04c97f1a4d675e407d273 *R/boot.R
@@ -85,7 +85,7 @@ d2e7a73053e94b9a0444af290d0a19a1 *man/nlrq.control.Rd
 aa5102d7ad3c26a1eb17570d8e712134 *man/plot.rq.process.Rd
 585b11e2a458ebe2f58a208203df3660 *man/plot.rqs.Rd
 654996811ad4e00cb5e8e28f8c8c068c *man/plot.rqss.Rd
-941dcf59933be6c98c071ba99b1af498 *man/plot.summary.rqs.Rd
+658efbe978250146fbafebb610b2e2b2 *man/plot.summary.rqs.Rd
 db8b8073598318c738c5e475a8e74c62 *man/predict.rq.Rd
 38f8211e75ddd09e034c941900229461 *man/predict.rqss.Rd
 4eeff49d40b43c732f92ab317d9b7650 *man/print.KhmaladzeTest.Rd
@@ -96,7 +96,7 @@ aaa2dab8eadef88bd820062430e6fccc *man/qss.Rd
 a916d9f3d2bed1c77cba165f268873a6 *man/ranks.Rd
 e4a4292807cd1a251a98f57e7892e427 *man/rearrange.Rd
 6f68d1c8d2c8cc7009c9c13f102acd27 *man/residuals.nlrq.Rd
-0ebd7d56c0ed3341accda517d3724593 *man/rq.Rd
+1ce49d5e51a54007c4d44ed61d0e36dc *man/rq.Rd
 97edf8f7e4a17a81e73bfe2889b9c899 *man/rq.fit.Rd
 aea8247091db06872d7b0b25ff7e8184 *man/rq.fit.br.Rd
 67225085d5c626b389544a23b8116d80 *man/rq.fit.fnb.Rd
