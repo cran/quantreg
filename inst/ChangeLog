@@ -1477,3 +1477,4 @@ still mysterious  GCC 9 problem identified in the CRAN check on Debian.
 Possible indexing overrun??  See email from Brian.
 
 3.  Removed two data statements from dynrq.Rd.
+

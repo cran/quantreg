@@ -1,4 +1,4 @@
-e14c0297f5285c8bde060c2b8f1213af *DESCRIPTION
+382b701e4b148bec2464e7dc89714325 *DESCRIPTION
 83ce9949b099595fdf5ef163815bc49b *NAMESPACE
 9b8bcd519f37330271dfda84d9590474 *R/anova.R
 bed18ae268c04c97f1a4d675e407d273 *R/boot.R
@@ -16,7 +16,7 @@ ac869526f59c56603dcfd8e900686daa *R/sfn.R
 f0b39d29269a1fee63c98087f9d3fae7 *R/table.R
 11102c1b9076b53ebaac51cc79b90bfb *R/tools.R
 00f6440dcfd495483f57d543f4918de0 *README
-59569a14219af5b8865b5f33e57b6354 *build/vignette.rds
+d9e6ab85a4283f375b2d253c65213d1a *build/vignette.rds
 56ef7db1af717ba44a86062560b034df *data/Bosco.rda
 403622377f41685bab4f044f2dac7785 *data/CobarOre.rda
 3d69ca4dff26067565dddb340c8d12a3 *data/Mammals.rda
@@ -46,7 +46,7 @@ aa2009c3a395aee9512819bb72dbc5c1 *demo/hinged.R
 ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 94d79fd77a45e9a9c3cacaf467cba52b *demo/rqsslasso.R
 5235d61a73c80e7eb83777d7d923d144 *demo/stack.R
-63700e6ba121e46d3d1750b5fd2064eb *inst/ChangeLog
+3d924d6a9f4813c3afd1dbf81dac8bd9 *inst/ChangeLog
 a3f4a3a776bc39d6aa852ffc0c2ec0b4 *inst/FAQ
 f2732c4ab5eb2f4ca3421239a030f0ee *inst/TODO
 3fb70411ec441d151dcae73d63a5e018 *inst/doc/crq.pdf
@@ -85,7 +85,7 @@ d2e7a73053e94b9a0444af290d0a19a1 *man/nlrq.control.Rd
 aa5102d7ad3c26a1eb17570d8e712134 *man/plot.rq.process.Rd
 585b11e2a458ebe2f58a208203df3660 *man/plot.rqs.Rd
 654996811ad4e00cb5e8e28f8c8c068c *man/plot.rqss.Rd
-658efbe978250146fbafebb610b2e2b2 *man/plot.summary.rqs.Rd
+941dcf59933be6c98c071ba99b1af498 *man/plot.summary.rqs.Rd
 db8b8073598318c738c5e475a8e74c62 *man/predict.rq.Rd
 38f8211e75ddd09e034c941900229461 *man/predict.rqss.Rd
 4eeff49d40b43c732f92ab317d9b7650 *man/print.KhmaladzeTest.Rd
@@ -96,7 +96,7 @@ aaa2dab8eadef88bd820062430e6fccc *man/qss.Rd
 a916d9f3d2bed1c77cba165f268873a6 *man/ranks.Rd
 e4a4292807cd1a251a98f57e7892e427 *man/rearrange.Rd
 6f68d1c8d2c8cc7009c9c13f102acd27 *man/residuals.nlrq.Rd
-1ce49d5e51a54007c4d44ed61d0e36dc *man/rq.Rd
+0ebd7d56c0ed3341accda517d3724593 *man/rq.Rd
 97edf8f7e4a17a81e73bfe2889b9c899 *man/rq.fit.Rd
 aea8247091db06872d7b0b25ff7e8184 *man/rq.fit.br.Rd
 67225085d5c626b389544a23b8116d80 *man/rq.fit.fnb.Rd
@@ -154,7 +154,7 @@ b6107d8e8661f641a0199a1d7972a844 *src/ratfor/penalty.r
 f38b4b2bbad4d6f924f63c120e57374b *src/ratfor/rls.r
 24b799f6364213c6d1c25cfa229b0d7a *src/ratfor/rq0.f
 e21e07cbcb292d892b4ece7c58e428e3 *src/ratfor/rqbr.f
-dedfe0a5f74855e05acd651a336781a7 *src/ratfor/rqbr.r
+8e286089e89b453c211465cd732806ec *src/ratfor/rqbr.r
 f28516c6de1ee89b20c57f4c71a50c04 *src/ratfor/rqfn.r
 b751143bb7069e3aae457f3ea2105491 *src/ratfor/rqfnb.r
 2c72c86d700f2261d262370809c4e00c *src/ratfor/rqfnc.r
@@ -164,7 +164,7 @@ b751143bb7069e3aae457f3ea2105491 *src/ratfor/rqfnb.r
 1f7ca8e2e1c1020ca72d6ce14d5f52c0 *src/rls.f
 adc10cd5c28afaa18b3b90e138e02b13 *src/rq0.f
 d40fa68fb77b43b94bf693452565a2b9 *src/rq1.f
-820dbe94b51decb103678f8ed4b66565 *src/rqbr.f
+120a0f8d078df59a5d0c18e824703087 *src/rqbr.f
 3b2c0e594df800e766b1a932c05a65d0 *src/rqfn.f
 87ae541423022507a670c8975bc45625 *src/rqfnb.f
 43a088b9403c8f82de378b2fc002edc6 *src/rqfnc.f

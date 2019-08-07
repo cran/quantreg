@@ -57,9 +57,9 @@ fm <- rq(foodexp ~ income, data = engel, tau = 1:9/10)
 sfm <- summary(fm)
 
 ## visualizations
-try(plot(sfm))
-try(plot(sfm, parm = 2, mar = c(5.1, 4.1, 2.1, 2.1), main = "", xlab = "tau", 
-  ylab = "income coefficient", cex = 1, pch = 19))
+plot(sfm)
+plot(sfm, parm = 2, mar = c(5.1, 4.1, 2.1, 2.1), main = "", xlab = "tau", 
+  ylab = "income coefficient", cex = 1, pch = 19)
 }
 
 \keyword{hplot}

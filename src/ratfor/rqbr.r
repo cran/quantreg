@@ -56,7 +56,7 @@ integer n,n1,n2,n3,nsol,ndsol,out,s(m),h(nn,nsol)
 integer nn,n4,idxcf
 logical stage,test,init,iend,lup
 logical lci1,lci2,skip
-double precision a1,aux,b1,big,d,dif,pivot,smax,t,t0,t1,tnt
+double precision a1,aux,b1,big,d,dif,pivot,smax,t,t0,t1,tnt,dk
 double precision min,max,toler,zero,half,one,two
 double precision b(m),sol(n3,nsol),a(m,nn),x(nn),wa(m5,n4),wb(m)
 double precision sum,e(m),dsol(m,ndsol)
@@ -379,6 +379,7 @@ if (ift<=two) {
             a1 = zero
             b1 = zero
             k = wa(i,n4)*sign(one,wa(i,n4))-n
+            dk = wa(i,n4)*sign(one,wa(i,n4))
             l = 1
             do j = 1,n{
               if (j==idxcf)

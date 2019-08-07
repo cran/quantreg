@@ -2,11 +2,11 @@ C Output from Public domain Ratfor, version 1.0
       subroutine rqbr(m,nn,m5,n3,n4,a,b,t,toler,ift,x,e,s,wa,wb,nsol,nds
      *ol,sol,dsol,lsol,h,qn,cutoff,ci,tnmat,big,lci1)
       integer i,j,k,kl,kount,kr,l,lsol,m,m1,m2,m3,m4,m5,ift
+      integer kd,in,nn,n4,idxcf
       integer n,n1,n2,n3,nsol,ndsol,out,s(m),h(nn,nsol)
-      integer nn,n4,idxcf
       logical stage,test,init,iend,lup
       logical lci1,lci2,skip
-      double precision a1,aux,b1,big,d,dif,pivot,smax,t,t0,t1,tnt
+      double precision a1,aux,b1,big,d,dif,pivot,smax,t,t0,t1,tnt,dk
       double precision min,max,toler,zero,half,one,two
       double precision b(m),sol(n3,nsol),a(m,nn),x(nn),wa(m5,n4),wb(m)
       double precision sum,e(m),dsol(m,ndsol)
@@ -297,7 +297,7 @@ C Output from Public domain Ratfor, version 1.0
       sum = zero
       if(.not.lci2)then
       do23138 i = 1,kl-1 
-      k = wa(i,n4)*sign(one,wa(i,n4))
+      k = abs(wa(i,n4))
       x(k) = wa(i,n1)*sign(one,wa(i,n4))
 23138 continue
 23139 continue
@@ -346,7 +346,7 @@ C Output from Public domain Ratfor, version 1.0
       a1 = a1+a(i,idxcf)*(dsol(i,lsol)+t-one)
 23160 continue
 23161 continue
-      tn = a1/sqrt(qn(idxcf)*t*(one-t))
+      tn = a1/dsqrt(qn(idxcf)*t*(one-t))
       if(abs(tn).lt.cutoff)then
       if(lup)then
       smax = big
@@ -354,7 +354,7 @@ C Output from Public domain Ratfor, version 1.0
       smax = -big
       endif
       do23166 i =1,kl-1 
-      k = wa(i,n4)*sign(one,wa(i,n4))
+      k = abs(wa(i,n4))
       sol(k,1) = wa(i,n2)*sign(one,wa(i,n4))
       sol(k,2) = wa(i,n3)*sign(one,wa(i,n4))/tnew
 23166 continue
@@ -362,7 +362,7 @@ C Output from Public domain Ratfor, version 1.0
       do23168 i = kl,m 
       a1 = zero
       b1 = zero
-      k = wa(i,n4)*sign(one,wa(i,n4))-n
+      k = abs(wa(i,n4))-n
       l = 1
       do23170 j = 1,n
       if(j.eq.idxcf)then
@@ -518,7 +518,7 @@ C Output from Public domain Ratfor, version 1.0
 50    sum = zero
       if(.not.lci2)then
       do23230 i = kl,m 
-      k = wa(i,n4)*sign(one,wa(i,n4))
+      k = abs(wa(i,n4))
       d = wa(i,n1)*sign(one,wa(i,n4))
       sum = sum+d*sign(one,d)*(half+sign(one,d)*(t-half))
       k = k-n
