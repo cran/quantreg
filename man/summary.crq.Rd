@@ -21,6 +21,8 @@ will be returned if printing is invoked.
   \item{object}{
     An object of class \code{"crq"}  produced by a call to \code{crq()}.
   }
+  \item{taus}{Quantiles to be summarized. Specifying only one value can
+    produce annoying error messages harmful to your mental health.}
   \item{x}{
     An object of class \code{"crq"}  produced by a call to \code{crq()}.
   }
@@ -36,7 +38,6 @@ will be returned if printing is invoked.
   }
   \item{nrow}{Number of rows of the plot layout.}
   \item{ncol}{Number of columns of the plot layout.}
-  \item{taus}{Quantiles to be summarized.}
   \item{alpha}{Confidence level for summary intervals.}
   \item{digits}{Number of digits to be printed in summary display.}
   \item{CoxPHit}{An object of class coxph produced by \code{coxph}.}

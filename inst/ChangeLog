@@ -1478,3 +1478,23 @@ Possible indexing overrun??  See email from Brian.
 
 3.  Removed two data statements from dynrq.Rd.
 
+5.51
+
+1.  Made several (seemingly innocuous) changes in rqbr.f that have apparently
+fixed the gfortran-9 problem originally reported by Kurt and then in more
+detail by Brian.  With considerable help from Dirk E. I was able to make a
+Docker container that allowed me to run R as if in a Debian environment with
+gfortran-9.  I'm still rather puzzled that the changes I made fixed the
+problem:  as originally reported by Brian based on his array bounds checking
+there was a point at which an array subscript took the value -1, which is
+obviously bad... further debugging with print *, ... revealed that indices
+that were computed with a*sign(a) instead of producing abs(a) produced 0
+instead, and changing these instances to abs(a) worked perfectly in both
+the old and new environment.  I should now reinstate the rq.Rnw version of
+the vignette, but I think I'll let this go for a while and catch up on other
+things.
+
+5.52
+
+1.  Added Cleve Moler to authors as suggested by Brian to acknowledge use of
+several linpack routines.

@@ -160,3 +160,25 @@ regression fits."
     of the constraint set).
 
     2.  Use dither() to perturb the y observations slightly.
+
+
+14.  "I have wrote in R the function qreg to estimate quantiles using the optimizer nlm (see below, please).
+The results I get are different from those of your package. Please, could you help explain these differences."
+
+    qreg <- function(y,x,INT,q) {
+    if(INT==TRUE) x<- cbind(1,x)
+    Q <- function(beta) {
+        e <- y-x%*%beta
+        q*sum(e[which(e>=0)]) + (q-1)*sum(e[which(e<0)])
+        }
+    Beta <- solve(crossprod(x))%*%crossprod(x,y)
+    Reg <- nlm(Q,Beta,hessian=TRUE)
+    Reg
+    }
+
+    Imagine that you would like to cut an apple into quarters, you have two tools:  a knife and a spoon --
+    you would expect different results, no?  At a slightly more technical level, the Hessian that you
+    presume to exist is identically a matrix of zeros, almost everywhere.  And no, this is not just a
+    matter of local optima, the problem is convex, so there is a unique global optimum.
+
+

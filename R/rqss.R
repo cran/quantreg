@@ -132,7 +132,7 @@ function (x, constraint = "N", lambda = 1, dummies = dummies,
 # linear function with "knots" at the observed x_i points.  Additive models can consist
 # of several components of this form plus partial linear and triogram components.
 # To resolve the identifiability problem we delete the first column of the qss design
-# components.  On return F contains the fidelity portion of the design, A the penalty
+# components.  On return F contains the fidelity portion of the design, A is the penalty
 # contribution of the design, R the constraint portion, and r the rhs of the constraints.
 #
 # Constraints are specified by the constraint argument:
