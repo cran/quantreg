@@ -1498,3 +1498,15 @@ things.
 
 1.  Added Cleve Moler to authors as suggested by Brian to acknowledge use of
 several linpack routines.
+
+5.53
+
+1.  Modified the calls to class(x) in boot.rq so that they conform to the new
+convention that class(M) has two components c("matrix","array"), so if() wants
+to look at only the first component.
+
+5.54
+
+1.  Modified call to class(x) in crq.fit.pow() as in 5.53 
+
+2.  changed http to https in crq.Rd

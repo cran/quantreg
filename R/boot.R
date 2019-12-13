@@ -3,7 +3,7 @@ function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y),
 	  blbn = NULL, cluster = NULL, U = NULL, ...)
 {
     n <- length(y)
-    if(class(x) != "matrix.csr") x <- as.matrix(x)
+    if(class(x)[1] != "matrix.csr") x <- as.matrix(x)
     p <- ncol(x) 
     B <- matrix(0, R, p)
     if(tau <= 0 || tau >= 1) stop("tau outside (0,1) not allowed")
@@ -37,7 +37,7 @@ function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y),
 	r <- c(rq.fit(x, y, tau)$resid)
 	psi <- (r < 0) - tau
 	W <- as.matrix(t(x) %*% (U * psi))
-	if(class(x) == "matrix.csr") 
+	if(class(x)[1] == "matrix.csr") 
 	    B <- boot.rq.spwy(W, x, y, tau)
 	else
 	    B <- boot.rq.pwy(W, x, y, tau)

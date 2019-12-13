@@ -1,9 +1,9 @@
-a434dc4040578b8938c59fe0ab010e6b *DESCRIPTION
+f869e339057a88274617318d962b644c *DESCRIPTION
 83ce9949b099595fdf5ef163815bc49b *NAMESPACE
 9b8bcd519f37330271dfda84d9590474 *R/anova.R
-bed18ae268c04c97f1a4d675e407d273 *R/boot.R
+efcd4a85bc38bfe2e837e8444064b07f *R/boot.R
 0f5c733522683d9f88c7487515bc52de *R/combos.R
-19f643efe3160994f6f6ce2d65913312 *R/crq.R
+a537dd09f743afce7eb302c25058dbb6 *R/crq.R
 620fb4bb4c3212ff9da361581ab7a74a *R/dynrq.R
 3e27870071ee6cd633956a2ad6946499 *R/khmal.R
 3a3bfe25440d03fde5a730d671d49d10 *R/kuantile.R
@@ -16,7 +16,7 @@ ac869526f59c56603dcfd8e900686daa *R/sfn.R
 f0b39d29269a1fee63c98087f9d3fae7 *R/table.R
 11102c1b9076b53ebaac51cc79b90bfb *R/tools.R
 00f6440dcfd495483f57d543f4918de0 *README
-d9e6ab85a4283f375b2d253c65213d1a *build/vignette.rds
+0395557b9fc2dcdb8a49d124cbb938d3 *build/vignette.rds
 56ef7db1af717ba44a86062560b034df *data/Bosco.rda
 403622377f41685bab4f044f2dac7785 *data/CobarOre.rda
 3d69ca4dff26067565dddb340c8d12a3 *data/Mammals.rda
@@ -46,7 +46,7 @@ aa2009c3a395aee9512819bb72dbc5c1 *demo/hinged.R
 ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 94d79fd77a45e9a9c3cacaf467cba52b *demo/rqsslasso.R
 5235d61a73c80e7eb83777d7d923d144 *demo/stack.R
-707f5d8860a0f522c37720e8dd9660a2 *inst/ChangeLog
+5c30d41acfbe21827fb791f312fc978b *inst/ChangeLog
 0d1344b0c883f94534293a6028b8b1e0 *inst/FAQ
 f2732c4ab5eb2f4ca3421239a030f0ee *inst/TODO
 3fb70411ec441d151dcae73d63a5e018 *inst/doc/crq.pdf
@@ -68,7 +68,7 @@ a303a4ced70b992220472a10f79fa65c *man/anova.rq.Rd
 0a178fd6cf303131529803cfe731fbc5 *man/boot.rq.Rd
 f0c967422ef597cf9b87bee298fc0ec9 *man/combos.Rd
 e95befd0c07043e2f858f55c43d95b51 *man/critval.Rd
-dcd1802b430960ab4da1192ef88e06a0 *man/crq.Rd
+a38140e53d0ce37aeef2e9c8764b36af *man/crq.Rd
 7a808195ff0171df916917d7ed31ecb7 *man/dither.Rd
 b98230577b8d1fd213c734e509be4672 *man/dynrq.Rd
 1a3a7dbfb064513db6b48ce85d06524f *man/engel.Rd

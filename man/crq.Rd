@@ -162,7 +162,7 @@ Fitzenberger, B.  and P. Winker (2007): ``Improving the Computation of
 Censored Quantile Regression Estimators,'' CSDA, 52,  88-108.
 
 Koenker, R. (2008): ``Censored Quantile Regression Redux,'' \emph{J. 
-Statistical Software}, 27, \url{http://www.jstatsoft.org/v27/i06}.
+Statistical Software}, 27, \url{https://www.jstatsoft.org/v27/i06}.
 
 Peng, L and Y Huang, (2008) Survival Analysis with Quantile Regression Models,
 \emph{J. Am. Stat. Assoc.}, 103, 637-649. 
