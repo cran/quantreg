@@ -52,3 +52,9 @@ Note added May 14, 2016
 
 Contrary to the last note, it appears that my $HOME/bin/ratfor
 command works and $HOME/bin/ratfor77 does not.
+
+Note added Jan 22, 2020
+
+Contrary to the last note there is no $HOME/bin/ratfor* but I've installed
+ratfor90 in /usr/local/bin and this might produce something workable.  Not
+yet really tested seriously, but those ugly line numbers are gone, at least.

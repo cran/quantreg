@@ -419,9 +419,9 @@ function (object, newdata, type = "Qhat", stepfun = FALSE, na.action = na.pass, 
        else if(type == "Fhat"){
 	  taus <- c(taus[1],taus)
           if(M > 1) 
-	      f <- apply(pred,2,function(y) stepfun(y,t))
+	      f <- apply(pred,2,function(y) stepfun(y,taus))
           else
-              f <- stepfun(pred[,1],c(taus[1],taus))
+              f <- stepfun(pred[,1],taus)
           }
        else stop("Stepfuns must be either 'Qhat' or 'Fhat'")
        return(f)
@@ -438,7 +438,7 @@ function (object, newdata, type = "Qhat", stepfun = FALSE, na.action = na.pass, 
         if(M > 1) 
 	    f <- apply(pred[-1,], 2, function(z) akjfun(z, p, ...))
         else
-	   akjfun(pred[,1], p, ...)
+	   f = akjfun(pred[,1], p, ...)
        return(f)
        }
     else return(t(pred))
@@ -981,7 +981,7 @@ function (object, ...) {
         attr(val,"n") <- n
 	if(pen){
 	   if(!hasArg(edfThresh)) edfThresh <- 0.0001
-           attr(val,"df") <- sum(abs(object$coefficients) > edfThresh)
+           attr(val,"df") <- apply(abs(object$coefficients) > edfThresh,2,sum)
 	  }
 	else  attr(val,"df") <- p
         class(val) <- "logLik"

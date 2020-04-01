@@ -1510,3 +1510,9 @@ to look at only the first component.
 1.  Modified call to class(x) in crq.fit.pow() as in 5.53 
 
 2.  changed http to https in crq.Rd
+
+5.55
+
+1.  Fixed bug in predict.rq.process for Fhat reported by Vincenzo Coia.
+
+2.  Fixed bug in AIC.rqs to use correct edf reported by Brian Cade.

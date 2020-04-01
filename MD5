@@ -1,4 +1,4 @@
-f869e339057a88274617318d962b644c *DESCRIPTION
+ed749750144a14223d8ef9e0875dcd8a *DESCRIPTION
 83ce9949b099595fdf5ef163815bc49b *NAMESPACE
 9b8bcd519f37330271dfda84d9590474 *R/anova.R
 efcd4a85bc38bfe2e837e8444064b07f *R/boot.R
@@ -10,7 +10,7 @@ a537dd09f743afce7eb302c25058dbb6 *R/crq.R
 d2f509eb6977017d1b77faae7de97a7c *R/lprq.R
 74e57bf2387ac9e764dfc185bec65980 *R/nlrq.R
 23abbfdfe6ab274c1ebe89aaa4d825ef *R/qrisk.R
-47fea60ac351d7d553d20819738cba3f *R/quantreg.R
+c4bd05b11eba627e0f26e9e1393febde *R/quantreg.R
 c627b506f6f6ce325982d93c16268c0f *R/rqss.R
 ac869526f59c56603dcfd8e900686daa *R/sfn.R
 f0b39d29269a1fee63c98087f9d3fae7 *R/table.R
@@ -46,7 +46,7 @@ aa2009c3a395aee9512819bb72dbc5c1 *demo/hinged.R
 ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 94d79fd77a45e9a9c3cacaf467cba52b *demo/rqsslasso.R
 5235d61a73c80e7eb83777d7d923d144 *demo/stack.R
-5c30d41acfbe21827fb791f312fc978b *inst/ChangeLog
+e810e39691cf122caec25ea515f3bcd4 *inst/ChangeLog
 0d1344b0c883f94534293a6028b8b1e0 *inst/FAQ
 f2732c4ab5eb2f4ca3421239a030f0ee *inst/TODO
 3fb70411ec441d151dcae73d63a5e018 *inst/doc/crq.pdf
@@ -142,7 +142,7 @@ bd367d08c640378ec21e2cc69f8bd8bb *src/mcmb.c
 31bc1ee0336ad85bd71347646dd0ccf3 *src/penalty.f
 1f4de469cb42514e3f1ecb9601079c5c *src/powell.f
 660bc4ff506dc2106236384f53f96d8c *src/quantreg_init.c
-71d83107425821d2d48361f6881ac71d *src/ratfor/README
+0bb18109cf41bac271c3d49597f71d32 *src/ratfor/README
 4cd175de2489a75b3975fbb87fbf9a61 *src/ratfor/akj.r
 94215308d5710f542795197eeb00d6c1 *src/ratfor/boot.r
 abc8e4125098a8ec492c6d56a2e990ed *src/ratfor/brute.r
