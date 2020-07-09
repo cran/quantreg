@@ -21,7 +21,7 @@ will be returned if printing is invoked.
   }
   \item{se}{
     specifies the method used to compute standard standard errors.  There
-    are currently six available methods:  
+    are currently seven available methods:  
     \enumerate{
       \item \code{"rank"} which produces confidence intervals for the
       estimated parameters by inverting a rank test as described in
@@ -53,6 +53,11 @@ will be returned if printing is invoked.
       \code{bsmethod = "xy"} is sanction, and even that is experimental.  This
       option is intended for applications with very large n where other flavors
       of the bootstrap can be slow.
+
+      \item \code{"conquer"} which is invoked automatically if the fitted 
+      object was created with \code{method = "conquer"}, and returns the
+      multiplier bootstrap percentile confidence intervals described in
+      He et al (2020).
     }
     If \code{se = NULL} (the default)  and \code{covariance = FALSE}, and
     the sample size is less than 1001, then the "rank" method is used, 

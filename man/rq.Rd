@@ -56,7 +56,9 @@ rq(formula, tau=.5, data, subset, weights, na.action,
   }
   \item{method}{
     the algorithmic method used to compute the fit.  There are several
-    options:   The default method is the modified  version of the
+    options:   
+    \enumerate{
+	\item \code{"br"} The default method is the modified  version of the
     Barrodale and Roberts algorithm for \eqn{l_1}{l1}-regression,
     used by \code{l1fit} in S, and is described in detail in 
     Koenker and d'Orey(1987, 1994),  default = \code{"br"}. 
@@ -64,26 +66,44 @@ rq(formula, tau=.5, data, subset, weights, na.action,
     and may be used to compute the full quantile regression process.  It 
     also implements a scheme for computing confidence intervals for 
     the estimated parameters, based on inversion of a rank test described 
-    in Koenker(1994).  For larger problems it is advantageous to use 
+    in Koenker(1994).  
+
+    \item \code{"fn"} For larger problems it is advantageous to use 
     the Frisch--Newton interior point method \code{"fn"}. 
-    And for very large problems one can use the Frisch--Newton approach after 
-    preprocessing \code{"pfn"}.  Both of the latter methods are
-    described in detail in Portnoy and Koenker(1997), this method is
-    primarily well-suited for large n, small p problems where the parametric
-    dimension of the model is modest.  For large problems with  large
-    parametric dimension it is usually advantageous to use method \code{"sfn"}
-    which uses the Frisch-Newton algorithm, but exploits sparse algebra
+    This is described in detail in Portnoy and Koenker(1997).
+
+    \item \code{"pfn"} For even larger problems one can use the Frisch--Newton approach after 
+    preprocessing \code{"pfn"}.  Also described in detail in Portnoy and Koenker(1997), 
+    this method is primarily well-suited for large n, small p problems, that is when the 
+    parametric dimension of the model is modest.  
+    \item \code{"sfn"}  For large problems with  large
+    parametric dimension it is sometimes advantageous to use method \code{"sfn"}
+    which also uses the Frisch-Newton algorithm, but exploits sparse algebra
     to compute iterates.  This is typically helpful when the model includes
     factor variables that, when expanded, generate design matrices that
     are very sparse.
-    A sixth option \code{"fnc"} that enables the user to specify
+
+    \item \code{"fnc"}  Another option enables the user to specify
     linear inequality constraints on the fitted coefficients; in this
     case one needs to specify the matrix \code{R} and the vector \code{r}
     representing the constraints in the form \eqn{Rb \geq r}.  See the
-    examples.  Finally, there are two penalized methods:  \code{"lasso"}
+    examples below.  
+
+    \item \code{"conquer"}  For very large problems especially those with
+    large parametric dimension, this option provides a link to the \pkg{conquer}
+    of He, Pan, Tan, and Zhou (2020).  Calls to \code{summary} when the fitted
+    object is computed with this option invoke the multiplier bootstrap percentile
+    method of the \pkg{conquer} package and can be considerably quicker than other
+    options when the problem size is large.  Further options for this fitting
+    method are described in the \pkg{conquer} package.  Note that this option
+    employs a smoothing form of the usual QR objective function so solutions
+    may be expected to differ somewhat from those produced with the other options.
+    
+    \item \code{"lasso"} There are two penalized methods: \item \code{"lasso"} 
     and \code{"scad"} that implement the lasso penalty and Fan and Li's
     smoothly clipped absolute deviation penalty, respectively.  These
     methods should probably be regarded as experimental.
+    }
   }
   \item{contrasts}{
     a list giving contrasts for some or all of the factors 
@@ -95,7 +115,7 @@ rq(formula, tau=.5, data, subset, weights, na.action,
   }
   \item{...}{
     additional arguments for the fitting routines 
-    (see \code{\link{rq.fit.br}} and \code{\link{rq.fit.fnb}}
+    (see \code{\link{rq.fit.br}} and \code{\link{rq.fit.fnb}}, etc.
     and the functions they call). 
   }
 }
@@ -153,11 +173,11 @@ The function computes an estimate on the tau-th conditional quantile
 function of the response, given the covariates, as specified by the
 formula argument.  Like \code{lm()}, the function presumes a linear
 specification for the quantile regression model, i.e. that the formula
-defines a model that is linear in parameters.  For non-linear quantile
-regression see the package \code{nlrq()}.  
+defines a model that is linear in parameters.  For non-linear (in parameters)
+quantile regression see the package \code{nlrq()}.  
 The function minimizes a weighted sum of absolute
 residuals that can be formulated as a linear programming problem.  As
-noted above, there are three different algorithms that can be chosen
+noted above, there are several different algorithms that can be chosen
 depending on problem size and other characteristics.  For moderate sized
 problems (\eqn{n \ll 5,000, p \ll 20}{n << 5,000, p << 20}) it is recommended 
 that the default \code{"br"} method be used. There are several choices of methods for
@@ -178,6 +198,10 @@ and options.
 Regression quantile and regression rank score process in the 
 linear model and derived statistics, \emph{Annals of Statistics},
 \bold{20}, 305--330.
+
+[4] Xuming He and Xiaoou Pan and Kean Ming Tan and Wen-Xin Zhou, (2020)
+conquer: Convolution-Type Smoothed Quantile Regression,
+\url{https://CRAN.R-project.org/package=conquer}
 
 [4] Koenker, R. W. (1994). Confidence Intervals for regression quantiles, in 
 P. Mandl and M. Huskova (eds.), \emph{Asymptotic Statistics}, 349--359,  

@@ -1516,3 +1516,28 @@ to look at only the first component.
 1.  Fixed bug in predict.rq.process for Fhat reported by Vincenzo Coia.
 
 2.  Fixed bug in AIC.rqs to use correct edf reported by Brian Cade.
+
+5.57
+
+1.  Added link to a new fitting method by He, Pan, Tan and Zhou that uses
+a smoothed version of the usual piecewise linear QR objective and gradient
+descent.  This approach is MUCH faster than interior point on large problems
+especially those with large p.  See ?rq.fit.conquer for further details.
+
+2.  There is also a new multiplier bootstrap for inference.  At the moment
+it is automatically invoked only when the original fitting method is
+"conquer".
+
+5.58  
+
+1.  Added new fitting and bootstrap methods employing preprocessing, as
+implemented by Blaise Melly, see ?rq.fit.ppro for further details.  For
+large applications with moderately fine grids for tau these methods should
+speed things up considerably.
+
+5.61
+
+1.  Fixed inconsistent author entry for Melly.
+
+2.  Moved definition of eps up in rq() to resolve problems in packages
+vdg and qrjoint.

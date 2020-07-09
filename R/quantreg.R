@@ -107,6 +107,10 @@ function (formula, tau = 0.5, data, subset, weights, na.action, method = "br",
     if(method == "model.frame")return(mf)
     mt <- attr(mf, "terms")
     weights <- as.vector(model.weights(mf))
+    tau <- sort(unique(tau))
+    eps <- .Machine$double.eps^(2/3)
+    if (any(tau == 0)) tau[tau == 0] <- eps
+    if (any(tau == 1)) tau[tau == 1] <- 1 - eps
     Y <- model.response(mf)
     if(method == "sfn"){
 	if(requireNamespace("MatrixModels") && requireNamespace("Matrix")){
@@ -118,16 +122,14 @@ function (formula, tau = 0.5, data, subset, weights, na.action, method = "br",
     }	
     else
 	X <- model.matrix(mt, mf, contrasts)
-    eps <- .Machine$double.eps^(2/3)
     Rho <- function(u,tau) u * (tau - (u < 0))
-    if(length(tau)>1){
-	if(any(tau < 0) || any(tau > 1))
-		stop("invalid tau:  taus should be >= 0 and <= 1")
-	if(any(tau == 0)) tau[tau == 0] <- eps
-	if(any(tau == 1)) tau[tau == 1] <- 1 -eps
-	coef <- matrix(0,ncol(X),length(tau))
-        rho <- rep(0,length(tau))
-	fitted <- resid <- matrix(0,nrow(X),length(tau))
+    if (length(tau) > 1) {
+      if (any(tau < 0) || any(tau > 1)) 
+        stop("invalid tau:  taus should be >= 0 and <= 1")
+      coef <- matrix(0, ncol(X), length(tau))
+      rho <- rep(0, length(tau))
+      if(method != "ppro"){
+        fitted <- resid <- matrix(0, nrow(X), length(tau))
 	for(i in 1:length(tau)){
 	    z <- {if (length(weights))
                  	rq.wfit(X, Y, tau = tau[i], weights, method, ...)
@@ -149,22 +151,27 @@ function (formula, tau = 0.5, data, subset, weights, na.action, method = "br",
 	else if(method == "scad") class(fit) <- c("scadrqs","rqs")
 	else class(fit) <- "rqs"
 	}
+      else { # Preprocessing method
+	  fit <- rq.fit.ppro(X, Y, tau, ...)
+          class(fit) = ifelse(length(tau) == 1,"rq","rqs") 
+          }
+    }
     else{
-        process <- (tau < 0 || tau > 1)
-	if(tau == 0) tau <- eps
-	if(tau == 1) tau <- 1 -eps
-        fit <- {
-            if (length(weights))
-                rq.wfit(X, Y, tau = tau, weights, method, ...)
-            else rq.fit(X, Y, tau = tau, method, ...)
-           }
-	if(process)
-		rho <- list(x = fit$sol[1,],y = fit$sol[3,])
-	else {
-		if(length(dim(fit$residuals)))
-		    dimnames(fit$residuals) <- list(dimnames(X)[[1]],NULL)
-                rho <-  sum(Rho(fit$residuals,tau))
-		}
+      process <- (tau < 0 || tau > 1)
+      if(process && method != "br") 
+        stop("when tau not in [0,1] method br must be used")
+      fit <- {
+        if(length(weights))
+          rq.wfit(X, Y, tau = tau, weights, method, ...)
+        else rq.fit(X, Y, tau = tau, method, ...)
+        }
+      if(process)
+	rho <- list(tau = fit$sol[1,], rho = fit$sol[3,])
+      else {
+	if(length(dim(fit$residuals)))
+          dimnames(fit$residuals) <- list(dimnames(X)[[1]],NULL)
+          rho <-  sum(Rho(fit$residuals,tau))
+          } 
 	if(method == "lasso") class(fit) <- c("lassorq","rq")
 	else if(method == "scad") class(fit) <- c("scadrq","rq")
         else class(fit) <- ifelse(process, "rq.process", "rq")
@@ -188,17 +195,19 @@ function (formula, tau = 0.5, data, subset, weights, na.action, method = "br",
 "rq.fit" <-
 function(x, y, tau = 0.5, method = "br", ...)
 {
-    if(length(tau) > 1) {
-	    tau <- tau[1]
-	    warning("Multiple taus not allowed in rq.fit: solution restricted to first element")
-	}
+    if(length(tau) > 1 && method != "ppro") {
+	tau <- tau[1]
+        warning("Multiple taus not allowed in rq.fit: solution restricted to first element")
+        }
 
     fit <- switch(method,
 		fn = rq.fit.fnb(x, y, tau = tau, ...),
 		fnb = rq.fit.fnb(x, y, tau = tau, ...),
 		fnc = rq.fit.fnc(x, y, tau = tau, ...),
 		sfn = rq.fit.sfn(x, y, tau = tau, ...),
+		conquer = rq.fit.conquer(x, y, tau = tau, ...),
 		pfn = rq.fit.pfn(x, y, tau = tau, ...),
+		ppro= rq.fit.ppro(x, y, tau = tau, ...),
 		br = rq.fit.br(x, y, tau = tau, ...),
 		lasso = rq.fit.lasso(x, y, tau = tau, ...),
 		scad = rq.fit.scad(x, y, tau = tau, ...),
@@ -644,6 +653,19 @@ function (x, y, tau = 0.5, alpha = 0.1, ci = FALSE, iid = TRUE,
     }
 }
 
+"rq.fit.conquer" <- function(x, y, tau = 0.5, kernel = c("Gaussian", "uniform", 
+    "parabolic", "triangular"), h = 0, standardize = TRUE, tol = 1e-04, 
+    iteMax = 5000, ci = FALSE, alpha = 0.05, B = 1000)
+{
+    if(!requireNamespace("conquer", quietly = TRUE))
+            stop("method conquer requires package conquer")
+    fit = conquer::conquer(x[,-1], y, tau = tau, kernel = kernel, h = h, standardize =
+	standardize, tol = tol, iteMax = iteMax, ci = FALSE, alpha = alpha, B = 1000)
+    coefficients = fit$coeff 
+    names(coefficients) = dimnames(x)[[2]]
+    residuals = fit$residual
+    list(coefficients = coefficients, tau = tau, residuals = residuals)
+}
 "rq.fit.fnb" <-
 function (x, y, tau = 0.5, rhs = (1-tau)*apply(x,2,sum), beta = 0.99995, eps = 1e-06)
 {
@@ -821,7 +843,7 @@ function (x, y, tau = 0.5, lambda = 1, beta = 0.9995, eps = 1e-06)
 # is already done in the rq.fit.fnb calls.
 #
 function(x, y, tau = 0.5,  Mm.factor = 0.8,
-	max.bad.fixup = 3, eps = 1e-6)
+	max.bad.fixups = 3, eps = 1e-6)
 {
 	#rq function for n large --
 	n <- length(y)
@@ -852,8 +874,8 @@ function(x, y, tau = 0.5,  Mm.factor = 0.8,
 		kappa <- quantile(r/pmax(eps, band), c(lo.q, hi.q))
 		sl <- r < band * kappa[1]
 		su <- r > band * kappa[2]
-		bad.fixup <- 0
-		while(not.optimal & (bad.fixup < max.bad.fixup)) {
+		bad.fixups <- 0
+		while(not.optimal & (bad.fixups < max.bad.fixups)) {
 			xx <- x[!su & !sl,  ]
 			yy <- y[!su & !sl]
 			if(any(sl)) {
@@ -876,15 +898,15 @@ function(x, y, tau = 0.5,  Mm.factor = 0.8,
 			su.bad <- (r < 0) & su
 			sl.bad <- (r > 0) & sl
 			if(any(c(su.bad, sl.bad))) {
-				if(sum(su.bad | sl.bad) > 0.10000000000000001 *
-					M) {
-					warning("Too many fixups:  doubling m")
-					m <- 2 * m
-					break
+				if(sum(su.bad | sl.bad) > 0.1 * M) {
+				    # This warning may get annoying?
+				    warning("Too many fixups:  doubling m")
+				    bad.fixups <- bad.fixups + 1
+				    m <- 2 * m
+				    break
 				}
 				su <- su & !su.bad
 				sl <- sl & !sl.bad
-				bad.fixup <- bad.fixup + 1
 			}
 			else not.optimal <- FALSE
 		}
@@ -914,6 +936,7 @@ function(x, y, tau = 0.5, weights, method = "br",  ...)
 		br = rq.fit.br(wx, wy, tau = tau, ...),
 		fnc = rq.fit.fnc(wx, wy, tau = tau, ...),
 		sfn = rq.fit.sfn(wx, wy, tau = tau, ...),
+		conquer = rq.fit.conquer(wx, wy, tau = tau, ...),
                 pfn = rq.fit.pfn(wx, wy, tau = tau, ...), {
 			what <- paste("rq.fit.", method, sep = "")
 			if(exists(what, mode = "function"))
@@ -1045,15 +1068,18 @@ c(edf, aic)
 #		"xy"	uses xy-pair method
 #		"wxy"	uses weighted (generalized) method
 #		"pwy"	uses the parzen-wei-ying method
+#		"pxy"	uses the preprocessing method
 #		"mcmb"	uses the Markov chain marginal bootstrap method
 #		"cluster"  uses the Hagemann clustered wild gradient method
-#		"BLB"	uses the Bag of Little Boostraps method
+#		"conquer"  uses the He et al multiplier bootstrap
+#		"BLB"	uses the Bag of Little Bootstraps method
 #
 #
 function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.7, ...)
 {
     if(object$method == "lasso")
          stop("no inference for lasso'd rq fitting: try rqss (if brave, or credulous)")
+    if(object$method == "conquer") se = "conquer"
     mt <- terms(object)
     m <- model.frame(object)
     y <- model.response(m)
@@ -1145,7 +1171,7 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.
 	    B <- boot.rq(x, y, tau, ...)
         cov <- cov(B$B)
         serr <- sqrt(diag(cov))
-    }
+        }
    else if (se == "BLB"){ # Bag of Little Bootstraps
         n <- length(y)
         b <- ceiling(n^gamma)
@@ -1160,10 +1186,20 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.
 	cov <- cov(B$B)
         serr <- apply(Z, 1, mean)
     }
+   else if(se == "conquer"){
+       Z <- conquer(x[,-1], y, tau, ci = TRUE, ...)
+       #Fixme:  should have option to choose another bsmethod
+       coef <- cbind(Z$coef, Z$perCI)
+       vnames <- dimnames(x)[[2]]
+       cnames <- c("coefficients", "lower bd", "upper bd")
+       dimnames(coef) <- list(vnames, cnames)
+       resid <- y - x %*% Z$coef
+   }
+
     if( se == "rank"){
 	coef <- f$coef
 	}
-    else {
+    else if(se != "conquer"){
     	coef <- array(coef, c(p, 4))
     	dimnames(coef) <- list(vnames, c("Value", "Std. Error", "t value",
              "Pr(>|t|)"))
@@ -1304,3 +1340,85 @@ function (x, y, taus = c(.1,.3,.5), weights = c(.7,.2,.1),
     if(any(is.na(coefficients)))stop("NA coefs:  infeasible problem?")
     list(coefficients = coefficients, nit = z$it.count, flag = z$info)
 }
+#preprocessing for the QR process
+"rq.fit.ppro" <- function (x, y, tau, weights=NULL, Mm.factor = 0.8, eps = 1e-06, ...) 
+{
+  ntau <- length(tau)
+  n <- length(y)
+  if (nrow(x) != n) stop("x and y don't match n")
+  p <- ncol(x)
+  m <- n * sqrt(p) * max(diff(tau)) # check this length(tau) == 1 case?
+  dots <- list(...)
+  method <- ifelse(length(dots$pmethod), dots$pmethod, "fn")
+  if(length(weights)){
+      if(any(weights < 0))
+	 stop("negative weights not allowed")
+      if(length(weights) != n)
+	 stop("weights not of length(y)")
+      else {
+         x <- x * weights
+         y <- y * weights
+      }
+  }
+  coef <- matrix(NA, p, ntau)
+  resid <- matrix(NA, n, ntau)
+  rho <- rep(0, ntau)
+  Rho <- function(u, tau) u * (tau - (u < 0))
+  z <- rq.fit(x, y, tau=tau[1], method = method)
+  r <- z$resid
+  coef[,1] <- z$coef
+  rho[1] <- sum(Rho(z$residuals, tau[1]))
+  xxinv <- solve(chol(crossprod(x)))
+  # Is pmax really necessary here?
+  band <- pmax(eps, sqrt(((x %*% xxinv)^2) %*% rep(1, p)))
+  for(i in 2:ntau){
+    not.optimal <- TRUE
+    mm <- m
+    while (not.optimal) {
+      M <- Mm.factor * mm
+      lo.q <- max(1/n, tau[i] - M/(2 * n))
+      hi.q <- min(tau[i] + M/(2 * n), (n - 1)/n)
+      kappa <- quantile(r/band, c(lo.q, hi.q))
+      sl <- r < band * kappa[1]
+      su <- r > band * kappa[2]
+      while (not.optimal) {
+        xx <- x[!su & !sl, ]
+        yy <- y[!su & !sl]
+        if (any(sl)) {
+          glob.x <- c(t(x[sl, , drop = FALSE]) %*% rep(1, sum(sl)))
+          glob.y <- sum(y[sl])
+          xx <- rbind(xx, glob.x)
+          yy <- c(yy, glob.y)
+        }
+        if (any(su)) {
+          ghib.x <- c(t(x[su, , drop = FALSE]) %*% rep(1, sum(su)))
+          ghib.y <- sum(y[su])
+          xx <- rbind(xx, ghib.x)
+          yy <- c(yy, ghib.y)
+        }
+        z <- rq.fit(xx, yy, tau = tau[i], method = method)
+        b <- z$coef
+        r <- y - x %*% b
+        su.bad <- (r < 0) & su
+        sl.bad <- (r > 0) & sl
+        bad.signs <- sum(su.bad | sl.bad)
+        if (bad.signs > 0) {
+          if (bad.signs > 0.1 * M) {
+            mm <- 2*mm
+            warning("Too many fixups:  doubling m")
+            break
+          }
+          su <- su & !su.bad
+          sl <- sl & !sl.bad
+        }
+        else not.optimal <- FALSE
+      }
+    }
+    coef[,i] <- b
+    resid[,i] <- y - x %*% b
+    rho[i] <- sum(Rho(resid, tau[i]))
+  }
+  dimnames(coef) <- list(dimnames(x)[[2]], tau)
+  list(coefficients=coef, residuals = resid, rho=rho, weights = weights)
+}
+

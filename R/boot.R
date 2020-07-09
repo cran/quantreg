@@ -6,7 +6,7 @@ function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y),
     if(class(x)[1] != "matrix.csr") x <- as.matrix(x)
     p <- ncol(x) 
     B <- matrix(0, R, p)
-    if(tau <= 0 || tau >= 1) stop("tau outside (0,1) not allowed")
+    if(tau < 0 || tau > 1) stop("tau outside [0,1] not allowed")
     if(length(cluster)) bsmethod <- "cluster"
     if (bsmethod == "xy") {
 	if(!length(U)){
@@ -19,6 +19,14 @@ function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y),
         if(!length(U)) U <- matrix(rexp(n * R,1), n, R)
         B <- boot.rq.wxy(x, y, U, tau)
     }   
+    else if (bsmethod == "pxy") {
+        if (!length(U)) {
+            if (mofn < p || mofn > n) stop("mofn is out of range")
+            U <- matrix(sample(n, mofn * R, replace = TRUE), mofn, R)
+            }
+	coef <- rq.fit.fnb(x, y, tau, ...)$coef
+        B <- sqrt(mofn/n) * boot.rq.pxy(x, y, U, tau, coef, ...)
+    }
     else if (bsmethod == "BLB") {
 	b <- length(y)
         if(!length(U)) U <- rmultinom(R, blbn, rep(1/b, b))
@@ -252,5 +260,82 @@ boot.rq.spwy <- function(W, a, y, tau=.5, control)
 	}
 	B <- t(W)
 	B
+}
+# Preprocessing version of the xy bootstrap
+#	globs as in "pfn" method
+#	matrix s contains multinomial resampling draws (n by R)  
+boot.rq.pxy <- function (x, y, s, tau = 0.5, coef, method="fn", Mm.factor = 3) {
+  x <- as.matrix(x)
+  p <- ncol(x)
+  n <- nrow(x)
+  R <- ncol(s)
+  mofn <- nrow(s)
+  #I have implemented the bootstrap with the count vector instead of the permutation vector
+  counts <- apply(s, 2, tabulate, nbins=n)
+  m <- round((p*n)^(1/2)) # Is there any theory for this?
+  xxinv <- solve(chol(crossprod(x)))
+  band <- sqrt(rowSums((x %*% xxinv)^2)) # H[i,i] vector
+  r <- (y - x %*% coef)/band
+  #To avoid computing quantiles of r in each replication I calculate once the cdf
+  rs <- sort(r)
+  B <- matrix(NA, R, p)
+  #add two observations for the globs 
+  x <- rbind(0,0,x)
+  y <- c(0,0,y)
+  counts <- rbind(1,1,counts)
+  for(i in 1:R){
+    mm <- m
+    not.optimal <- TRUE
+    #keep only the observations with positive weights
+    bs <- (counts[,i] > 0)
+    xb <- x[bs,]
+    yb <- y[bs]
+    rb <- r[bs[3:length(bs)]]
+    wb <- counts[bs, i]
+    while (not.optimal) {
+      M <- Mm.factor * mm
+      lo.q <- max(1, ceiling(n*tau - M/2))
+      hi.q <- min(floor(n*tau + M/2), n)
+      kappa <- rs[c(lo.q, hi.q)]
+      sl <- c(FALSE, FALSE, rb < kappa[1])
+      su <- c(FALSE, FALSE, rb > kappa[2])
+      while (not.optimal) {
+        if (any(sl)) {
+          xb[1,] <- colSums(xb[sl, , drop = FALSE] * wb[sl])
+          yb[1] <- sum(yb[sl] * wb[sl])
+	} else sl[1] <- TRUE
+        if (any(su)) {
+          xb[2,] <- colSums(xb[su, , drop = FALSE] * wb[su])
+          yb[2] <- sum(yb[su] * wb[su])
+        } else su[2] <- TRUE
+        sel <- c(!su & !sl)
+        #use weighted QR
+        z <- tryCatch(z <- rq.wfit(xb[sel, ], yb[sel], weights=wb[sel], 
+		  tau = tau, method = method), error = function(e) e)
+        if(inherits(z, "error")){
+          mm <- 2*mm
+          warning("Singular design: doubling m")
+          break
+          }        
+        b <- z$coef
+        rb <- yb[3:sum(bs)] - xb[3:sum(bs), ] %*% b
+        su.bad <- c(FALSE, FALSE, rb < 0) & su
+        sl.bad <- c(FALSE, FALSE, rb > 0) & sl
+        bad.signs <- sum(su.bad | sl.bad)
+        if (bad.signs > 0) {
+          if (bad.signs > 0.1 * M) {
+            mm <- 2*mm
+            warning("Too many fixups:  doubling m")
+            break
+          }
+          su <- su & !su.bad
+          sl <- sl & !sl.bad
+        }
+        else not.optimal <- FALSE
+      }
+    }
+    B[i,] <- b
+  }
+  B
 }
 

@@ -517,7 +517,8 @@ function (object, newdata, interval = "none",  level = 0.95, ...)
         m <- 0
     }
     if(requireNamespace("MatrixModels") && requireNamespace("Matrix"))
-        X <- as(MatrixModels::model.Matrix(PLTerms, data = nd, sparse = TRUE),"matrix.csr")
+        X <- as(MatrixModels::model.Matrix(PLTerms, data = nd, 
+		  contrasts = contrasts, sparse = TRUE),"matrix.csr")
     else
         X <- model.matrix(PLTerms, data = nd)
     p <- ncol(X)
@@ -684,7 +685,7 @@ resid.rqss <- function(object, ...) object$resid[1:object$n]
     process <- (tau < 0 || tau > 1)
     Y <- model.extract(m, "response")
     if(requireNamespace("MatrixModels") && requireNamespace("Matrix")){
-         X <- MatrixModels::model.Matrix(Terms, m, contrasts, sparse = TRUE)
+         X <- MatrixModels::model.Matrix(Terms, m, contrasts.arg = contrasts, sparse = TRUE)
          vnames <- dimnames(X)[[2]]
          X <- as(X ,"matrix.csr")
          }

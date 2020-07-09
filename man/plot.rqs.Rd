@@ -26,7 +26,7 @@
     element corresponds to the \code{rq} coefficients and the second to
     the \code{lm} coefficients.}
   \item{cex, pch, type, xlab, ylab, \dots}{further graphical parameters
-    passed to \code{\link[graphics]{plot}}.}
+    passed.}
 }
 
 \details{The \code{plot} method for \code{"rqs"} objects visualizes the
