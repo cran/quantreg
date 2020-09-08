@@ -1541,3 +1541,12 @@ speed things up considerably.
 
 2.  Moved definition of eps up in rq() to resolve problems in packages
 vdg and qrjoint.
+
+5.65 
+
+1.  Made two changes in rq.fit.lasso that I hope will improve robustness of
+the fitting, thanks to report by Yuanzhi Li.  Only time will tell, with the
+help of further testing.  
+
+    o beta default was changed to conform with rq.fit.fnb code
+    o wn initialization was changed.

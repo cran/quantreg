@@ -40,7 +40,7 @@ will be returned if printing is invoked.
       sandwich estimate using a local estimate of the sparsity.
       
       \item \code{"ker"} which uses a kernel estimate of the sandwich
-      as proposed by Powell(1990).
+      as proposed by Powell(1991).
 
       \item \code{"boot"} which implements one of several possible bootstrapping
       alternatives for estimating standard errors including a variate of the wild
@@ -145,6 +145,11 @@ matrix for the full object.}
 
   Kleiner, A., Talwalkar, A., Sarkar, P. and Jordan, M.I. (2014) A Scalable
 	bootstrap for massive data, \emph{JRSS(B)}, 76, 795-816.
+
+  Powell, J. (1991) Estimation of Monotonic Regression Models under
+	Quantile Restrictions, in Nonparametric and Semiparametric Methods
+	in Econometrics, W. Barnett, J. Powell, and G Tauchen (eds.),
+	Cambridge U. Press.
 
 }
 \seealso{

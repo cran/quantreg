@@ -76,6 +76,7 @@ rq(formula, tau=.5, data, subset, weights, na.action,
     preprocessing \code{"pfn"}.  Also described in detail in Portnoy and Koenker(1997), 
     this method is primarily well-suited for large n, small p problems, that is when the 
     parametric dimension of the model is modest.  
+
     \item \code{"sfn"}  For large problems with  large
     parametric dimension it is sometimes advantageous to use method \code{"sfn"}
     which also uses the Frisch-Newton algorithm, but exploits sparse algebra
@@ -98,9 +99,14 @@ rq(formula, tau=.5, data, subset, weights, na.action,
     method are described in the \pkg{conquer} package.  Note that this option
     employs a smoothing form of the usual QR objective function so solutions
     may be expected to differ somewhat from those produced with the other options.
+
+    \item \code{"ppro"} This option is intended for applications with large
+    sample sizes and/or moderately fine tau grids.  It uses a form of preprocessing
+    to accelerate the solution process.  See \code{"rq.fit.ppro"} for further
+    details.
     
-    \item \code{"lasso"} There are two penalized methods: \item \code{"lasso"} 
-    and \code{"scad"} that implement the lasso penalty and Fan and Li's
+    \item \code{"lasso"} There are two penalized methods:  \code{"lasso"} 
+    and \code{"scad"} that implement the lasso penalty and Fan and Li
     smoothly clipped absolute deviation penalty, respectively.  These
     methods should probably be regarded as experimental.
     }

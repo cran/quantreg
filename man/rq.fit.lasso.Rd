@@ -16,7 +16,7 @@ Lasso Penalized Quantile Regression
   penalized.  There should be a sparse version of this, but isn't (yet).
 }
 \usage{
-rq.fit.lasso(x, y, tau = 0.5, lambda = 1, beta = .9995, eps = 1e-06)
+rq.fit.lasso(x, y, tau = 0.5, lambda = 1, beta = .99995, eps = 1e-06)
 }
 \arguments{
 \item{x}{

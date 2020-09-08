@@ -789,7 +789,7 @@ function (x, y, tau = 0.5, alpha = 3.2, lambda = 1, start = "rq", beta = 0.9995,
 
 
 "rq.fit.lasso" <-
-function (x, y, tau = 0.5, lambda = 1, beta = 0.9995, eps = 1e-06)
+function (x, y, tau = 0.5, lambda = 1, beta = 0.99995, eps = 1e-06)
 {
     n <- length(y)
     p <- ncol(x)
@@ -813,7 +813,7 @@ function (x, y, tau = 0.5, lambda = 1, beta = 0.9995, eps = 1e-06)
     d <- rep(1, N)
     u <- rep(1, N)
     wn <- rep(0, 10 * N)
-    wn[1:N] <- rep(0.5, N)
+    wn[1:N] <- 0.5
     z <- .Fortran("rqfnb", as.integer(N), as.integer(p), a = as.double(t(as.matrix(X))),
         c = as.double(-Y), rhs = as.double(rhs), d = as.double(d),
         as.double(u), beta = as.double(beta), eps = as.double(eps),
