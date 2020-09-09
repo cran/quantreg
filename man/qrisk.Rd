@@ -32,7 +32,7 @@ See examples for imposing non-negative portfolio weights.
   \item{qrisk}{the in-sample Choquet risk of the optimal portfolio}
 }
 \references{
-http://www.econ.uiuc.edu/~roger/research/risk/risk.html
+\url{http://www.econ.uiuc.edu/~roger/research/risk/risk.html}
 
 Bassett, G., R. Koenker, G Kordas, (2004) Pessimistic Portfolio Allocation and 
 Choquet Expected Utility, J. of Financial Econometrics,  2, 477-492.

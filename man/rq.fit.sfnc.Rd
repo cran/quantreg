@@ -52,7 +52,7 @@ rq.fit.sfnc(x, y, R, r, tau = 0.5,
 \references{
   Koenker, R and Ng, P. (2002).
   SparseM:  A Sparse Matrix Package for \R; \cr
-  \url{http://www.econ.uiuc.edu/~roger/research}
+  \url{http://www.econ.uiuc.edu/~roger/research/}
 
   Koenker, R. and P. Ng(2005).
   Inequality Constrained Quantile Regression, \emph{Sankya}, 418-440.

@@ -1549,4 +1549,12 @@ the fitting, thanks to report by Yuanzhi Li.  Only time will tell, with the
 help of further testing.  
 
     o beta default was changed to conform with rq.fit.fnb code
-    o wn initialization was changed.
+    o wn initialization was also changed to conform to rq.fit.fnb.
+
+5.66
+
+1.  Added rq.fit.ppro and boot.rq.pxy to exported objects in NAMESPACE.
+They were documented but invisible heretofore.
+
+2.  Commented out the warning about too many bad fixups in boot.rq.pxy
+it was making too much noise.

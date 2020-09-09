@@ -220,7 +220,7 @@ Tortoise:  Computability of Squared-error vs Absolute Error Estimators,
 [6] Koenker, R. W. (2005). \emph{Quantile Regression},  Cambridge U. Press.
 
 There is also recent information available at the URL:
-\url{http://www.econ.uiuc.edu}.
+\url{http://www.econ.uiuc.edu/~roger/}.
 }
 \seealso{
   \code{\link{FAQ}}, 

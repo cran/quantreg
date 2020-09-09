@@ -325,7 +325,7 @@ boot.rq.pxy <- function (x, y, s, tau = 0.5, coef, method="fn", Mm.factor = 3) {
         if (bad.signs > 0) {
           if (bad.signs > 0.1 * M) {
             mm <- 2*mm
-            warning("Too many fixups:  doubling m")
+            #warning("Too many fixups:  doubling m")
             break
           }
           su <- su & !su.bad
