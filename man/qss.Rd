@@ -1,6 +1,7 @@
 \name{qss}
 \alias{qss}
 \alias{qss1}
+\alias{qts1}
 \alias{qss2}
 \alias{triogram.fidelity}
 \alias{triogram.penalty}
@@ -12,7 +13,8 @@ specifications are possible, and qualitative constraints may also be specified
 for the qss terms.
 }
 \usage{
-qss(x, constraint = "N", lambda = 1, ndum = 0, dummies = NULL, w = rep(1, length(x)))
+qss(x, constraint = "N", lambda = 1, ndum = 0, dummies = NULL, 
+    Dorder = 1, w = rep(1, length(x)))
 }
 \arguments{
   \item{x}{The covariate determining the nonparametric component, if
@@ -40,12 +42,16 @@ qss(x, constraint = "N", lambda = 1, ndum = 0, dummies = NULL, w = rep(1, length
 	vertices used is smaller than ndum.  The values of these
 	vertices are returned in the list dummies, so that they can
 	be reused.}
+  \item{Dorder}{Order of the total variation penalty, the default of 1
+      implies a penalty on the first derivative of the fitted function,
+      a value of 0 implies total variation of the fitted function
+      itself will be penalized.  Note that no provision is (yet) made
+      for imposing shape constraints when Dorder = 0}
   \item{dummies}{list of dummy vertices as generated, for example by
 	triogram.fidelity when ndum > 0.  Should be a list with x
 	and y components.  These points should lie inside the convex
 	hull of the real xy points, but no explicit checking of this
 	assertion is currently done.}
-
   \item{w}{ weights not yet unimplemented }
 }
 \details{
@@ -57,6 +63,10 @@ to have mean zero.  This convention has implications for prediction that need to
 recognized.  The penalty components for qss terms are based on total
 variation penalization of the first derivative (and gradient, for bivariate x)
 as described in the references appearing in the help for \code{rqss}.
+When Dorder = 0, fitting is like the taut string methods of Davies, except
+of course for the fact that fidelity is quantilesque rather than quadratic,
+and that no provision is made for automatic selection of the smoothing 
+parameter.
 
 For the bivariate case, package \pkg{tripack} (and for plotting also
 \pkg{akima}) are required (automatically, by the \R code).
@@ -70,6 +80,9 @@ For the bivariate case, package \pkg{tripack} (and for plotting also
 }
 \author{Roger Koenker}
 
+\references{
+    Davies, Laurie (2014) \emph{Data Analysis and Approximate Models}, CRC Press.
+}
 \seealso{ \code{\link{rqss}}}
 \keyword{smooth}
 \keyword{robust}

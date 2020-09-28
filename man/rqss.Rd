@@ -9,7 +9,7 @@ Fitting function for additive quantile regression models with possible univariat
 and/or bivariate nonparametric terms estimated by total variation regularization.
 }
 \usage{
-rqss(formula, tau = 0.5, data = parent.frame(), weights, na.action,
+rqss(formula, tau = 0.5, data = parent.frame(), weights, subset, na.action,
 	method = "sfn", lambda = NULL, contrasts = NULL, ztol = 1e-5, control, ...)
 }
 \arguments{
@@ -34,6 +34,9 @@ rqss(formula, tau = 0.5, data = parent.frame(), weights, na.action,
     and it is strongly recommended that they be strictly positive,
     since zero weights are ambiguous.
   }
+  \item{subset}{an optional vector specifying a subset of observations to be
+          used in the fitting.  This can be a vector of indices of observations
+	 to be included, or a logical vector.} 
   \item{na.action}{
     a function to filter missing data.
     This is applied to the model.frame after any subset argument has been used.
@@ -105,6 +108,11 @@ rqss(formula, tau = 0.5, data = parent.frame(), weights, na.action,
     model specified in the formula.  See \code{\link{rqss.object}}
     for further details on this object, and references to methods
     to look at it.
+}
+\note{
+    If you intend to embed calls to \code{rqss} inside another function, then
+    it is advisable to pass a data frame explicitly as the \code{data} argument
+    of the \code{rqss} call, rather than relying on the magic of R scoping rules.
 }
 \references{
   [1] Koenker, R. and S. Portnoy (1997)

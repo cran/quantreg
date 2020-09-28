@@ -32,7 +32,7 @@ function (tt, special, order = 1)
 
 "qss" <-
 function (x, constraint = "N", lambda = 1, ndum = 0, dummies = NULL, 
-    w = rep(1, length(x))) 
+    Dorder = 1, w = rep(1, length(x))) 
 {
     if (is.matrix(x)) {
         if (ncol(x) == 2) 
@@ -42,9 +42,20 @@ function (x, constraint = "N", lambda = 1, ndum = 0, dummies = NULL,
             x <- as.vector(x)
         else stop("qss objects must have dimension 1 or 2")
     }
-    if (is.vector(x)) 
-        qss <- qss1(x, constraint = constraint, lambda = lambda, 
-            dummies = dummies, ndum = ndum, w = w)
+    if (is.vector(x)) {
+	if(Dorder == 1)
+	    qss <- qss1(x, constraint = constraint, lambda = lambda, 
+		dummies = dummies, ndum = ndum, w = w)
+	else if(Dorder == 0){
+	    if(!(constraint == "N"))
+		stop("Constraints not implemented for Dorder = 0")
+	    else
+		qss <- qts1(x, lambda = lambda, 
+		    dummies = dummies, ndum = ndum, w = w)
+	}
+	else
+	    stop("Dorder must be either 0 or 1")
+    }
     qss
 }
 
@@ -112,6 +123,28 @@ function(x, y, constraint = "N", lambda = 1, ndum= 0, dummies = NULL, w=rep(1,le
         lambda = lambda, A = A[, -1], R = R[, -1], r = r)
 }
 
+qts1 <- function (x, lambda = 1, dummies = dummies, 
+    ndum = 0, w = rep(1, length(x))) 
+{ # This is the taut string TV(g) not TV(g') penalty option
+    xun <- unique(x[order(x)])
+    h <- diff(xun)
+    nh <- length(h)
+    nx <- length(x)
+    p <- nh + 1
+    A <- new("matrix.csr", ra = c(rbind(-1/h, 1/h)), ja = as.integer(c(rbind(1:nh, 
+        2:(nh + 1)))), ia = as.integer(2 * (1:(nh + 1)) - 1), 
+        dimension = as.integer(c(nh, nh + 1)))
+    if (length(xun) == length(x)) {
+        F <- new("matrix.csr", ra = rep(1, nx), ja = as.integer(rank(x)), 
+            ia = 1:(nx + 1), dimension = as.integer(c(nx, nx)))
+    }
+    else {
+        F <- new("matrix.csr", ra = rep(1, nx), ja = as.integer(factor(x)), 
+            ia = 1:(nx + 1), dimension = as.integer(c(nx, length(xun))))
+    }
+     list(x = list(x = xun), F = F[, -1], lambda = lambda, A = A[,
+        -1], R = NULL, r = NULL)
+}
 
 "qss1" <-
 function (x, constraint = "N", lambda = 1, dummies = dummies,
@@ -501,7 +534,7 @@ function (object, newdata, interval = "none",  level = 0.95, ...)
     Names <- all.vars(parse(text = ff))
     if (any(!(Names %in% names(newdata)))) 
         stop("newdata doesn't include some model variables")
-    ff <- reformulate(ff)
+    #ff <- reformulate(ff)
     nd <- eval(model.frame(ff, data = newdata), parent.frame())
     qssterms <- attr(Terms, "specials")$qss
     if (length(qssterms)) {
@@ -638,13 +671,13 @@ predict.qss2 <- function (object, newdata, ...)
 fitted.rqss  <-  function(object, ...) (object$X %*% object$coef)[1:object$n]
 resid.rqss <- function(object, ...) object$resid[1:object$n]
 
-"rqss" <- function (formula, tau = 0.5, data = parent.frame(), weights, 
-    na.action, method = "sfn", lambda = NULL, contrasts = NULL, 
-    ztol = 1e-05,  control = sfn.control(), ...) 
+rqss <- function (formula, tau = 0.5, data = parent.frame(), weights, 
+    subset, na.action, method = "sfn", lambda = NULL, contrasts = NULL, 
+    ztol = 1e-05, control = sfn.control(), ...) 
 {
     call <- match.call()
     m <- match.call(expand.dots = FALSE)
-    temp <- c("", "formula", "data", "weights", "na.action")
+    temp <- c("", "formula", "data", "weights", "na.action", "subset")
     m <- m[match(temp, names(m), nomatch = 0)]
     m[[1]] <- as.name("model.frame")
     special <- "qss"
@@ -653,10 +686,10 @@ resid.rqss <- function(object, ...) object$resid[1:object$n]
     else terms(formula, special, data = data)
     qssterms <- attr(Terms, "specials")$qss
     dropx <- NULL
-    if(length(tau) > 1){
+    if (length(tau) > 1) {
         tau <- tau[1]
         warning("multiple taus not supported, using first element")
-        }
+    }
     if (length(qssterms)) {
         tmpc <- untangle.specials(Terms, "qss")
         ord <- attr(Terms, "order")[tmpc$terms]
@@ -666,33 +699,42 @@ resid.rqss <- function(object, ...) object$resid[1:object$n]
         if (length(dropx)) 
             Terms <- Terms[-dropx]
         attr(Terms, "specials") <- tmpc$vars
-        fnames <- function(x){
-           fy <- all.names(x[[2]])
-           if(fy[1] == "cbind") fy <- fy[-1]
-           fy
-           }
+        fnames <- function(x) {
+            fy <- all.names(x[[2]])
+            if (fy[1] == "cbind") 
+                fy <- fy[-1]
+            fy
+        }
         fqssnames <- unlist(lapply(parse(text = tmpc$vars), fnames))
         qssnames <- unlist(lapply(parse(text = tmpc$vars), function(x) deparse(x[[2]])))
     }
-    m$formula <- Terms
     ff <- delete.response(terms(formula(Terms)))
-    if(exists("fqssnames")){
-       ffqss <- paste(fqssnames, collapse = "+")
-       ff <- paste(deparse(formula(ff)), "+", ffqss)
+    if (exists("fqssnames")) {
+	mff <- m
+	mff$formula <- Terms
+	#mff <- delete.response(terms(formula(Terms)))
+        ffqss <- paste(fqssnames, collapse = "+")
+	#ff <- paste(deparse(formula(mff)), "+", ffqss)
+	mff$formula <- as.formula(paste(deparse(mff$formula), "+", ffqss))
+	ff <- delete.response(terms(formula(mff)))
+	ff <- deparse(formula(ff))
+	mff <- eval(mff, parent.frame())
     }
+    m$formula <- Terms
     m <- eval(m, parent.frame())
     weights <- model.extract(m, weights)
     process <- (tau < 0 || tau > 1)
     Y <- model.extract(m, "response")
-    if(requireNamespace("MatrixModels") && requireNamespace("Matrix")){
-         X <- MatrixModels::model.Matrix(Terms, m, contrasts.arg = contrasts, sparse = TRUE)
-         vnames <- dimnames(X)[[2]]
-         X <- as(X ,"matrix.csr")
-         }
-    else{
-         X <- model.matrix(Terms, m, contrasts)
-         vnames <- dimnames(X)[[2]]
-         }
+    if (requireNamespace("MatrixModels") && requireNamespace("Matrix")) {
+        X <- MatrixModels::model.Matrix(Terms, m, contrasts.arg = contrasts, 
+            sparse = TRUE)
+        vnames <- dimnames(X)[[2]]
+        X <- as(X, "matrix.csr")
+    }
+    else {
+        X <- model.matrix(Terms, m, contrasts)
+        vnames <- dimnames(X)[[2]]
+    }
     p <- ncol(X)
     pf <- environment(formula)
     nrL <- 0
@@ -713,8 +755,8 @@ resid.rqss <- function(object, ...) object$resid[1:object$n]
     }
     if (length(qssterms) > 0) {
         F <- as.matrix.csr(X)
-        qss <- lapply(tmpc$vars, function(u) eval(parse(text = u), 
-            data, enclos = pf))
+	pf <- environment(formula)
+        qss <- lapply(tmpc$vars, function(u) eval(parse(text = u), mff, pf))
         mqss <- length(qss)
         ncA <- rep(0, mqss + 1)
         nrA <- rep(0, mqss + 1)
@@ -755,23 +797,28 @@ resid.rqss <- function(object, ...) object$resid[1:object$n]
             r <- NULL
         }
         if (method == "lasso") {
-            A <- rbind(cbind(L, as.matrix.csr(0, nrL, ncol(F) - ncL)), A)
+            A <- rbind(cbind(L, as.matrix.csr(0, nrL, ncol(F) - 
+                ncL)), A)
         }
         X <- rbind(F, A)
         Y <- c(Y, rep(0, nrow(A)))
         rhs <- t(rbind((1 - tau) * F, 0.5 * A)) %*% rep(1, nrow(X))
         XpX <- t(X) %*% X
         nnzdmax <- XpX@ia[length(XpX@ia)] - 1
-	if(is.null(control[["nsubmax"]]))
-           control[["nsubmax"]] <- max(nnzdmax, floor(1000 + exp(-1.6) * nnzdmax^1.2))
-        if(is.null(control[["nnzlmax"]]))
-           control[["nnzlmax"]] <- floor(2e+05 - 2.8 * nnzdmax + 7e-04 * nnzdmax^2)
-        if(is.null(control[["tmpmax"]]))
-           control[["tmpmax"]] <- floor(1e+05 + exp(-12.1) * nnzdmax^2.35)
+        if (is.null(control[["nsubmax"]])) 
+            control[["nsubmax"]] <- max(nnzdmax, floor(1000 + 
+                exp(-1.6) * nnzdmax^1.2))
+        if (is.null(control[["nnzlmax"]])) 
+            control[["nnzlmax"]] <- floor(2e+05 - 2.8 * nnzdmax + 
+                7e-04 * nnzdmax^2)
+        if (is.null(control[["tmpmax"]])) 
+            control[["tmpmax"]] <- floor(1e+05 + exp(-12.1) * 
+                nnzdmax^2.35)
         fit <- if (length(r) > 0) 
             rqss.fit(X, Y, tau = tau, rhs = rhs, method = "sfnc", 
                 R = R, r = r, control = control, ...)
-        else rqss.fit(X, Y, tau = tau, rhs = rhs, method = "sfn", control = control, ...)
+        else rqss.fit(X, Y, tau = tau, rhs = rhs, method = "sfn", 
+            control = control, ...)
         for (i in 1:mqss) {
             ML <- p + 1 + ncA[i]
             MU <- p + ncA[i + 1]
@@ -787,33 +834,32 @@ resid.rqss <- function(object, ...) object$resid[1:object$n]
     else {
         X <- as.matrix.csr(X)
         nrA <- 0
-        if (method == "lasso") { #Pure lasso case
-            rhs <- t(rbind((1 - tau) * X, 0.5 * L)) %*% rep(1, nrow(X) + nrow(L))
+        if (method == "lasso") {
+            rhs <- t(rbind((1 - tau) * X, 0.5 * L)) %*% rep(1, 
+                nrow(X) + nrow(L))
             X <- rbind(X, L)
             Y <- c(Y, rep(0, nrL))
-            #nrA <- c(nrA, nrL) # Why was this here?
         }
-        else
-            rhs <- NULL
+        else rhs <- NULL
         if (length(weights)) {
             if (any(weights < 0)) 
                 stop("negative weights not allowed")
             X <- X * weights
             Y <- Y * weights
         }
-	XpX <- t(X) %*% X
+        XpX <- t(X) %*% X
         nnzdmax <- XpX@ia[length(XpX@ia)] - 1
-        if (is.null(control[["nsubmax"]]))
-            control[["nsubmax"]] <- max(nnzdmax, floor(1000 +
+        if (is.null(control[["nsubmax"]])) 
+            control[["nsubmax"]] <- max(nnzdmax, floor(1000 + 
                 exp(-1.6) * nnzdmax^1.2))
-        if (is.null(control[["nnzlmax"]]))
-            control[["nnzlmax"]] <- floor(2e+05 - 2.8 * nnzdmax +
+        if (is.null(control[["nnzlmax"]])) 
+            control[["nnzlmax"]] <- floor(2e+05 - 2.8 * nnzdmax + 
                 7e-04 * nnzdmax^2)
-        if (is.null(control[["tmpmax"]]))
-            control[["tmpmax"]] <- floor(1e+05 + exp(-12.1) *
+        if (is.null(control[["tmpmax"]])) 
+            control[["tmpmax"]] <- floor(1e+05 + exp(-12.1) * 
                 nnzdmax^2.35)
-        fit <- rqss.fit(X, Y, tau = tau,  rhs = rhs, control = control, 
-			method = method, ...)
+        fit <- rqss.fit(X, Y, tau = tau, rhs = rhs, control = control, 
+            method = method, ...)
         fit$nrA <- nrA
     }
     names(fit$coef) <- vnames
@@ -842,7 +888,6 @@ resid.rqss <- function(object, ...) object$resid[1:object$n]
     class(fit) <- "rqss"
     fit
 }
-
 
 "summary.rqss" <- function(object, cov = FALSE, ztol = 1e-5, ...){
     resid <- object$resid

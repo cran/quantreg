@@ -1557,4 +1557,18 @@ help of further testing.
 They were documented but invisible heretofore.
 
 2.  Commented out the warning about too many bad fixups in boot.rq.pxy
-it was making too much noise.
+since it was making too much noise.
+
+5.68
+
+1.  Added  a subset argument to the rqss function as requested by Brian Cade.
+This seemed more difficult than expected as a R-help inquiry of 21/9/2020
+indicates.
+
+2.  Added a Dorder argument to the qss function, which when Dorder = 0 results
+in penalization of the fitted function itself, rather than its derivative.
+See the vinaigrette:  conformal.Rnw for an example.
+
+3.  Noticed that the demo rqsslasso.R had an argument bandcol that generated
+a warning -- "not a graphical parameter" -- I think that this was intended to
+be bcol in plot.rqss which when changed now works as originally intended.

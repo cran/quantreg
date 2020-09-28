@@ -19,3 +19,4 @@ crquis	Demo for crq method using UIS data and Peng Huang method.
 RB-r	Demo for testing R beta = r using anova[.rq]
 Polson	Demo to compare rqss fit with Polson-Scott ADMM fit
 Panel	Demo to illustrate fixed effect estimation for panel data
+subset	Demo to test subset option for rqss

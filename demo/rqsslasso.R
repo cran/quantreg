@@ -11,4 +11,4 @@ y <- w %*% beta + sin(x) + (z^2)/50 + rnorm(n)/5
 d <- data.frame(w,x,y,z) 
 f <- rqss(y ~ w + qss(x,lambda = 3) + qss(z,lambda = 2),
                 method = "lasso", lambda = 3, data = d)
-plot(f, bands = "both", bandcol = c("lightsteelblue", "lightsteelblue4"))
+plot(f, bands = "both", bcol = c("lightsteelblue", "lightsteelblue4"))
