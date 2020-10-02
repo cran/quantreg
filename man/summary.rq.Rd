@@ -58,6 +58,9 @@ will be returned if printing is invoked.
       object was created with \code{method = "conquer"}, and returns the
       multiplier bootstrap percentile confidence intervals described in
       He et al (2020).
+
+      \item \code{"extreme"} which uses the subsampling method of Chernozhukov
+      Fernandez-Val, and Kaji (2018) designed for inference on extreme quantiles.
     }
     If \code{se = NULL} (the default)  and \code{covariance = FALSE}, and
     the sample size is less than 1001, then the "rank" method is used, 
@@ -82,7 +85,14 @@ will be returned if printing is invoked.
     intervals, which is the default method for sample sizes less than 1000,
     the type I error probability of the intervals can be controlled with the
     alpha parameter passed via "...",  thereby controlling the width of the
-    intervals plotted by \code{plot.summary.rqs}. 
+    intervals plotted by \code{plot.summary.rqs}. Similarly, the arguments
+    alpha, mofn and kex can be passed when invoking the \code{"extreme"} option
+    for  "se" to control the percentile interval reported, given by estimated
+    quantiles [alpha/2, 1 - alpha/2]; \code{kex} is a tuning parameter for the
+    extreme value confidence interval construction. The size of the bootstrap
+    subsamples for the "extreme" option can also be controlled by passing
+    the argument \code{mofm} via "...".  Default values for kex, mofn and
+    alpha are 20, \code{floor(n/5)} and 0.1, respectively.
    }
 }
 \value{
@@ -91,7 +101,9 @@ will be returned if printing is invoked.
 
 \item{coefficients}{
   a p by 4 matrix consisting of the coefficients, their estimated standard
-  errors, their t-statistics, and their associated p-values.
+  errors, their t-statistics, and their associated p-values, in the case of
+  most "se" methods.  For methods "rank" and "extreme" potentially asymetric
+  confidence intervals are return in lieu of standard errors and p-values.
 }
 \item{cov}{
   the estimated covariance matrix for the coefficients in the model,
@@ -138,6 +150,11 @@ matrix for the full object.}
  
 
 \references{
+  Chernozhukov, Victor, Ivan Fernandez-Val, and Tetsuya Kaji, (2018)
+    Extremal Quantile Regression, in Handbook of Quantile Regression,
+    Eds. Roger Koenker, Victor Chernozhukov, Xuming He, Limin Peng,
+    CRC Press.
+
   Koenker, R. (2004) \emph{Quantile Regression}.
 
   Bilias, Y. Chen, S. and Z. Ying, Simple resampling methods for censored

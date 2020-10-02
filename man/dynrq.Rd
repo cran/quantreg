@@ -16,7 +16,7 @@
 \description{
 Interface to \code{\link{rq.fit}} and \code{\link{rq.wfit}} for fitting dynamic linear 
 quantile regression models.  The interface is based very closely
-on Achim Zeileis's \code{dynlm} package.  In effect, this is  mainly
+on Achim Zeileis's dynlm package.  In effect, this is  mainly
 ``syntactic sugar'' for formula processing, but one should never underestimate
 the value of good, natural sweeteners.
 }
@@ -66,7 +66,7 @@ but currently \code{dynrq} offers two advantages over the direct use of
 \code{rq} for time series applications of quantile regression: 
 extended formula processing, and preservation of time series attributes.  
 Both features have been shamelessly lifted from Achim Zeileis's
-package \code{"dynlm"}.
+package dynlm.
 
 For specifying the \code{formula} of the model to be fitted, there are several
 functions available which allow for convenient specification
@@ -107,7 +107,6 @@ that class (and no internal \code{NA}s were created by the \code{na.action}).
 }
 
 \seealso{\code{\link[zoo]{zoo}}, 
-\code{\link[dynlm]{dynlm}},
 \code{\link[zoo]{merge.zoo}}}
 
 \examples{

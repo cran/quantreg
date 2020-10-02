@@ -1,5 +1,6 @@
 \name{plot.summary.rqs}
 \alias{plot.summary.rqs}
+\alias{plot.summary.rq}
 
 \title{Visualizing sequences of quantile regression summaries}
 
@@ -30,7 +31,10 @@
   \item{ols}{logical. Should a line for the OLS coefficient and their confidence
     bands (as estimated by \code{\link[stats]{lm}}) be added?}
   \item{mfrow, mar, ylim, main}{graphical parameters. Suitable defaults are chosen
-    based on the coefficients to be visualized.}
+    based on the coefficients to be visualized.  It can be useful to use a common
+    vertical scale when plotting as a way of comparing confidence bands constructed
+    by different methods. For this purpose one can specify a \code{ylim} as a 
+     2 by \code{length(parm)} matrix.}
   \item{col}{vector of color specification for \code{rq} coefficients
     and the associated confidence polygon.}
   \item{border}{color specification for the confidence polygon. By default,
@@ -47,8 +51,10 @@
 
 \seealso{\code{\link{rq}}, \code{\link{plot.rqs}}}
 
-\value{An array with all coefficients visualized (and associated confidence bands)
-  is returned invisibly.}
+\value{A list with components \code{z}, an array with all coefficients visualized 
+    (and associated confidence bands), and \code{Ylim}, a 2 by p matrix containing  
+    the y plotting limits.  The latter component may be useful for establishing a
+    common scale for two or more similar plots.  The list is returned invisibly.}
 
 \examples{
 ## fit Engel models (in levels) for tau = 0.1, ..., 0.9

@@ -1,5 +1,6 @@
-b58c600e47b0ad4cc22d83e53c4bae96 *DESCRIPTION
-f3156f61d4f7f69765c1e43b42d7fe9b *NAMESPACE
+fa83aa84feb1f2282270ff6611e8fb5c *DESCRIPTION
+76dfb717549edcc0f1e74034a4686128 *NAMESPACE
+6c1789eaa459e5175106e2eba12bdbb4 *R/ParetoTest.R
 9b8bcd519f37330271dfda84d9590474 *R/anova.R
 7791766ccff3b1a9470276143f94881d *R/boot.R
 0f5c733522683d9f88c7487515bc52de *R/combos.R
@@ -10,10 +11,10 @@ a537dd09f743afce7eb302c25058dbb6 *R/crq.R
 d2f509eb6977017d1b77faae7de97a7c *R/lprq.R
 74e57bf2387ac9e764dfc185bec65980 *R/nlrq.R
 23abbfdfe6ab274c1ebe89aaa4d825ef *R/qrisk.R
-e507c24b40c582cb90890fc961de2fd7 *R/quantreg.R
+f43fe908de291ce33cc5ecc94e3522d4 *R/quantreg.R
 2f450805f5a24d5b2bf2b0b8301063c5 *R/rqss.R
 ac869526f59c56603dcfd8e900686daa *R/sfn.R
-f0b39d29269a1fee63c98087f9d3fae7 *R/table.R
+522fc9d16e1ef995877eaaf3972eb29e *R/table.R
 11102c1b9076b53ebaac51cc79b90bfb *R/tools.R
 00f6440dcfd495483f57d543f4918de0 *README
 7ff9f06623480e33e31e14cc9cf1bc84 *build/vignette.rds
@@ -47,7 +48,7 @@ ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 32f68b8e497d02b2cae7cf5f9b83ff52 *demo/rqsslasso.R
 5235d61a73c80e7eb83777d7d923d144 *demo/stack.R
 a582af0bad3d273cb076a346c906cba5 *demo/subset.R
-fdccee529a93189e1f0765dd69ee28e8 *inst/ChangeLog
+f6beb678bdfa9c9dbfaeebfcb4e72a00 *inst/ChangeLog
 0d1344b0c883f94534293a6028b8b1e0 *inst/FAQ
 f2732c4ab5eb2f4ca3421239a030f0ee *inst/TODO
 3fb70411ec441d151dcae73d63a5e018 *inst/doc/crq.pdf
@@ -59,6 +60,7 @@ f2732c4ab5eb2f4ca3421239a030f0ee *inst/TODO
 5701d2b99e27ab58a510d8d2d9a7832e *man/FAQ.Rd
 10e300026d352f6940c4f22d7eda1868 *man/KhmaladzeTest.Rd
 5b7d1c28799b3f9e4691ad61bf69b5b0 *man/Mammals.Rd
+5e19c6a25ab4ac17d770ee7c24c981e6 *man/ParetoTest.Rd
 1c55b05cfde94862b2503523ccca1998 *man/Peirce.Rd
 114a06055c68efb323cb9dd8a7278050 *man/QTECox.Rd
 9d5c7b53fc04bbbbe5820d2d616e31b5 *man/akj.Rd
@@ -72,7 +74,7 @@ f0c967422ef597cf9b87bee298fc0ec9 *man/combos.Rd
 e95befd0c07043e2f858f55c43d95b51 *man/critval.Rd
 a38140e53d0ce37aeef2e9c8764b36af *man/crq.Rd
 7a808195ff0171df916917d7ed31ecb7 *man/dither.Rd
-b98230577b8d1fd213c734e509be4672 *man/dynrq.Rd
+cbd990280720ac16fd49d1fb6ed962cd *man/dynrq.Rd
 1a3a7dbfb064513db6b48ce85d06524f *man/engel.Rd
 1d469f209e0a9ce8a5f0d81ca45c37c0 *man/gasprice.Rd
 ae4f006622b154a304a34633f9bc56c0 *man/kuantile.Rd
@@ -87,7 +89,7 @@ d2e7a73053e94b9a0444af290d0a19a1 *man/nlrq.control.Rd
 aa5102d7ad3c26a1eb17570d8e712134 *man/plot.rq.process.Rd
 f147921961ec856f8ab74dccc81466cc *man/plot.rqs.Rd
 654996811ad4e00cb5e8e28f8c8c068c *man/plot.rqss.Rd
-941dcf59933be6c98c071ba99b1af498 *man/plot.summary.rqs.Rd
+ded41d155578d1d75df60ab5332c6fac *man/plot.summary.rqs.Rd
 db8b8073598318c738c5e475a8e74c62 *man/predict.rq.Rd
 38f8211e75ddd09e034c941900229461 *man/predict.rqss.Rd
 4eeff49d40b43c732f92ab317d9b7650 *man/print.KhmaladzeTest.Rd
@@ -121,8 +123,8 @@ c42b5515ccf48527ae43449357b3dfb0 *man/rq.process.object.Rd
 7a198b2a81968dc5da8b7f59ff282714 *man/sfn.control.Rd
 2dfb6597245f45ee542f157105db4bc4 *man/srisk.Rd
 df77d52ebbf3f9acf7c953bb90235387 *man/summary.crq.Rd
-b045550a5bb7e62141e6c4ca805a6006 *man/summary.rq.Rd
-2cd698ce46395e6e057f5981dcbcb3b9 *man/summary.rqss.Rd
+adfc9dfec9c9ea378c4211117a2976e5 *man/summary.rq.Rd
+8d1741b40851f000d6ab080331b93a28 *man/summary.rqss.Rd
 7c19b7bc8dcaeafdb05e8fae65322c04 *man/table.rq.Rd
 f5a8859d2b97685d09b1e5bc77f27194 *man/uis.Rd
 bda0ebc1c480b97ce4c9cb3b2ddaf9a9 *src/Makevars

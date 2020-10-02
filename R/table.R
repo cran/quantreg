@@ -173,9 +173,14 @@ plot.summary.rqs <- function(x, parm = NULL, level = 0.9, ols = TRUE,
 
   ## actual plotting
   ylim0 <- ylim
+  Ylim <- NULL
+    if(is.matrix(ylim0))
+	if((nrow(ylim0) != 2) || ncol(ylim0) != length(parm))
+	    stop("ylim matrix of incompatible dimensions")
   for(i in seq(along = parm)) {
   b <- t(sapply(seq(along = cf), function(tau) cf[[tau]][i, ]))
-  if(is.null(ylim)){
+  if(is.matrix(ylim0)) ylim <- ylim0[,i]
+  if(is.null(ylim0)){
            if(ols)
                 ylim <- range(c(b[,2], b[,3], olscf[i]))
            else
@@ -191,7 +196,7 @@ plot.summary.rqs <- function(x, parm = NULL, level = 0.9, ols = TRUE,
       abline(h = olscf[i, 3], col = lcol, lty = lty[2])
     }
     abline(h = 0, col = gray(0.3))
-    ylim <- ylim0
+    Ylim <- cbind(Ylim, ylim)
   }
 
   ## restore original par settings and return
@@ -200,8 +205,8 @@ plot.summary.rqs <- function(x, parm = NULL, level = 0.9, ols = TRUE,
         x <- c(cf, list(ols = olscf))
   else
         x <- cf
-  invisible(structure(as.vector(unlist(x)), .Dim = c(dim(x[[1]]), length(x)),
-    .Dimnames = list(rownames(x[[1]]), colnames(x[[1]]), names(x))))
+  invisible(list(structure(as.vector(unlist(x)), .Dim = c(dim(x[[1]]), length(x)),
+    .Dimnames = list(rownames(x[[1]]), colnames(x[[1]]), names(x))),Ylim = Ylim))
 }
 "latex.table" <-
 function (x, file = as.character(substitute(x)), rowlabel = file, 

@@ -1084,6 +1084,7 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.
     m <- model.frame(object)
     y <- model.response(m)
     dots <- list(...)
+    method <- object$method
     if(object$method == "sfn")
 	x <- object$model$x
     else
@@ -1186,6 +1187,52 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.
 	cov <- cov(B$B)
         serr <- apply(Z, 1, mean)
     }
+   else if(se == "extreme"){
+    tau0 <- tau
+    if(tau > 0.5) {
+	y <- -y
+	tau <- 1 - tau
+    }
+    if(length(dots$mofn)) mofn = dots$mofn
+    else mofn = floor(n/5)
+    if(length(dots$mofn)) kex = dots$kex
+    else kex = 20
+    if(length(dots$alpha)) alpha = dots$alpha
+    else alpha = 0.1
+    if(length(dots$R)) R = dots$R
+    else R = 200
+    m <- (tau * n + kex)/(tau * n)
+    taub <- min(tau * n/mofn, tau + (.5 - tau)/3)
+    # This warning is a bit different than Section 1.3.4 of the Handbook chapter
+    #if (tau.b.e == tau.e + (.5 - tau.e) / 3 && b >= min(n / 3, 1000))
+    #	    warning("tau may be non-extremal results are not likely to differ from central inference");
+    xbar <- apply(x,2, mean)
+    b0 <- rq.fit(x, y, tau, method = method)$coef
+    bm <- rq.fit(x, y, tau = m*tau, method = method)$coef
+    An <- (m-1)*tau * sqrt(n/(tau*(1-tau)))/c(crossprod(xbar,bm - b0))
+    bt <- rq.fit(x, y, tau=taub, method = method)$coef
+    s <- matrix(sample(1:n, mofn * R, replace = T), mofn, R)
+    mbe <- (taub * mofn + kex)/(taub * mofn)
+    bmbeb <- rq.fit(x, y, tau = mbe*taub, method = method)$coef
+    # Accelerated xy bootstrap
+    B0 <- boot.rq.pxy(x, y, s, taub, bt, method = method)
+    Bm <- boot.rq.pxy(x, y, s, tau = mbe * taub, bmbeb, method = method)
+    B <- (mbe - 1) * taub * sqrt(mofn/(taub * (1-taub))) *
+	(B0 - b0)/c((Bm - B0) %*% xbar) 
+    if (tau0 <= 0.5) {
+        bbc <- b0 - apply(B, 2, quantile, .5, na.rm = TRUE)/An
+        ciL <- b0 - apply(B, 2, quantile, 1 - alpha/2, na.rm = TRUE)/An
+        ciU <- b0 - apply(B, 2, quantile, alpha/2, na.rm = TRUE)/An
+    } else {
+        bbc <- -(b0 - apply(B, 2, quantile, .5, na.rm = TRUE)/An)
+        ciL <- -(b0 - apply(B, 2, quantile, alpha/2, na.rm = TRUE)/An)
+        ciU <- -(b0 - apply(B, 2, quantile, 1 - alpha/2, na.rm = TRUE)/An)
+    }
+    B <- R-sum(is.na(B[,1]))
+    coef <- cbind(b0, bbc, ciL, ciU)
+    if(tau0 > 0.5) {coef <-  -coef; tau <- tau0}
+    dimnames(coef) = list(dimnames(x)[[2]], c("coef", "BCcoef","ciL", "ciU"))
+}
    else if(se == "conquer"){
        Z <- conquer(x[,-1], y, tau, ci = TRUE, ...)
        #Fixme:  should have option to choose another bsmethod
@@ -1199,7 +1246,7 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.
     if( se == "rank"){
 	coef <- f$coef
 	}
-    else if(se != "conquer"){
+    else if(!(se %in% c("conquer", "extreme"))){
     	coef <- array(coef, c(p, 4))
     	dimnames(coef) <- list(vnames, c("Value", "Std. Error", "t value",
              "Pr(>|t|)"))

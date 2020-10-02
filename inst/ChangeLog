@@ -1572,3 +1572,25 @@ See the vinaigrette:  conformal.Rnw for an example.
 3.  Noticed that the demo rqsslasso.R had an argument bandcol that generated
 a warning -- "not a graphical parameter" -- I think that this was intended to
 be bcol in plot.rqss which when changed now works as originally intended.
+
+5.70
+
+1.  Further fiddling with rqss to get the fake.formula trickery to work.  Had
+to ask John Fox (car package) and James Craig (tidyvpc package) to modify
+their code to provide explicit data arguments when rqss was called inside
+their functions and added a note to warn others of this necessity.
+
+5.71
+
+1.  Added ParetaTest function and friends to do tail exponent estimation and
+inference based on original code of Chernozhukov and Fernandez-Val.
+
+2.  Added new "se" option to summary.rq to implement the extreme CI estimates
+of Chernozhukov and Fernandez-Val.  For the moment I've commented out a
+warning about tau not being extreme enough to justify the use of this option.
+
+3.  Modified plot.summary.rq so that one can pass a matrix of ylim values to
+assure that two summary.rq plots have the same scale.  A suggestion born of
+Victor's  totally legimate critique of my extermal QR vinaigrette,  now
+modified to fix this.
+

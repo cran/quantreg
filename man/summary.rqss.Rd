@@ -16,7 +16,7 @@
 	the so-called effective degrees of freedom.}
   \item{...}{additional arguments}
 }
-\details{ This is a highly experimental function intended to explore
+\details{ This function is intended to explore
 inferential methods for rqss fitting.  The function is modeled after
 \code{summary.gam} in Simon Wood's (2006)  \pkg{mgcv} package.  (Of course,
 Simon should not be blamed for any deficiencies in the current implementation.
