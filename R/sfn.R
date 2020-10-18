@@ -47,9 +47,9 @@ rq.fit.sfn <- function(a,y,tau=.5, rhs = (1-tau)*c(t(a) %*% rep(1,length(y))), c
 	nsubmax <- ctrl$nsubmax
 	tmpmax <- ctrl$tmpmax
 	nnzlmax <- ctrl$nnzlmax
-        if (is.null(ctrl$nsubmax)) nsubmax <- nnzemax
-        if (is.null(ctrl$tmpmax)) tmpmax <- 6 * m
-        if (is.null(ctrl$nnzlmax)) nnzlmax <- 4 * nnzdmax
+        if (is.null(ctrl$nsubmax)) ctrl$nsubmax <- nsubmax <- nnzemax
+        if (is.null(ctrl$tmpmax)) ctrl$tmpmax <- tmpmax <- 6 * m
+        if (is.null(ctrl$nnzlmax)) ctrl$nnzlmax <- nnzlmax <- 4 * nnzdmax
 	wwm <- vector("numeric",3*m)
 	s <- u - x
 	b1 <- solve(e, ao %*% y, tmpmax=tmpmax,nnzlmax=nnzlmax,nsubmax=nsubmax)

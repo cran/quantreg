@@ -78,11 +78,14 @@ rq(formula, tau=.5, data, subset, weights, na.action,
     parametric dimension of the model is modest.  
 
     \item \code{"sfn"}  For large problems with  large
-    parametric dimension it is sometimes advantageous to use method \code{"sfn"}
+    parametric dimension it is often advantageous to use method \code{"sfn"}
     which also uses the Frisch-Newton algorithm, but exploits sparse algebra
-    to compute iterates.  This is typically helpful when the model includes
+    to compute iterates.  This is especially helpful when the model includes
     factor variables that, when expanded, generate design matrices that
-    are very sparse.
+    are very sparse.  At present options for inference, i.e. summary methods
+    are somewhat limited when using the \code{"sfn"} method.  Only the option
+    \code{se = "nid"} is currently available, but I hope to implement some
+    bootstrap options in the near future.
 
     \item \code{"fnc"}  Another option enables the user to specify
     linear inequality constraints on the fitted coefficients; in this

@@ -181,4 +181,13 @@ The results I get are different from those of your package. Please, could you he
     presume to exist is identically a matrix of zeros, almost everywhere.  And no, this is not just a
     matter of local optima, the problem is convex, so there is a unique global optimum.
 
+15.  When using method = "sfn"  I sometimes see the warning:
 
+    1: In rq.fit.sfn(a, y, tau = tau) :
+    tiny diagonals replaced with Inf when calling blkfct
+
+    This is generally harmless, but admittedly annoying.  I may eventually decide
+    that it is completely harmless and eliminate it, but meanwhile we just have to
+    live with it.  Think of it as not nearly as annoying as loud motorcycles in cities.
+
+    

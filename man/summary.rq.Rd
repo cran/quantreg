@@ -38,6 +38,10 @@ will be returned if printing is invoked.
       linearity (in \code{x}) of the
       the conditional quantile functions and computes a Huber
       sandwich estimate using a local estimate of the sparsity.
+      If the initial fitting was done with method "sfn" then use
+      of \code{se = "nid"} is recommended.  However, if the cluster
+      option is also desired then \code{se = "boot"} can be used
+      and bootstrapping will also employ the "sfn" method.
       
       \item \code{"ker"} which uses a kernel estimate of the sandwich
       as proposed by Powell(1991).

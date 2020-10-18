@@ -120,8 +120,10 @@ function (formula, tau = 0.5, data, subset, weights, na.action, method = "br",
 	    mf$x <- X
 	    }
     }	
-    else
+    else{
 	X <- model.matrix(mt, mf, contrasts)
+	vnames <- dimnames(X)[[2]]
+    }
     Rho <- function(u,tau) u * (tau - (u < 0))
     if (length(tau) > 1) {
       if (any(tau < 0) || any(tau > 1)) 
@@ -141,8 +143,8 @@ function (formula, tau = 0.5, data, subset, weights, na.action, method = "br",
 	    fitted[,i] <- Y - z$residuals
 	   }
 	taulabs <- paste("tau=",format(round(tau,3)))
-	dimnames(coef) <- list(dimnames(X)[[2]],taulabs)
-	dimnames(resid) <- list(dimnames(X)[[1]],taulabs)
+	dimnames(coef) <- list(vnames, taulabs)
+	dimnames(resid)[[2]] <- taulabs
 	fit <- z
         fit$coefficients <-  coef
         fit$residuals <- resid
@@ -1085,17 +1087,21 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.
     y <- model.response(m)
     dots <- list(...)
     method <- object$method
-    if(object$method == "sfn")
+    if(object$method == "sfn"){
 	x <- object$model$x
-    else
+	vnames <- names(object$coef)
+	ctrl <- object$control
+    }
+    else{
 	x <- model.matrix(mt, m, contrasts = object$contrasts)
+	vnames <- dimnames(x)[[2]]
+    }
     wt <- as.vector(model.weights(object$model))
     tau <- object$tau
     eps <- .Machine$double.eps^(1/2)
     coef <- coefficients(object)
     if (is.matrix(coef))
         coef <- coef[, 1]
-    vnames <- dimnames(x)[[2]]
     resid <- object$residuals
     n <- length(resid)
     p <- length(coef)
@@ -1130,17 +1136,25 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.
     else if (se == "nid") {
         h <- bandwidth.rq(tau, n, hs = hs)
 	while((tau - h < 0) || (tau + h > 1)) h <- h/2
-        bhi <- rq.fit.fnb(x, y, tau = tau + h)$coef
-        blo <- rq.fit.fnb(x, y, tau = tau - h)$coef
+        bhi <- rq.fit(x, y, tau = tau + h, method = method)$coef
+        blo <- rq.fit(x, y, tau = tau - h, method = method)$coef
         dyhat <- x %*% (bhi - blo)
         if (any(dyhat <= 0))
             warning(paste(sum(dyhat <= 0), "non-positive fis"))
         f <- pmax(0, (2 * h)/(dyhat - eps))
         fxxinv <- diag(p)
-        fxxinv <- backsolve(qr(sqrt(f) * x)$qr[1:p, 1:p,drop=FALSE], fxxinv)
-        fxxinv <- fxxinv %*% t(fxxinv)
-        cov <- tau * (1 - tau) * fxxinv %*% crossprod(x) %*%
-            fxxinv
+	if(method == "sfn"){
+	    D <- t(x) %*% (f * x)
+            D <- chol(0.5 * (D + t(D)), nsubmax = ctrl$nsubmax,
+                      nnzlmax = ctrl$nnzlmax, tmpmax = ctrl$tmpmax)
+            fxxinv <- backsolve(D, fxxinv)
+        }
+	else{
+	    fxxinv <- backsolve(qr(sqrt(f) * x)$qr[1:p, 1:p,drop=FALSE], fxxinv)
+	    fxxinv <- fxxinv %*% t(fxxinv)
+	}
+	xx <- t(x) %*% x
+        cov <- tau * (1 - tau) * fxxinv %*% xx %*% fxxinv
         scale <- mean(f)
         serr <- sqrt(diag(cov))
     }
@@ -1166,6 +1180,8 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.
 	         cluster <- dots$cluster[-object$na.action]
 	         bargs <- modifyList(bargs, list(cluster = cluster))
 	    }
+	    if(class(bargs$x)[1] == "matrix.csr")
+	         bargs <- modifyList(bargs, list(control = ctrl))
 	B <- do.call(boot.rq, bargs)
 	}
 	else
@@ -1237,7 +1253,6 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.
        Z <- conquer(x[,-1], y, tau, ci = TRUE, ...)
        #Fixme:  should have option to choose another bsmethod
        coef <- cbind(Z$coef, Z$perCI)
-       vnames <- dimnames(x)[[2]]
        cnames <- c("coefficients", "lower bd", "upper bd")
        dimnames(coef) <- list(vnames, cnames)
        resid <- y - x %*% Z$coef

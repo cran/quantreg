@@ -1582,7 +1582,7 @@ their functions and added a note to warn others of this necessity.
 
 5.71
 
-1.  Added ParetaTest function and friends to do tail exponent estimation and
+1.  Added ParetoTest function and friends to do tail exponent estimation and
 inference based on original code of Chernozhukov and Fernandez-Val.
 
 2.  Added new "se" option to summary.rq to implement the extreme CI estimates
@@ -1594,3 +1594,25 @@ assure that two summary.rq plots have the same scale.  A suggestion born of
 Victor's  totally legimate critique of my extermal QR vinaigrette,  now
 modified to fix this.
 
+5.74
+
+1.  Fixed bug in rq.fit.sfn so that all the control parameters are passed.
+
+2.  Modified summary.rq so that the "nid" option can now use "sfn" fitting
+if the original fitted object was computed with "sfn".  This is the first
+step in trying to get the "boot" methods to behave similarly.
+
+3.  After the upgrade to catalina and then upgrading R and gfortran and xcode Command
+Line Tools I was getting compilation errors with stdio.h not found.  This
+was eventually resolved by removing my .R/Makevars file which pointed to
+obsolete clang compilers and libraries.  I've now also removed clang6 and
+clang7 from /usr/local since they are now irrelevant.
+
+4.  The code for clustered bootstrap is now adapted so that if method = "sfn"
+is used for the initial fitting then it will also be used for the
+bootstrapping.  This speeds things up considerably.  A potential issue that
+is still unresolved here is that I am not allowing users to pass control
+parameters, so one has to hope that default choices work.  My naive attempt
+to pass the control list from the initial fit produced a "memory not mapped"
+segfault, presumably because the spwy bootstrap method uses one extra
+observation than the initial fitting.

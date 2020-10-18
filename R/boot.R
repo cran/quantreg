@@ -6,7 +6,7 @@ function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y),
     if(class(x)[1] != "matrix.csr") x <- as.matrix(x)
     p <- ncol(x) 
     B <- matrix(0, R, p)
-    if(tau < 0 || tau > 1) stop("tau outside [0,1] not allowed")
+    if(tau < 0 || tau > 1) stop("tau outside (0,1) not allowed")
     if(length(cluster)) bsmethod <- "cluster"
     if (bsmethod == "xy") {
 	if(!length(U)){
@@ -42,7 +42,10 @@ function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y),
 	    U <- matrix(sample(h, R * m, prob = hp, replace = TRUE), m, R)
 	    U <- apply(U, 2, function(v) v[match(cluster,u)])
 	}
-	r <- c(rq.fit(x, y, tau)$resid)
+	if(class(x)[1] == "matrix.csr") 
+	    r <- c(rq.fit.sfn(x, y, tau)$resid)
+	else
+	    r <- c(rq.fit.fnb(x, y, tau)$resid)
 	psi <- (r < 0) - tau
 	W <- as.matrix(t(x) %*% (U * psi))
 	if(class(x)[1] == "matrix.csr") 
@@ -238,10 +241,19 @@ function(U,X, y, tau = 0.5, tol=1e-4)
 #		a really ideal world all of this resampling code
 #		would be able to adapt to the "fn" or "sfn" etc
 #		method used by the original fitting scheme.
+#		My initial attempt to allow control to be passed
+#		from the initial fit of the coefficients was a failure.
+#		There was a "memory not mapped" segfault presumably
+#		due to the fact that the pwy scheme has one extra
+#		observation.  Who would have guessed things were so
+#		delicately tuned.  This should be fixed when I'm in
+#		a more delicate frame of mind.  Meanwhile, on Andreas
+#		test problem using sfn is substantially faster 26s
+#		vs 148s for fnb, and even more for br as I used earlier.
 #################################################################
 
 
-boot.rq.spwy <- function(W, a, y, tau=.5, control)
+boot.rq.spwy <- function(W, a, y, tau=.5)
 {
 	y <- c(y, length(y) * max(abs(y)))
 	n <- length(y)
