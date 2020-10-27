@@ -20,3 +20,4 @@ RB-r	Demo for testing R beta = r using anova[.rq]
 Polson	Demo to compare rqss fit with Polson-Scott ADMM fit
 Panel	Demo to illustrate fixed effect estimation for panel data
 subset	Demo to test subset option for rqss
+MCV	Demo to illustrate multifold cross validation lambda selection for rqss

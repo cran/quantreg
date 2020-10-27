@@ -796,10 +796,12 @@ rqss <- function (formula, tau = 0.5, data = parent.frame(), weights,
             R <- NULL
             r <- NULL
         }
-        if (method == "lasso") {
-            A <- rbind(cbind(L, as.matrix.csr(0, nrL, ncol(F) - 
-                ncL)), A)
-        }
+        if (method == "lasso") 
+            A <- rbind(cbind(L, as.matrix.csr(0, nrL, ncol(F) - ncL)), A)
+	if(length(weights)){
+	   F <- F * weights
+	   Y <- Y * weights
+	}
         X <- rbind(F, A)
         Y <- c(Y, rep(0, nrow(A)))
         rhs <- t(rbind((1 - tau) * F, 0.5 * A)) %*% rep(1, nrow(X))
@@ -864,11 +866,13 @@ rqss <- function (formula, tau = 0.5, data = parent.frame(), weights,
     }
     names(fit$coef) <- vnames
     n <- length(fit$resid) - nrL - nrA[length(nrA)]
+    if(length(weights)) fit$resid[1:n] <- fit$resid[1:n]/weights
     uhat <- fit$resid[1:n]
     Rho <- function(u, tau) sum(u * (tau - (u < 0)))
     fit$fidelity <- Rho(uhat, tau)
     fit$edf <- sum(abs(uhat) < ztol)
     fit$X <- X
+    fit$y <- Y
     fit$n <- n
     fit$nrL <- nrL
     fit$terms <- Terms
@@ -887,6 +891,17 @@ rqss <- function (formula, tau = 0.5, data = parent.frame(), weights,
     attr(fit, "na.message") <- attr(m, "na.message")
     class(fit) <- "rqss"
     fit
+}
+"Munge" <- function(formula, ...) { 
+    # Recursive substitution {per Gabor Grothendieck}
+    if (length(formula) > 1) {
+	if (identical(formula[[2]], as.name(names(list(...))))) 
+	    formula <- eval(formula, list(...))
+	if (length(formula) > 1) 
+	    for (i in 1:length(formula)) 
+		formula[[i]] <- Recall(formula[[i]], ...)
+	}
+   formula
 }
 
 "summary.rqss" <- function(object, cov = FALSE, ztol = 1e-5, ...){

@@ -1616,3 +1616,16 @@ parameters, so one has to hope that default choices work.  My naive attempt
 to pass the control list from the initial fit produced a "memory not mapped"
 segfault, presumably because the spwy bootstrap method uses one extra
 observation than the initial fitting.
+
+5.75
+
+1.  Implemented weights for rqss fitting when there are qss terms, as
+suggested by the ConfidenceQuant package of Zhang et al.  This is prepatory
+to exploring their implementation of lambda selection and BLB inference.
+Note that they don't undo the weighting when computing residuals which
+may or may not be important.  As currently implemented, I do undo the
+weighting.
+
+2.  Added Munge function to mangle formulas for rqss (used in demo(MCV)
+
+3.  Added demo MCV to illustrate lambda selection via k-fold CV.
