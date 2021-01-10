@@ -46,8 +46,8 @@ rq.fit.ppro(x, y, tau, weights = NULL, Mm.factor = 0.8, eps = 1e-06, ...)
 }
 \references{
      Chernozhukov, V.  I. Fernandez-Val and B. Melly,
-	Fast Algorithms for the Quantile Regression Process, 2019,
-	arXiv, 1909.05782,
+	Fast Algorithms for the Quantile Regression Process, 2020,
+	Empirical Economics.,
 
      Portnoy, S.  and R. Koenker, The Gaussian Hare and the Laplacian
 	Tortoise, Statistical Science, (1997) 279-300

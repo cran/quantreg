@@ -1,5 +1,5 @@
 C Output from Public domain Ratfor, version 1.05
-      subroutine kuantiles(k,m,n,x)
+      subroutine kuantile(k,m,n,x)
       integer i,j,k(m),m,n
       double precision x(n)
       j = 0

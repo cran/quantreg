@@ -1,4 +1,4 @@
-C Output from Public domain Ratfor, version 1.0
+C Output from Public domain Ratfor, version 1.05
       subroutine rqfnc(n1,n2,p,a1,y,a2,r,rhs,d1,d2,u,beta,eps,wn1,wn2,wp
      *,nit,info)
       integer n1,n2,p,info,nit(3)

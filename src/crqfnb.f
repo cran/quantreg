@@ -1,8 +1,8 @@
-C Output from Public domain Ratfor, version 1.0
+C Output from Public domain Ratfor, version 1.05
       subroutine crqfnb(n,p,a1,c1,n1,x,y,c,b,g,m,r,s,d,u,wn,wp,info)
       integer n,p,n1,m,info,nit(3)
       double precision a1(p,n1),c1(n),x(n,p),y(n),c(n),b(p,m),g(m)
-      double precision wn(n,9),wp(p,p+3),r(p),s(n),d(n),u(n)
+      double precision wn(n1,9),wp(p,p+3),r(p),s(n),d(n),u(n)
       double precision zero,half,one,beta,eps,dh
       parameter( zero = 0.0d0)
       parameter( half = 0.5d0)

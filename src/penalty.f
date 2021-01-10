@@ -1,4 +1,4 @@
-C Output from Public domain Ratfor, version 1.0
+C Output from Public domain Ratfor, version 1.05
       subroutine penalty(n,m,q,x,y,bnd,tlist,tlptr,tlend,rax,jax,ned,eps
      *,ierr)
       integer n,m,q,lp,lpl,ned,ierr

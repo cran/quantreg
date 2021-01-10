@@ -58,3 +58,17 @@ Note added Jan 22, 2020
 Contrary to the last note there is no $HOME/bin/ratfor* but I've installed
 ratfor90 in /usr/local/bin and this might produce something workable.  Not
 yet really tested seriously, but those ugly line numbers are gone, at least.
+
+Note added November 8 2020
+
+I've installed a new ratfor executable in my mac mini bin directory.  It
+is generated from Brian Gaeke's C distribution ratfor-1.05.  And seems to work
+well; i.e. produces .f files that compile with gfortran -c with only a couple
+of warnings about legacy syntax.  The good news is that these warnings are 
+emitted only for the rqbr.f code produced from rqbr.r, for which my handedited
+rqbr.f version still passes R CMD check.  This was reported to Brian and he
+suggested flags that could be used to quell the emissions, but this didn't
+seem a.) very practical, or b.) very necessary.  I've put links to Brian G's
+code for ratfor and to Brian K's BTL memo describing ratfor on my
+reproducibility webpage.  So for the foreseeable, we are ok on the ratfor
+front, including for the new subroutines pfnb.r and qfnb.r.

@@ -1,5 +1,5 @@
 C Output from Public domain Ratfor, version 1.05
-      subroutine sakj(x,z,p,iker,dens,psi,score,nx,nz,h,alpha,kappa,xlam
+      subroutine akj(x,z,p,iker,dens,psi,score,nx,nz,h,alpha,kappa,xlam
      *)
       double precision dens(nz),score(nz),psi(nz),h,kappa
       double precision z(nz),x(nx),xlam(nx),p(nx),qrange,pi

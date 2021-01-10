@@ -103,10 +103,17 @@ rq(formula, tau=.5, data, subset, weights, na.action,
     employs a smoothing form of the usual QR objective function so solutions
     may be expected to differ somewhat from those produced with the other options.
 
-    \item \code{"ppro"} This option is intended for applications with large
+    \item \code{"pfnb"} This option is intended for applications with large
     sample sizes and/or moderately fine tau grids.  It uses a form of preprocessing
-    to accelerate the solution process.  See \code{"rq.fit.ppro"} for further
-    details.
+    to accelerate the solution process.  The loop over taus occurs inside the Fortran
+    call and there should be more efficient than other methods in large problems.
+
+    \item \code{"qfnb"} This option is like the preceeding one except that it doesn't
+    use the preprocessing option.
+
+    \item \code{"ppro"} This option is an R prototype of the \code{pfnb} and is 
+    offered for historical/interpretative purposes, but probably should be considered
+    deprecated.
     
     \item \code{"lasso"} There are two penalized methods:  \code{"lasso"} 
     and \code{"scad"} that implement the lasso penalty and Fan and Li

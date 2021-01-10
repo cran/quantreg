@@ -1,6 +1,6 @@
 "boot.rq"<-
 function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y), 
-	  blbn = NULL, cluster = NULL, U = NULL, ...)
+	  coef = NULL, blbn = NULL, cluster = NULL, U = NULL, ...)
 {
     n <- length(y)
     if(class(x)[1] != "matrix.csr") x <- as.matrix(x)
@@ -24,13 +24,13 @@ function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y),
             if (mofn < p || mofn > n) stop("mofn is out of range")
             U <- matrix(sample(n, mofn * R, replace = TRUE), mofn, R)
             }
-	coef <- rq.fit.fnb(x, y, tau, ...)$coef
         B <- sqrt(mofn/n) * boot.rq.pxy(x, y, U, tau, coef, ...)
     }
+    else if (bsmethod == "pwxy") {
+        B <- sqrt(mofn/n) * boot.rq.pwxy(x, y, tau, coef, ...)$B
+    }
     else if (bsmethod == "BLB") {
-	b <- length(y)
-        if(!length(U)) U <- rmultinom(R, blbn, rep(1/b, b))
-        B <- boot.rq.wxy(x, y, U, tau)
+        B <- boot.rq.pwxy(x, y, tau, coef, ...)$B
     }   
     else if (bsmethod == "cluster"){ # Hagemann wild gradient bootstrap
 	if(!length(U)){
@@ -351,3 +351,36 @@ boot.rq.pxy <- function (x, y, s, tau = 0.5, coef, method="fn", Mm.factor = 3) {
   B
 }
 
+boot.rq.pwxy <- function (x, y, tau, coef, R = 200, m0 = NULL, eps = 1e-06, ...) 
+{
+    n <- length(y)
+    if (nrow(x) != n) 
+        stop("x and y don't match n")
+    p <- ncol(x)
+    if (!length(m0)) 
+        m0 <- round(sqrt(n*p))
+    r <- y - x %*% coef
+    b <- matrix(0, p, R)
+    nit <- matrix(0, 5, R) # This version keeps track of fixups!
+    info <- rep(0, R)
+    xxinv <- solve(chol(crossprod(x)))
+    band <- pmax(eps, sqrt(((x %*% xxinv)^2) %*% rep(1, p)))
+    r <- r/band
+    o <- order(r)
+    r <- r[o]
+    y <- y[o]
+    x <- x[o,]
+    loq <- max(1, ceiling(n*tau - m0/2))
+    hiq <- min(floor(n*tau + m0/2), n)
+    qk <- r[c(loq,hiq)]
+    z <- .Fortran("pwxy", as.integer(n), as.integer(p), as.integer(R), 
+        as.double(t(x)), as.double(y), as.double(tau), as.double(qk),as.double(r), 
+        b = as.double(-b), double(n), as.double(band), as.integer(m0), double(n), 
+        double(n), double(n * 9), double(p * (p + 3)), double(p * 
+            n), double(n), integer(n), integer(n), double(p), 
+        double(p), double(p), nit = as.integer(nit), info = as.integer(info))
+    if(any(z$info != 0)) warnings("Some bootstrap replications have abnormal convergence")
+    B <- t(matrix(-z$b, p, R))
+    nit <- matrix(z$nit,5,R)
+    list(B = B, nit = nit)
+}

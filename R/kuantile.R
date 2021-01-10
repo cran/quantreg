@@ -80,3 +80,11 @@ function (x, isuniq = !duplicated(x))
         ix <- ix[sort.list(ixS)]
     list(ix = ix, xU = x[isuniq])
 }
+q489 <- function(x, tau = .5){
+    n <- length(x)
+    z <- .Fortran("qselect", 
+		  as.integer(n), 
+		  as.double(x),
+		  q = as.double(tau))
+    z$q
+}

@@ -12,7 +12,7 @@ intervals and tests of hypotheses regarding quantile regression models.
 }
 \usage{
 boot.rq(x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y), 
-	blbn = NULL, cluster = NULL, U = NULL,  ...)
+	coef = NULL, blbn = NULL, cluster = NULL, U = NULL,  ...)
 }
 \arguments{
   \item{x}{ The regression design matrix}
@@ -32,10 +32,11 @@ boot.rq(x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y),
 	permits subsampling (m out of n) bootstrap.  Obviously mofn
 	should be substantially larger than the column dimension of x,
 	and should be less than the sample size.}
+  \item{coef}{coefficients from initial fitted object}
   \item{blbn}{orginal sample size for the BLB model}
   \item{cluster}{If non-NULL this argument should specify cluster id
       numbers for each observation, in which case the clustered version of 
-      the bootstrap based on the proposal of Hagemann (2016). If present
+      the bootstrap based on the proposal of Hagemann (2017). If present
       \code{bsmethod} is set to set to "cluster". If this option is used
       and the fitting method for the original call was "sfn" then the
       bootstrapping will be carried out with the "sfn" as well.  This
@@ -82,9 +83,9 @@ Springer-Verlag, New York.
 Practical Confidence Intervals for Regression Quantiles,
 Journal of Computational and Graphical Statistics, 14, 41-55.
 
-[3] Hagemann, A. (2016) Cluster Robust Bootstrap inference in 
+[3] Hagemann, A. (2017) Cluster Robust Bootstrap inference in 
 quantile regression models, Journal of the American Statistical Association , 
-forthcoming.
+112, 446--456.
 
 [4] He, X. and Hu, F. (2002). Markov Chain Marginal Bootstrap.
 Journal of the American Statistical Association , Vol. 97, no. 459,
@@ -100,7 +101,7 @@ of minimizers of convex functions, \emph{J. Stat. Planning and Inf}, 117, 225-23
 Bayesian Inference, Journal of Business & Economic Statistics, 21, pp. 12-18.
 
 [8]  Feng, Xingdong, Xuming He, and Jianhua Hu (2011) Wild Bootstrap for
-Quantile Regression, Biometrika, to appear.
+Quantile Regression, Biometrika, 98, 995--999. 
 }
 
 \author{ Roger Koenker (and Xuming He and M. Kocherginsky for the mcmb code)}

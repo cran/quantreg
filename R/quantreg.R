@@ -130,7 +130,7 @@ function (formula, tau = 0.5, data, subset, weights, na.action, method = "br",
         stop("invalid tau:  taus should be >= 0 and <= 1")
       coef <- matrix(0, ncol(X), length(tau))
       rho <- rep(0, length(tau))
-      if(method != "ppro"){
+      if(!(method %in% c("ppro","qfnb","pfnb"))){
         fitted <- resid <- matrix(0, nrow(X), length(tau))
 	for(i in 1:length(tau)){
 	    z <- {if (length(weights))
@@ -153,7 +153,15 @@ function (formula, tau = 0.5, data, subset, weights, na.action, method = "br",
 	else if(method == "scad") class(fit) <- c("scadrqs","rqs")
 	else class(fit) <- "rqs"
 	}
-      else { # Preprocessing method
+      else if(method == "pfnb"){ # Preprocessing in fortran loop
+	  fit <- rq.fit.pfnb(X, Y, tau)
+          class(fit) = "rqs" 
+          }
+      else if(method == "qfnb"){ # simple fortran loop method 
+	  fit <- rq.fit.qfnb(X, Y, tau)
+          class(fit) = ifelse(length(tau) == 1,"rq","rqs") 
+          }
+      else if(method == "ppro"){ # Preprocessing method in R
 	  fit <- rq.fit.ppro(X, Y, tau, ...)
           class(fit) = ifelse(length(tau) == 1,"rq","rqs") 
           }
@@ -209,6 +217,7 @@ function(x, y, tau = 0.5, method = "br", ...)
 		sfn = rq.fit.sfn(x, y, tau = tau, ...),
 		conquer = rq.fit.conquer(x, y, tau = tau, ...),
 		pfn = rq.fit.pfn(x, y, tau = tau, ...),
+		pfnb = rq.fit.pfnb(x, y, tau = tau, ...),
 		ppro= rq.fit.ppro(x, y, tau = tau, ...),
 		br = rq.fit.br(x, y, tau = tau, ...),
 		lasso = rq.fit.lasso(x, y, tau = tau, ...),
@@ -656,13 +665,13 @@ function (x, y, tau = 0.5, alpha = 0.1, ci = FALSE, iid = TRUE,
 }
 
 "rq.fit.conquer" <- function(x, y, tau = 0.5, kernel = c("Gaussian", "uniform", 
-    "parabolic", "triangular"), h = 0, standardize = TRUE, tol = 1e-04, 
-    iteMax = 5000, ci = FALSE, alpha = 0.05, B = 1000)
+    "parabolic", "triangular"), h = 0,  tol = 1e-04, 
+    iteMax = 5000, ci = FALSE, alpha = 0.05, B = 200)
 {
     if(!requireNamespace("conquer", quietly = TRUE))
             stop("method conquer requires package conquer")
-    fit = conquer::conquer(x[,-1], y, tau = tau, kernel = kernel, h = h, standardize =
-	standardize, tol = tol, iteMax = iteMax, ci = FALSE, alpha = alpha, B = 1000)
+    fit = conquer::conquer(x[,-1], y, tau = tau, kernel = kernel, h = h, 
+	tol = tol, iteMax = iteMax, ci = FALSE, alpha = alpha, B = 1000)
     coefficients = fit$coeff 
     names(coefficients) = dimnames(x)[[2]]
     residuals = fit$residual
@@ -685,13 +694,13 @@ function (x, y, tau = 0.5, rhs = (1-tau)*apply(x,2,sum), beta = 0.99995, eps = 1
         c = as.double(-y), rhs = as.double(rhs), d = as.double(d),as.double(u),
         beta = as.double(beta), eps = as.double(eps),
         wn = as.double(wn), wp = double((p + 3) * p),
-        it.count = integer(3), info = integer(1))
+        nit = integer(3), info = integer(1))
     if (z$info != 0)
-        stop(paste("Error info = ", z$info, "in stepy: singular design"))
+        warning(paste("Error info = ", z$info, "in stepy: possibly singular design"))
     coefficients <- -z$wp[1:p]
     names(coefficients) <- dimnames(x)[[2]]
     residuals <- y - x %*% coefficients
-    list(coefficients=coefficients, tau=tau, residuals=residuals)
+    list(coefficients=coefficients, tau=tau, residuals=residuals, nit = z$nit)
 }
 
 "rq.fit.fnc" <-
@@ -854,13 +863,16 @@ function(x, y, tau = 0.5,  Mm.factor = 0.8,
 	if(tau < 0 | tau > 1)
 		stop("tau outside (0,1)")
 	p <- ncol(x)
-	m <- round(((p + 1) * n)^(2/3))
+	m <- round(sqrt(p) * n^(2/3))
 	not.optimal <- TRUE
+	ifix = 0
+	ibad = 0
 	while(not.optimal) {
+		ibad = ibad + 1
 		if(m < n)
 			s <- sample(n, m)
 		else {
-			b <- rq.fit.fnb(x, y, tau = tau,  eps = eps)$coef
+			z <- rq.fit.fnb(x, y, tau = tau,  eps = eps)
 			break
 		}
 		xx <- x[s,  ]
@@ -878,6 +890,7 @@ function(x, y, tau = 0.5,  Mm.factor = 0.8,
 		su <- r > band * kappa[2]
 		bad.fixups <- 0
 		while(not.optimal & (bad.fixups < max.bad.fixups)) {
+			ifix = ifix + 1
 			xx <- x[!su & !sl,  ]
 			yy <- y[!su & !sl]
 			if(any(sl)) {
@@ -913,11 +926,10 @@ function(x, y, tau = 0.5,  Mm.factor = 0.8,
 			else not.optimal <- FALSE
 		}
 	}
-	coefficients <- b
+	nit <- c(z$nit,ifix,ibad)
+	coefficients <- z$coef
 	names(coefficients) <- dimnames(x)[[2]]
-	residuals <- y - x %*% b
-	return(list(coefficients=coefficients, tau=tau,
-		residuals=residuals))
+	list(coefficients=coefficients, tau=tau, nit = nit)
 }
 
 "rq.wfit" <-
@@ -939,7 +951,9 @@ function(x, y, tau = 0.5, weights, method = "br",  ...)
 		fnc = rq.fit.fnc(wx, wy, tau = tau, ...),
 		sfn = rq.fit.sfn(wx, wy, tau = tau, ...),
 		conquer = rq.fit.conquer(wx, wy, tau = tau, ...),
-                pfn = rq.fit.pfn(wx, wy, tau = tau, ...), {
+		ppro = rq.fit.ppro(wx, wy, tau = tau, ...),
+                pfn = rq.fit.pfn(wx, wy, tau = tau, ...), 
+                pfnb = rq.fit.pfnb(wx, wy, tau = tau, ...), {
 			what <- paste("rq.fit.", method, sep = "")
 			if(exists(what, mode = "function"))
 				(get(what, mode = "function"))(x, y, ...)
@@ -1103,7 +1117,7 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.
     if (is.matrix(coef))
         coef <- coef[, 1]
     resid <- object$residuals
-    n <- length(resid)
+    n <- length(y)
     p <- length(coef)
     rdf <- n - p
     if (!is.null(wt)) {
@@ -1185,7 +1199,7 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.
 	B <- do.call(boot.rq, bargs)
 	}
 	else
-	    B <- boot.rq(x, y, tau, ...)
+	    B <- boot.rq(x, y, tau, coef = coef, ...)
         cov <- cov(B$B)
         serr <- sqrt(diag(cov))
         }
@@ -1250,7 +1264,9 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.
     dimnames(coef) = list(dimnames(x)[[2]], c("coef", "BCcoef","ciL", "ciU"))
 }
    else if(se == "conquer"){
-       Z <- conquer(x[,-1], y, tau, ci = TRUE, ...)
+       if(length(dots$R)) R = dots$R
+       else R = 200
+       Z <- conquer(x[,-1], y, tau, ci = TRUE, B = R)
        #Fixme:  should have option to choose another bsmethod
        coef <- cbind(Z$coef, Z$perCI)
        cnames <- c("coefficients", "lower bd", "upper bd")
@@ -1484,3 +1500,78 @@ function (x, y, taus = c(.1,.3,.5), weights = c(.7,.2,.1),
   list(coefficients=coef, residuals = resid, rho=rho, weights = weights)
 }
 
+# R function for fnb call for multiple taus
+rq.fit.qfnb <- function(x,y,tau){
+    n <- nrow(x)
+    p <- ncol(x)
+    m <- length(tau)
+    d <- rep(1, n)
+    u <- rep(1, n)
+    z <- .Fortran("qfnb",
+		  n = as.integer(n),
+		  p = as.integer(p),
+		  m = as.integer(m),
+		  a = as.double(t(x)),
+		  y = as.double(-y),
+		  t = as.double(tau),
+		  r = double(p),
+		  d = as.double(d),
+		  u = as.double(u),
+		  wn = double(n*9),
+		  wp = double(p*(p+3)),
+		  B = double(p*m),
+		  nit = integer(3),
+		  info = integer(1))
+    if(z$info != 0)
+	warning(paste("Info = ", z$info, "in stepy: singular design: nit = ", z$nit[1]))
+    coefficients <- matrix(-z$B, p, m)
+    dimnames(coefficients) <- list(dimnames(x)[[2]],paste("tau = ",tau))
+    list(coefficients = coefficients, nit = z$nit, flag = z$info)
+}
+rq.fit.pfnb <- function (x, y, tau, m0 = NULL, eps = 1e-06) {
+    m <- length(tau)
+    n <- length(y)
+    if(!is.matrix(x)) dim(x) <- c(n,1) 
+    if (nrow(x) != n) 
+        stop("x and y don't match n")
+    p <- ncol(x)
+    if(!length(m0))
+	m0 <- floor(n^(2/3) * sqrt(p)) # Needs testing!
+    s <- sample(n,m0)
+    xs <- x[s,,drop = FALSE]
+    ys <- y[s]
+    z <- rq.fit(xs, ys, tau = tau[1], method = "fn")
+    r <- y - x %*% z$coef
+    b <- matrix(0,p,m)
+    nit <- matrix(0,5,m)
+    xxinv <- solve(chol(crossprod(xs)))
+    band <- pmax(eps, sqrt(((x %*% xxinv)^2) %*% rep(1, p)))
+    z <- .Fortran("pfnb",
+		  as.integer(n),
+		  as.integer(p),
+		  as.integer(m),
+		  as.double(t(x)),
+		  as.double(y),
+		  as.double(tau),
+		  as.double(r),
+		  b = as.double(-b),
+		  as.double(band),
+		  as.integer(m0),
+		  double(n),
+		  double(n),
+		  double(n*9),
+		  double(p*(p+3)),
+		  double(p*n),
+		  double(n),
+		  integer(n),
+		  integer(n),
+		  double(p),
+		  double(p),
+		  double(p),
+		  nit = as.integer(nit),
+		  info = integer(m))
+    coefficients <- matrix(-z$b,p,m)
+    nit <- matrix(z$nit,5,m)
+    dimnames(coefficients) <- list(dimnames(x)[[2]],paste("tau = ",tau))
+    list(coefficients = coefficients, nit = nit, flag = z$info)
+}

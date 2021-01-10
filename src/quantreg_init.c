@@ -12,9 +12,14 @@ extern void F77_NAME(brutpow)(void *, void *, void *, void *, void *, void *, vo
 extern void F77_NAME(combin)(void *, void *, void *, void *, void *, void *, void *);
 extern void F77_NAME(crqf)(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void F77_NAME(crqfnb)(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void F77_NAME(grexp)(void *, void *, void *);
 extern void F77_NAME(kuantiles)(void *, void *, void *, void *);
 extern void F77_NAME(penalty)(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void F77_NAME(pfnb)(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void F77_NAME(pwxy)(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void F77_NAME(powell)(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void F77_NAME(qfnb)(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void F77_NAME(qselect)(void *, void *, void *);
 extern void F77_NAME(pwy)(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void F77_NAME(rls)(void *, void *, void *, void *, void *, void *, void *);
 extern void F77_NAME(rqbr)(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
@@ -37,9 +42,14 @@ static const R_FortranMethodDef FortranEntries[] = {
     {"combin",    (DL_FUNC) &F77_NAME(combin),     7},
     {"crqf",      (DL_FUNC) &F77_NAME(crqf),      26},
     {"crqfnb",    (DL_FUNC) &F77_NAME(crqfnb),    18},
+    {"grexp",     (DL_FUNC) &F77_NAME(grexp),      3},
     {"kuantiles", (DL_FUNC) &F77_NAME(kuantiles),  4},
     {"penalty",   (DL_FUNC) &F77_NAME(penalty),   14},
+    {"pfnb",      (DL_FUNC) &F77_NAME(pfnb),      23},
+    {"pwxy",      (DL_FUNC) &F77_NAME(pwxy),      25},
     {"powell",    (DL_FUNC) &F77_NAME(powell),    17},
+    {"qfnb",      (DL_FUNC) &F77_NAME(qfnb),      14},
+    {"qselect",   (DL_FUNC) &F77_NAME(qselect),    3},
     {"pwy",       (DL_FUNC) &F77_NAME(pwy),       16},
     {"rls",       (DL_FUNC) &F77_NAME(rls),        7},
     {"rqbr",      (DL_FUNC) &F77_NAME(rqbr),      27},

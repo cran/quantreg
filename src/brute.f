@@ -1,4 +1,4 @@
-C Output from Public domain Ratfor, version 1.0
+C Output from Public domain Ratfor, version 1.05
       subroutine brutpow(n,p,m,h,a,b,c,x,tau,u,xh,d,jminz,nflag)
       integer n,p,m
       double precision x(p),a(n,p),b(n),c(n)
@@ -6,6 +6,7 @@ C Output from Public domain Ratfor, version 1.0
       double precision zero, one,tau,pow,minz,z
       integer h(p,m),k,findk,jminz,nflag
       parameter(zero = 0.0d0, one = 1.d0)
+      jminz = 1
       minz = pow(n,p,x,a,b,c,tau)
       do23000 j = 2,m 
       k = findk(p,h(1,j),h(1,j-1))

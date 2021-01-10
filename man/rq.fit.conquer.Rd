@@ -7,8 +7,8 @@
     in the \pkg{conquer} package of He et al (2020).}
 \usage{
 rq.fit.conquer (x, y, tau=0.5, kernel = c("Gaussian", "uniform",
-    "parabolic", "triangular"), h = 0, standardize = TRUE, tol = 1e-04,
-    iteMax = 5000, ci = FALSE, alpha = 0.05, B = 1000)
+    "parabolic", "triangular"), h = 0, tol = 1e-04,
+    iteMax = 5000, ci = FALSE, alpha = 0.05, B = 200)
 }
 \arguments{
   \item{x}{design matrix usually supplied via rq(), expected to
@@ -21,9 +21,6 @@ rq.fit.conquer (x, y, tau=0.5, kernel = c("Gaussian", "uniform",
   \item{h}{The bandwidth parameter for kernel smoothing of the QR
       objective function.  Default is max{((log(n) + p) / n)^0.4, 0.05}. 
       The default is used if the input value is less than 0.05.} 
-  \item{standardize}{A logical flag, when TRUE, the design matrix will be
-          standardized so that each column has mean zero and standard
-          deviation one. }
   \item{tol}{Tolerance level of the gradient descent
           algorithm. The gradient descent algorithm terminates when the
           maximal entry of the gradient is less than "tol". Default is

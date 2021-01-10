@@ -1629,3 +1629,68 @@ weighting.
 2.  Added Munge function to mangle formulas for rqss (used in demo(MCV)
 
 3.  Added demo MCV to illustrate lambda selection via k-fold CV.
+
+5.79
+
+1.  In preparation for some attempt to rationalize the multiple estimation and
+inference methods, I poked around to see whether I could find a workable
+version of ratfor to use to write new wrapper code for various extensions.
+Eventually I found an updated C version maintained by Brian Gaeke that worked
+for all of my existing ratfor code with the exception of rqbr.r which emits a
+gfortran warning about goto's jumping across blocks (see email from Gaeke on
+23/11/20).  This isn't really a problem since I have functional f77 code for
+this anyway.  The point is that going forward, at least for the foreseeable I
+have a workable ratfor.
+
+2.  Added two new estimation methods qfnb and pfnb designed to speed up
+estimation for large problems with many taus. The former just puts calls to
+the existing fnb routine inside a fortran loop, the latter translates the ppro
+preprocessing method into ratfor.  This seems to help quite a lot as
+experiments in my ongoing vinaigrette show, but there is probably still some
+fine tuning that could be done.  I have the feeling that it would be wortwhile
+being more aggressive about reducing the sample size as n grows.
+
+3.  Changed default m0 parameter for rq.fit.pfnb so that it was proportional
+to n^(2/3) rather than n which seems to speed things up considerable.
+
+5.80
+
+1.  Added a new bootstrap method boot.rq.pwxy which calls a fortran
+preprocessing subroutine.  Generation of random exponentials is done inside
+the loop thanks to grexp() and some C trickery documented in the R Extensions
+manual.  For large problems this promises to be much quicker than other  prior
+methods, presuming that I can get the interface with summary() and boot.rq()
+working.
+
+2.  Added a more elaborate iteration count object to the return from
+boot.rq.pwxy that provides information on the number of "fixups" as well as
+FN iterations and final sample size.
+
+3.  Removed the standardize argument from rq.fit.conquer which seems to have
+been removed from the argument list of conquer::conquer.
+
+4.  Changed the BLB procedure so that it uses pwxy rather than wxy, pending
+further investigation...
+
+5.  Changed the rq.fit.pfnb procedure so that it knows how to do only one tau.
+
+5.81
+
+1.  rq.fit.pfn and rq.fit.pfnb now return nit info as part of my effort to
+investigate how to set tuning parameters for these functions.
+
+2.  changed rq.fit.fnb so that non-zero exit status from an error (stop) to a
+warning.  Experiments with large p examples involving factor variables
+suggested that these cases were often harmless.  As long as 10 or more
+iterations were done, these exits were generally just stepy being too fussy
+about the cholesky factorization.
+
+3.  Changed plot.rqss so that it returned all the confidence band information
+not just for the last one.  Thanks to Zehra Atik for the bug report on this.
+
+5.82
+
+1.  Fixed rq.fit.pfnb to work with vector x.
+
+2.  Added q489 function to compute univariate sample quantile via literal
+translation of the original (Algol 68) code of Floyd and Rivest.

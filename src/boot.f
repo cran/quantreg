@@ -1,4 +1,4 @@
-C Output from Public domain Ratfor, version 1.0
+C Output from Public domain Ratfor, version 1.05
       subroutine pwy(m,n,k,m5,n2,a,c,b,t,toler,ift,x,e,s, wa,wb)
       double precision b(m),a(k,n),x(n,k)
       double precision wa(m5,n2),wb(m),e(m),c(m,n)
@@ -51,5 +51,17 @@ C Output from Public domain Ratfor, version 1.0
       call rq0(m,n,m5,n2,aa,bb,tau,toler,ift(i),x(1,i),e,s,wa,wb)
 23008 continue
 23009 continue
+      return
+      end
+      subroutine heqfy(n,p,r,x,b,y)
+      integer n,p,r
+      double precision x(n,p),b(p,n,r),y(n,r)
+      do23014 i=1,r
+      do23016 j=1,n
+      y(j,i)=ddot(p,x(j,1),n,b(1,j,i),1)
+23016 continue
+23017 continue
+23014 continue
+23015 continue
       return
       end

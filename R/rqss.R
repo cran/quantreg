@@ -429,7 +429,7 @@ function (x, rug = TRUE, jit = TRUE, bands = NULL, coverage = 0.95, add = FALSE,
 	           }
                   lines(B$x, B$y, ...)
                 }
-                band[[1]] <- list(x = B$x, blo = B$y - B$se %o% cv, 
+                band[[i]] <- list(x = B$x, blo = B$y - B$se %o% cv, 
                   bhi = B$y + B$se %o% cv)
                 if (rug) {
                   if (jit) 

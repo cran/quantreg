@@ -1,4 +1,4 @@
-C Output from Public domain Ratfor, version 1.0
+C Output from Public domain Ratfor, version 1.05
       subroutine rqs(m,n,k,m5,n2,a,b,tau,toler,ift,x,e,s,wa,wb)
       double precision b(m,k),a(m,n),x(n,k),e(m),wa(m5,n2),wb(m)
       double precision tau,toler
