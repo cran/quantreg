@@ -45,8 +45,12 @@ qss(x, constraint = "N", lambda = 1, ndum = 0, dummies = NULL,
   \item{Dorder}{Order of the total variation penalty, the default of 1
       implies a penalty on the first derivative of the fitted function,
       a value of 0 implies total variation of the fitted function
-      itself will be penalized.  Note that no provision is (yet) made
-      for imposing shape constraints when Dorder = 0}
+      itself will be penalized.  Note that only monotonicity constraints,
+      "I" and "D" are allowed when \code{Dorder = 0}, and result in estimates
+      that are equivalent to a form of isotonic regression when lambda is
+      sufficiently near zero.  Results in this case from the package \pkg{isotone}
+      may differ slightly when plotted due to multiple solutions so it is prudent
+      to evaluate the objective function for both solutions.}
   \item{dummies}{list of dummy vertices as generated, for example by
 	triogram.fidelity when ndum > 0.  Should be a list with x
 	and y components.  These points should lie inside the convex
@@ -63,8 +67,8 @@ to have mean zero.  This convention has implications for prediction that need to
 recognized.  The penalty components for qss terms are based on total
 variation penalization of the first derivative (and gradient, for bivariate x)
 as described in the references appearing in the help for \code{rqss}.
-When Dorder = 0, fitting is like the taut string methods of Davies, except
-of course for the fact that fidelity is quantilesque rather than quadratic,
+When Dorder = 0, fitting is like the taut string methods of Davies (2014), except
+for the fact that fidelity is quantilesque rather than quadratic,
 and that no provision is made for automatic selection of the smoothing 
 parameter.
 

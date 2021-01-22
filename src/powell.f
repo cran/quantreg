@@ -131,7 +131,7 @@ C Output from Public domain Ratfor, version 1.05
       double precision function pow(n,p,x,a,b,c,tau)
       integer n,p
       double precision x(p),a(n,p),b(n),c(n)
-      double precision tau,u,zero,rho,fit
+      double precision tau,u,zero,rho,fit,ddot
       parameter(zero= 0.d0)
       pow = zero
       do23047 i = 1,n

@@ -18,9 +18,9 @@ subroutine sakj(x,z,p,iker,dens,psi,score,nx,nz,h,alpha,kappa,xlam)
 # kappa--constant determining initial (default) window width
 # xlam--Silverman's lambda, window adjustment for each x
 
-double precision dens(nz),score(nz),psi(nz),h,kappa
-double precision z(nz),x(nx),xlam(nx),p(nx),qrange,pi
-double precision con1,sum,sqsum,xsd,a,fifth,hinv,half
+double precision dens(nz),score(nz),psi(nz),h,kappa,con1
+double precision z(nz),x(nx),xlam(nx),p(nx),qrange,pi,four
+double precision con1,sum,sqsum,xsd,a,fifth,hinv,half,g,ginv
 double precision xn,xker,dxker,ddxker,fact,xponen,alpha,glog,zero,one,two
 parameter( zero = 0.d0)
 parameter( one = 1.d0)

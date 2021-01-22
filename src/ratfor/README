@@ -71,4 +71,6 @@ suggested flags that could be used to quell the emissions, but this didn't
 seem a.) very practical, or b.) very necessary.  I've put links to Brian G's
 code for ratfor and to Brian K's BTL memo describing ratfor on my
 reproducibility webpage.  So for the foreseeable, we are ok on the ratfor
-front, including for the new subroutines pfnb.r and qfnb.r.
+front, including for the new subroutines pfnb.r and qfnb.r.  To reiterate, all
+the ratfor in this directory, with the exception of rqbr.r is used to generate
+the fortran in the src directory above. 

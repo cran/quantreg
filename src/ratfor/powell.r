@@ -123,7 +123,7 @@ end
 double precision function pow(n,p,x,A,b,c,tau)
 integer n,p
 double precision x(p),A(n,p),b(n),c(n)
-double precision tau,u,zero,rho,fit
+double precision tau,u,zero,rho,fit,ddot
 
 PARAMETER(zero= 0.d0) 
 

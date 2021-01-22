@@ -59,7 +59,7 @@ end
 #does a matrix multiply to make Y matrix for heqf bootstrap
 subroutine heqfy(n,p,r,x,b,y)
 integer n,p,r
-double precision x(n,p),b(p,n,r),y(n,r)
+double precision x(n,p),b(p,n,r),y(n,r),ddot
 do i=1,r{
 	do j=1,n{
 		y(j,i)=ddot(p,x(j,1),n,b(1,j,i),1)

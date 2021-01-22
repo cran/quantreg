@@ -47,10 +47,10 @@ function (x, constraint = "N", lambda = 1, ndum = 0, dummies = NULL,
 	    qss <- qss1(x, constraint = constraint, lambda = lambda, 
 		dummies = dummies, ndum = ndum, w = w)
 	else if(Dorder == 0){
-	    if(!(constraint == "N"))
-		stop("Constraints not implemented for Dorder = 0")
+	    if(!(constraint %in% c("N","I","D")))
+		stop("This constraint not implemented for Dorder = 0")
 	    else
-		qss <- qts1(x, lambda = lambda, 
+		qss <- qts1(x, constraint = constraint, lambda = lambda, 
 		    dummies = dummies, ndum = ndum, w = w)
 	}
 	else
@@ -123,7 +123,7 @@ function(x, y, constraint = "N", lambda = 1, ndum= 0, dummies = NULL, w=rep(1,le
         lambda = lambda, A = A[, -1], R = R[, -1], r = r)
 }
 
-qts1 <- function (x, lambda = 1, dummies = dummies, 
+qts1 <- function (x, constraint = "N", lambda = 1, dummies = dummies, 
     ndum = 0, w = rep(1, length(x))) 
 { # This is the taut string TV(g) not TV(g') penalty option
     xun <- unique(x[order(x)])
@@ -131,6 +131,12 @@ qts1 <- function (x, lambda = 1, dummies = dummies,
     nh <- length(h)
     nx <- length(x)
     p <- nh + 1
+    makeD <- function(p) {
+        new("matrix.csr", ra = c(rbind(rep(-1, (p - 1)), rep(1,
+            (p - 1)))), ja = as.integer(c(rbind(1:(p - 1), 2:p))),
+            ia = as.integer(2 * (1:p) - 1), dimension = as.integer(c(p -
+                1, p)))
+    }
     A <- new("matrix.csr", ra = c(rbind(-1/h, 1/h)), ja = as.integer(c(rbind(1:nh, 
         2:(nh + 1)))), ia = as.integer(2 * (1:(nh + 1)) - 1), 
         dimension = as.integer(c(nh, nh + 1)))
@@ -142,8 +148,12 @@ qts1 <- function (x, lambda = 1, dummies = dummies,
         F <- new("matrix.csr", ra = rep(1, nx), ja = as.integer(factor(x)), 
             ia = 1:(nx + 1), dimension = as.integer(c(nx, length(xun))))
     }
-     list(x = list(x = xun), F = F[, -1], lambda = lambda, A = A[,
-        -1], R = NULL, r = NULL)
+    switch(constraint, 
+	   I = {R <- makeD(p); r <- rep(0, p-1)},
+	   D = {R <- -makeD(p); r <- rep(0, p-1)},
+	   N = {R <- NULL; r <- NULL})
+    list(x = list(x = xun), F = F[, -1], lambda = lambda, A = A[,
+        -1], Dorder = 0, R = R[,-1], r = r)
 }
 
 "qss1" <-
@@ -153,7 +163,7 @@ function (x, constraint = "N", lambda = 1, dummies = dummies,
 # Sparse Additive Quantile Smoothing Spline Models - Univariate Module
 #
 # This function returns a structure intended to make model.matrix for a univariate
-# nonparametric component of a model formula specified by a call to rq().  A sparse form
+# nonparametric component of a model formula specified by a call to rqss().  A sparse form
 # of the Frisch Newton algorithm is eventually called to compute the estimator.
 # Optional monotonicity and/or convexity/concavity constraints can be specified.  If
 # the formula consists of a single qss component then the estimator solves the
@@ -213,7 +223,6 @@ function (x, constraint = "N", lambda = 1, dummies = dummies,
         F <- new("matrix.csr", ra = rep(1, nx), ja = as.integer(factor(x)),
             ia = 1:(nx + 1), dimension = as.integer(c(nx, length(xun))))
 	}
-
    switch(constraint,
         V = {   R <- A;
                 r <- rep(0,nrow(R))
@@ -245,17 +254,30 @@ function (x, constraint = "N", lambda = 1, dummies = dummies,
 		},
 	N = { R=NULL; r=NULL}
 	)
-   list(x = list(x=xun), F=F[,-1], lambda = lambda, A=A[,-1], R=R[,-1], r=r)
+   list(x = list(x=xun), F=F[,-1], lambda = lambda, A=A[,-1], 
+	Dorder = 1, R=R[,-1], r=r)
 }
 "plot.qss1" <-
 function(x, rug = TRUE, jit = TRUE, add = FALSE, ...)
 {
-if(!add) plot(x[,1],x[,2],type = "n", ...)
-lines(x[,1],x[,2], ...)
-if(rug) {
-    if(jit)
-       rug(jitter(x[,1]))
-    else rug(x[,1])
+    if(!add) plot(x,type = "n", ...)
+	lines(x, ...)
+    if(rug) {
+	if(jit)
+	    rug(jitter(x[,1]))
+	else rug(x[,1])
+    }
+}
+"plot.qts1" <-
+function (x, rug = TRUE, jit = TRUE, add = FALSE, ...) 
+{
+    if (!add) 
+        plot(x, type = "S", ...)
+    lines(x, type = "S", ...)
+    if (rug) {
+        if (jit) 
+            rug(jitter(x[, 1]))
+        else rug(x[, 1])
     }
 }
 "plot.qss2" <-
@@ -389,12 +411,20 @@ function (x, rug = TRUE, jit = TRUE, bands = NULL, coverage = 0.95, add = FALSE,
     if(!length(select)) 
         select <- 1:m
     for (i in select) {
-        qss <- x$qss[[i]]$xyz
-        if (ncol(qss) == 3) {
+	if(!is.null(x$qss[[i]]$Dorder)){ 
+	  if(x$qss[[i]]$Dorder == 0){
+	    qts <- x$qss[[i]]$xyz
+	    qts[, 2] <- x$coef[1] + qts[, 2]
+	    plot.qts1(qts, add = add, ...)
+	  }
+	}
+	else {
+          qss <- x$qss[[i]]$xyz
+            if (ncol(qss) == 3) {
             qss[, 3] <- x$coef[1] + qss[, 3]
             plot.qss2(qss, ...)
-        }
-        else if (ncol(qss) == 2) {
+            }
+           else if (ncol(qss) == 2) {
             if (length(bands)) {
                 if (is.na(x$coef["(Intercept)"])) 
                   stop("rqss confidence bands require an intercept parameter")
@@ -445,6 +475,7 @@ function (x, rug = TRUE, jit = TRUE, bands = NULL, coverage = 0.95, add = FALSE,
             title(titles[i])
         }
         else stop("invalid fitted qss object")
+      }
     }
     if (pages > 0) 
         par(oldpar)
@@ -825,9 +856,10 @@ rqss <- function (formula, tau = 0.5, data = parent.frame(), weights,
             ML <- p + 1 + ncA[i]
             MU <- p + ncA[i + 1]
             qss[[i]] <- list(xyz = cbind(qss[[i]]$x$x, qss[[i]]$x$y, 
-                c(0, fit$coef[ML:MU])), dummies = qss[[i]]$dummies)
+                c(0, fit$coef[ML:MU])), dummies = qss[[i]]$dummies, 
+			     Dorder = qss[[i]]$Dorder)
             if (ncol(qss[[i]]$xyz) == 2) 
-                class(qss[[i]]) <- "qss1"
+                class(qss[[i]]) <- ifelse(qss[[i]]$Dorder == 1,"qss1", "qts1")
             else class(qss[[i]]) <- "qss2"
         }
         names(qss) <- qssnames

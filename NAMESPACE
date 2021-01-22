@@ -106,4 +106,4 @@ S3method(print, summary.Hill)
 S3method(print, Pickands)
 S3method(summary, Pickands)
 S3method(print, summary.Pickands)
-
+S3method(plot, qts1)

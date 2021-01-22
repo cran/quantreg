@@ -55,7 +55,7 @@ C Output from Public domain Ratfor, version 1.05
       end
       subroutine heqfy(n,p,r,x,b,y)
       integer n,p,r
-      double precision x(n,p),b(p,n,r),y(n,r)
+      double precision x(n,p),b(p,n,r),y(n,r),ddot
       do23014 i=1,r
       do23016 j=1,n
       y(j,i)=ddot(p,x(j,1),n,b(1,j,i),1)

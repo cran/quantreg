@@ -62,9 +62,9 @@ c
       do 500 ii=1, nrow 
 c     row i 
          do 200 ka=ia(ii), ia(ii+1)-1 
-	    if (values) scal = a(ka)
-	    jj   = ja(ka)
-	    do 100 kb=ib(jj),ib(jj+1)-1
+            if (values) scal = a(ka)
+            jj   = ja(ka)
+            do 100 kb=ib(jj),ib(jj+1)-1
                jcol = jb(kb)
                jpos = iw(jcol)
                if (jpos .eq. 0) then
@@ -79,10 +79,10 @@ c     row i
                else
                   if (values) c(jpos) = c(jpos) + scal*b(kb)
                endif
- 100	    continue
+ 100     continue
  200     continue
          do 201 k=ic(ii), len
-	    iw(jc(k)) = 0
+            iw(jc(k)) = 0
  201     continue
          ic(ii+1) = len+1
  500  continue
@@ -270,7 +270,7 @@ c
             endif
  300     continue
          do 301 k=ic(ii), len
-	    iw(jc(k)) = 0
+            iw(jc(k)) = 0
  301     continue
          ic(ii+1) = len+1
  500  continue

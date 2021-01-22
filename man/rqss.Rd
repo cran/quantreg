@@ -99,9 +99,16 @@ rqss(formula, tau = 0.5, data = parent.frame(), weights, subset, na.action,
     structure.  
 
     If the \pkg{MatrixModels} and \pkg{Matrix} packages are both  loadable then the 
-    linear in parameters portion of the design matrix is made in sparse matrix form, 
+    linear-in-parameters portion of the design matrix is made in sparse matrix form;
     this is helpful in large applications with many factor variables for which dense 
     formation of the design matrix would take too much space.
+
+    Although modeling with \code{rqss} typically imposes smoothing penalties on
+    the total variation of the first derivative, or gradient, of the fitted functions,
+    for univariate smoothing, it is also possible to penalize total variation of
+    the function itself using the option \code{Dorder = 0} inside \code{qss} terms.
+    In such cases, estimated functions are piecewise constant rather than piecewise
+    linear.  See the documentation for \code{qss} for further details.
 }
 \value{
     The function returns a fitted object representing the estimated

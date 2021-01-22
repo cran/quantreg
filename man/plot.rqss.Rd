@@ -1,6 +1,7 @@
 \name{plot.rqss}
 \alias{plot.rqss}
 \alias{plot.qss1}
+\alias{plot.qts1}
 \alias{plot.qss2}
 \alias{plot.summary.rqss}
 \title{Plot Method for rqss Objects}
@@ -19,6 +20,7 @@ to plot {summary.rqss}  objects just generates a warning message.
 	add = FALSE, shade = TRUE, select = NULL, pages = 0, titles = NULL, 
 	bcol = NULL, \dots)
 \method{plot}{qss1}(x, rug = TRUE, jit = TRUE, add = FALSE, \dots)
+\method{plot}{qts1}(x, rug = TRUE, jit = TRUE, add = FALSE, \dots)
 \method{plot}{qss2}(x, render = "contour", ncol = 100, zcol = NULL, \dots)
 \method{plot}{summary.rqss}(x, \dots)
 }
@@ -58,6 +60,9 @@ then a list with three components for each qss component is returned (invisibly)
 	 	\code{bands = "both"} then this is a  matrix with two columns}	
 }
 \details{
+    For univariate \code{qss} components with \code{Dorder = 0} the fitted
+    function is piecewise constant, not piecewise linear.  In this case the constraints 
+    are limited to increasing, decreasing or none.  
 If \code{bands == "uniform"} then the bands are uniform bands based on the 
 Hotelling (1939) tube approach.  See also Naiman (1986), 
 Johansen and Johnstone (1990), Sun and Loader (1994), 

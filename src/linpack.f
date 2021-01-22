@@ -325,7 +325,7 @@ c
 
       subroutine dgefa(a,lda,n,ipvt,info)
 c      use numerical_libraries
-	
+
       integer lda,n,ipvt(*),info
       double precision a(lda,*)
 c
@@ -376,7 +376,7 @@ c     internal variables
 c
       double precision t
 c           integer idamax,j,k,kp1,l,nm1
-	 integer j,k,kp1,l,nm1
+      integer j,k,kp1,l,nm1
 c
 c
 c     gaussian elimination with partial pivoting

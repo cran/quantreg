@@ -1694,3 +1694,17 @@ not just for the last one.  Thanks to Zehra Atik for the bug report on this.
 
 2.  Added q489 function to compute univariate sample quantile via literal
 translation of the original (Algol 68) code of Floyd and Rivest.
+
+5.83
+
+1.  In response to Brian Ripley's email of 11/1/21 several ratfor/fortran
+changes were made:  ddot was declared double in boot.f and rls.f, the routine
+spwy.[rf] was removed since it was never actually functional, and several
+nonconforming tab characters were removed from sparskit.f.
+
+2.  Added a new plotting function for qss objects with Dorder 0 that imposes
+the piecewise constant feature of the fit.
+
+3.  Added options for increasing and decreasing constraints for the Dorder 0
+qss functions. By setting lambda small, one can get something equivalent to
+the solution from the isotone package using their weighted fractile option.
