@@ -412,70 +412,66 @@ function (x, rug = TRUE, jit = TRUE, bands = NULL, coverage = 0.95, add = FALSE,
         select <- 1:m
     for (i in select) {
 	if(!is.null(x$qss[[i]]$Dorder)){ 
-	  if(x$qss[[i]]$Dorder == 0){
-	    qts <- x$qss[[i]]$xyz
-	    qts[, 2] <- x$coef[1] + qts[, 2]
-	    plot.qts1(qts, add = add, ...)
-	  }
-	}
-	else {
-          qss <- x$qss[[i]]$xyz
-            if (ncol(qss) == 3) {
-            qss[, 3] <- x$coef[1] + qss[, 3]
-            plot.qss2(qss, ...)
-            }
-           else if (ncol(qss) == 2) {
-            if (length(bands)) {
-                if (is.na(x$coef["(Intercept)"])) 
-                  stop("rqss confidence bands require an intercept parameter")
-                B <- summary(x$qss[[i]], V[[i]], ...)
-                cv <- B$cv
-                B <- B$pred
-                B$y <- B$y + x$coef["(Intercept)"]
-                if(!length(bcol)) bcol <- c("grey85","grey65")
-		for(k in 1:length(cv)){
-                 if (add || k > 1) 
-                  if(shade){
-                     polygon(c(B$x,rev(B$x)),
-                        c(B$y - cv[k] * B$se,rev(B$y + cv[k] * B$se)),
-			col = bcol[k], border = FALSE)
+	    if(x$qss[[i]]$Dorder == 0){
+		qts <- x$qss[[i]]$xyz
+		qts[, 2] <- x$coef[1] + qts[, 2]
+		plot.qts1(qts, add = add, ...)
+		}
+	    else { 
+		qss <- x$qss[[i]]$xyz
+		if (length(bands)) {
+		    if (is.na(x$coef["(Intercept)"])) 
+			stop("rqss confidence bands require an intercept parameter")
+		    B <- summary(x$qss[[i]], V[[i]], ...)
+		    cv <- B$cv
+		    B <- B$pred
+		    B$y <- B$y + x$coef["(Intercept)"]
+		    if(!length(bcol)) bcol <- c("grey85","grey65")
+		    for(k in 1:length(cv)){
+			if (add || k > 1) 
+			    if(shade){
+				polygon(c(B$x,rev(B$x)),
+				c(B$y - cv[k] * B$se,rev(B$y + cv[k] * B$se)),
+				col = bcol[k], border = FALSE)
+			    }
+			    else
+				matlines(B$x, cbind(B$y, B$y + cv[k] * cbind(-B$se, 
+				B$se)), lty = c(1, 2, 2), col = c("black", "blue", "blue"))
+			else {
+			    matplot(B$x, B$y + cv[k] * cbind(-B$se, B$se), 
+				xlab = paste(qssnames[i]), ylab = "Effect", type = "n", ...)
+			    if(shade){
+				polygon(c(B$x,rev(B$x)),
+				    c(B$y - cv[k] * B$se,rev(B$y + cv[k] * B$se)),
+				    col = bcol[k], border = FALSE)
+			    } 
+			    else{
+				lines(B$x, B$y + cv * B$se, lty = 2, ...)
+				lines(B$x, B$y - cv * B$se, lty = 2, ...)
+			    }
 			}
-                  else
-                    matlines(B$x, cbind(B$y, B$y + cv[k] * cbind(-B$se, 
-                        B$se)), lty = c(1, 2, 2), col = c("black", "blue", "blue"))
-                else {
-                  matplot(B$x, B$y + cv[k] * cbind(-B$se, B$se), 
-                    xlab = paste(qssnames[i]), ylab = "Effect", 
-                    type = "n", ...)
-                  if(shade){
-                     polygon(c(B$x,rev(B$x)),
-                        c(B$y - cv[k] * B$se,rev(B$y + cv[k] * B$se)),
-			col = bcol[k], border = FALSE)
-			}
-                  else{
-                     lines(B$x, B$y + cv * B$se, lty = 2, ...)
-                     lines(B$x, B$y - cv * B$se, lty = 2, ...)
-		     }
-	           }
-                  lines(B$x, B$y, ...)
-                }
-                band[[i]] <- list(x = B$x, blo = B$y - B$se %o% cv, 
-                  bhi = B$y + B$se %o% cv)
-                if (rug) {
-                  if (jit) 
-                    rug(jitter(qss[, 1]))
-                  else rug(qss[, 1])
-                }
-            }
-            else {
-                qss[, 2] <- x$coef[1] + qss[, 2]
-                plot.qss1(qss, xlab = paste(qssnames[i]), ylab = "Effect", 
-                  rug = rug, jit = jit, add = add, ...)
-            }
-            title(titles[i])
+			lines(B$x, B$y, ...)
+		    }
+		    band[[i]] <- list(x = B$x, blo = B$y - B$se %o% cv, bhi = B$y + B$se %o% cv)
+		    if (rug) {
+			if (jit) 
+			    rug(jitter(qss[, 1]))
+			else rug(qss[, 1])
+                    }
+		}
+		else {
+		    qss[, 2] <- x$coef[1] + qss[, 2]
+		    plot.qss1(qss, xlab = paste(qssnames[i]), ylab = "Effect", 
+		    rug = rug, jit = jit, add = add, ...)
+		}
+	    }
         }
-        else stop("invalid fitted qss object")
-      }
+	qss <- x$qss[[i]]$xyz
+        if (ncol(qss) == 3) {
+             qss[, 3] <- x$coef[1] + qss[, 3]
+             plot.qss2(qss, ...)
+        }
+	title(titles[i])
     }
     if (pages > 0) 
         par(oldpar)

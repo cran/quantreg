@@ -1,4 +1,4 @@
-75d83d86b89439775f0cb53e3fc35b6c *DESCRIPTION
+b3575d10fe353bbdac071cfc2b2a7b00 *DESCRIPTION
 9d0cfba39283f7b6fefa5d5ece554173 *NAMESPACE
 6c1789eaa459e5175106e2eba12bdbb4 *R/ParetoTest.R
 9b8bcd519f37330271dfda84d9590474 *R/anova.R
@@ -12,12 +12,12 @@ d2f509eb6977017d1b77faae7de97a7c *R/lprq.R
 74e57bf2387ac9e764dfc185bec65980 *R/nlrq.R
 23abbfdfe6ab274c1ebe89aaa4d825ef *R/qrisk.R
 031cc143798e492478618ad0d0c74a80 *R/quantreg.R
-2ffc836ad7e2565797453a3c4a365020 *R/rqss.R
+cb65285fd5aec905d3569bfde8d47fdc *R/rqss.R
 f7723bc3ed3a21afb5b60417ddc7baa0 *R/sfn.R
 522fc9d16e1ef995877eaaf3972eb29e *R/table.R
 11102c1b9076b53ebaac51cc79b90bfb *R/tools.R
 00f6440dcfd495483f57d543f4918de0 *README
-bf2b3eb72ce284c898f6bcbd34ae84dd *build/vignette.rds
+4f080d7b20a7f01ee950ab517ee2b2e5 *build/vignette.rds
 56ef7db1af717ba44a86062560b034df *data/Bosco.rda
 403622377f41685bab4f044f2dac7785 *data/CobarOre.rda
 3d69ca4dff26067565dddb340c8d12a3 *data/Mammals.rda
@@ -49,7 +49,7 @@ ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 32f68b8e497d02b2cae7cf5f9b83ff52 *demo/rqsslasso.R
 5235d61a73c80e7eb83777d7d923d144 *demo/stack.R
 a582af0bad3d273cb076a346c906cba5 *demo/subset.R
-a68a185a91e13d016c8e85a5984f0a92 *inst/ChangeLog
+47bbeb3e5361d6fcdda773f200a816f3 *inst/ChangeLog
 f66010e65bd560dd445575e83da64ec5 *inst/FAQ
 f2732c4ab5eb2f4ca3421239a030f0ee *inst/TODO
 3fb70411ec441d151dcae73d63a5e018 *inst/doc/crq.pdf
@@ -68,7 +68,7 @@ f2732c4ab5eb2f4ca3421239a030f0ee *inst/TODO
 9d5c7b53fc04bbbbe5820d2d616e31b5 *man/akj.Rd
 a303a4ced70b992220472a10f79fa65c *man/anova.rq.Rd
 742ec68efdfbcf12a2a47e1adcfde3fe *man/bandwidth.rq.Rd
-22f0835a5d071362da4d76b2c6a38b87 *man/barro.Rd
+36991ef697fde62deb19e355974477dd *man/barro.Rd
 9121a0c8f5ade9142d089cfb87db490b *man/boot.crq.Rd
 a2c27ae8be0bbcd40e2e44ad1e1ebd1c *man/boot.rq.Rd
 e82257e42bca148c307aadf04829ce4a *man/boot.rq.pwxy.Rd
@@ -118,7 +118,7 @@ aa976325fa2a0f23f71cafab9091b8db *man/rq.fit.ppro.Rd
 1228e0e3446d874ad8cc1c15cf144e9d *man/rq.fit.qfnb.Rd
 55f92799613bbb08fd10107f92a55c16 *man/rq.fit.scad.Rd
 4eda8605d8c65c05f78621e1418fdf6c *man/rq.fit.sfn.Rd
-550d0faf21299d7b428b043420743533 *man/rq.fit.sfnc.Rd
+fa356613a916b242cccfa02593986d4e *man/rq.fit.sfnc.Rd
 5b3b9d437a05dc195caa2502b1e72e9a *man/rq.object.Rd
 c42b5515ccf48527ae43449357b3dfb0 *man/rq.process.object.Rd
 0a8b72f28db402c6333d4387f0fca020 *man/rq.wfit.Rd

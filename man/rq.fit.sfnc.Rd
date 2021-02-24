@@ -50,13 +50,11 @@ rq.fit.sfnc(x, y, R, r, tau = 0.5,
   \item{time}{Amount of time used in the computation}
 }
 \references{
-  Koenker, R and Ng, P. (2002).
-  SparseM:  A Sparse Matrix Package for \R; \cr
-  \url{http://www.econ.uiuc.edu/~roger/research/}
+  Koenker, R and Ng, P. (2002).  SparseM:  A Sparse Matrix Package for \R; 
+  \url{https://CRAN.R-project.org/package=SparseM}
 
   Koenker, R. and P. Ng(2005).
   Inequality Constrained Quantile Regression, \emph{Sankya}, 418-440.
-
 }
 \author{Pin Ng}
 \seealso{

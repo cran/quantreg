@@ -1706,5 +1706,14 @@ nonconforming tab characters were removed from sparskit.f.
 the piecewise constant feature of the fit.
 
 3.  Added options for increasing and decreasing constraints for the Dorder 0
-qss functions. By setting lambda small, one can get something equivalent to
+qss functions. By setting lambda to zero, one can get something equivalent to
 the solution from the isotone package using their weighted fractile option.
+
+5.84
+
+1.  The changes to plot.rqss in the last version messed up plotting for qss
+objects, this is (hopefully) now restored to prior functionality.
+
+5.85
+
+1.  Added doi info for K 2005, and K et al (2017) at Uwe's suggestion.
