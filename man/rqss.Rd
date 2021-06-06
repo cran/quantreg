@@ -7,6 +7,8 @@
 \description{
 Fitting function for additive quantile regression models with possible univariate
 and/or bivariate nonparametric terms estimated by total variation regularization.
+See \code{summary.rqss} and \code{plot.rqss} for further details on inference and
+confidence bands.
 }
 \usage{
 rqss(formula, tau = 0.5, data = parent.frame(), weights, subset, na.action,
@@ -91,7 +93,7 @@ rqss(formula, tau = 0.5, data = parent.frame(), weights, subset, na.action,
     methods \code{\link{logLik}} and \code{\link{AIC}} that is
     relevant to lambda selection.  A more detailed description of
     some recent developments of these methods is available from
-    within the package with \code{vignette("rqss")}.  Since this
+    within the package with \code{vignette("rq")}.  Since this
     function uses sparse versions of the interior point algorithm
     it may also prove to be useful for fitting linear models
     without \code{\link{qss}} terms when the design has a sparse

@@ -4,7 +4,7 @@
 Lasso Penalized Quantile Regression 
 }
 \description{
-  The fitting method implements the lasso penalty of Tibshirani for
+  The fitting method implements the lasso penalty for
   fitting quantile regression models.  When  the argument \code{lambda}
   is a scalar the penalty function is the l1
   norm of the last (p-1) coefficients, under the presumption that the
@@ -13,10 +13,14 @@ Lasso Penalized Quantile Regression
   equal the column dimension of the matrix \code{x} and then defines a
   coordinatewise specific vector of lasso penalty parameters.  In this
   case \code{lambda} entries of zero indicate covariates that are not
-  penalized.  There should be a sparse version of this, but isn't (yet).
+  penalized.  If \code{lambda} is not specified, a default value is
+  selected according to the proposal of Belloni and Chernozhukov (2011).
+  See \code{LassoLambdaHat} for further details.
+  There should be a sparse version of this, but isn't (yet).
+  There should also be a preprocessing version, but isn't (yet).
 }
 \usage{
-rq.fit.lasso(x, y, tau = 0.5, lambda = 1, beta = .99995, eps = 1e-06)
+rq.fit.lasso(x, y, tau = 0.5, lambda = NULL, beta = .99995, eps = 1e-06)
 }
 \arguments{
 \item{x}{
@@ -31,7 +35,8 @@ rq.fit.lasso(x, y, tau = 0.5, lambda = 1, beta = .99995, eps = 1e-06)
 \item{lambda}{
   the value of the penalty parameter(s) that determine how much shrinkage is done.
   This should be either a scalar, or a vector of length equal to the column dimension
-  of the \code{x} matrix.
+  of the \code{x} matrix.  If unspecified, a default value is chosen according to
+  the proposal of Belloni and Chernozhukov (2011).
 }
 \item{beta}{
   step length parameter for Frisch-Newton method.
@@ -46,7 +51,10 @@ rq.fit.lasso(x, y, tau = 0.5, lambda = 1, beta = .99995, eps = 1e-06)
   has class "lassorqs".  
 }
 \references{
-Koenker, R. (2005 \emph{Quantile Regression}, CUP.
+Koenker, R. (2005) \emph{Quantile Regression}, CUP.
+
+Belloni, A. and  V. Chernozhukov. (2011) l1-penalized quantile regression 
+    in high-dimensional sparse models. \emph{Annals of Statistics}, 39 82 - 130.
 }
 \author{R. Koenker}
 \seealso{

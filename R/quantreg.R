@@ -800,15 +800,17 @@ function (x, y, tau = 0.5, alpha = 3.2, lambda = 1, start = "rq", beta = 0.9995,
 
 
 "rq.fit.lasso" <-
-function (x, y, tau = 0.5, lambda = 1, beta = 0.99995, eps = 1e-06)
+function (x, y, tau = 0.5, lambda = NULL, beta = 0.99995, eps = 1e-06)
 {
     n <- length(y)
     p <- ncol(x)
     if (n != nrow(x))
         stop("x and y don't match n")
-    if(length(lambda) == 1)
+    if(!length(lambda))
+	lambda <- LassoLambdaHat(x, tau = tau)
+    else if(length(lambda) == 1)
          lambda <- c(0,rep(lambda,p-1))
-    if(length(lambda) != p)
+    else if(length(lambda) != p)
           stop(paste("lambda must be either of length ",p," or length one"))
     if(any(lambda < 0))
           stop("negative lambdas disallowed")
@@ -1575,3 +1577,13 @@ rq.fit.pfnb <- function (x, y, tau, m0 = NULL, eps = 1e-06) {
     dimnames(coefficients) <- list(dimnames(x)[[2]],paste("tau = ",tau))
     list(coefficients = coefficients, nit = nit, flag = z$info)
 }
+LassoLambdaHat <- function(X, R = 1000, tau = 0.5, C = 1, alpha = 0.95){
+   # Chernozhukov and Belloni default lasso lambda proposal:
+        n <- nrow(X)
+        sigs <- apply(X^2,2,mean)
+        U <- matrix(runif(n * R),n)
+        R <- (t(X) %*% (tau - (U < tau)))/sigs
+        r <- apply(abs(R),2,max)
+        C * quantile(r, 1 - alpha) * sigs
+        }
+

@@ -42,7 +42,7 @@ function (x, constraint = "N", lambda = 1, ndum = 0, dummies = NULL,
             x <- as.vector(x)
         else stop("qss objects must have dimension 1 or 2")
     }
-    if (is.vector(x)) {
+    else if (is.numeric(x)) {
 	if(Dorder == 1)
 	    qss <- qss1(x, constraint = constraint, lambda = lambda, 
 		dummies = dummies, ndum = ndum, w = w)
@@ -56,6 +56,7 @@ function (x, constraint = "N", lambda = 1, ndum = 0, dummies = NULL,
 	else
 	    stop("Dorder must be either 0 or 1")
     }
+    else stop("invalid argument for qss function")
     qss
 }
 
@@ -614,7 +615,32 @@ function (object, newdata, interval = "none",  level = 0.95, ...)
 	}
     y
 }
-
+"predict.qts1" <-
+function (object, newdata, ...)
+{
+    x <- object$xyz[, 1]
+    y <- object$xyz[, 2] 
+    if(ncol(newdata)==1)
+        newdata <- newdata[,1]
+    else
+        stop("newdata should have only one column for predict.qts1")
+    if (any(diff(x) < 0))
+        stop("x coordinates in qts1 object not monotone")
+    if (max(newdata) > max(x) || min(newdata) < min(x))
+        stop("no extrapolation allowed in predict.qts")
+    bin <- cut(newdata, unique(x), label = FALSE, include.lowest = TRUE)
+    p <- length(x)
+    m <- length(newdata)
+    V <- cbind(bin, bin + 1)
+    B <- cbind(x[bin + 1] - newdata, newdata - x[bin])/(x[bin +
+        1] - x[bin])
+    ra <- c(t(B))
+    ja <- as.integer(c(t(V)))
+    ia <- as.integer(c(2 * (1:m) - 1, 2 * m + 1))
+    dim <- c(m, p)
+    D <- new("matrix.csr", ra = ra, ja = ja, ia = ia, dimension = dim)
+    list(x = newdata, y = D %*% y, D = D[, -1])
+}
 "predict.qss1" <-
 function (object, newdata, ...)
 {
@@ -1089,4 +1115,3 @@ critval <- function(kappa, alpha = 0.05, rdf = 0){
       }
    uniroot(tube,c(1,5),alpha = alpha, rdf = rdf)$root
    }
-

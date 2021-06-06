@@ -1591,7 +1591,7 @@ warning about tau not being extreme enough to justify the use of this option.
 
 3.  Modified plot.summary.rq so that one can pass a matrix of ylim values to
 assure that two summary.rq plots have the same scale.  A suggestion born of
-Victor's  totally legimate critique of my extermal QR vinaigrette,  now
+Victor's  totally legitimate critique of my extremal QR vinaigrette,  now
 modified to fix this.
 
 5.74
@@ -1647,11 +1647,11 @@ estimation for large problems with many taus. The former just puts calls to
 the existing fnb routine inside a fortran loop, the latter translates the ppro
 preprocessing method into ratfor.  This seems to help quite a lot as
 experiments in my ongoing vinaigrette show, but there is probably still some
-fine tuning that could be done.  I have the feeling that it would be wortwhile
+fine tuning that could be done.  I have the feeling that it would be worthwhile
 being more aggressive about reducing the sample size as n grows.
 
 3.  Changed default m0 parameter for rq.fit.pfnb so that it was proportional
-to n^(2/3) rather than n which seems to speed things up considerable.
+to n^(2/3) rather than n which seems to speed things up considerably.
 
 5.80
 
@@ -1717,3 +1717,18 @@ objects, this is (hopefully) now restored to prior functionality.
 5.85
 
 1.  Added doi info for K 2005, and K et al (2017) at Uwe's suggestion.
+
+2.  modified qss code to test is.numeric(x) rather than is.vector(x) to
+avoid the fact that is.vector(x) is false, if x happens to have attributes
+other than names.  Thanks to Wolfgang Viechtbauer and Terry Therneau for
+help in tracking this down. The Rstudio function haven::read_dta() adds
+an attribute to the data.frame it constructs to indicate that the data was
+born in the hell of Stata.
+
+3.  Added predict.qts1 function which was somehow neglected when I made
+the conformal QR vinaigrette. 
+
+4.  Added a LassoLambdaHat function to compute the Belloni-Chernozhukov
+lambdahat interval.  And modified rq.fit.lasso to use this as the default 
+lambda selection rule if lambda is not specified.
+
