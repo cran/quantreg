@@ -1268,7 +1268,7 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.
    else if(se == "conquer"){
        if(length(dots$R)) R = dots$R
        else R = 200
-       Z <- conquer(x[,-1], y, tau, ci = TRUE, B = R)
+       Z <- conquer::conquer(x[,-1], y, tau, ci = TRUE, B = R)
        #Fixme:  should have option to choose another bsmethod
        coef <- cbind(Z$coef, Z$perCI)
        cnames <- c("coefficients", "lower bd", "upper bd")

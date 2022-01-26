@@ -59,7 +59,7 @@ function (object, ..., test = "Wald", joint = TRUE,
 	    weights <- as.vector(model.weights(mf))
             tau <- taus[[1]]
             for (i in 2:nobjects) {
-                if (!all(names[[i]] %in% names[[1]])) 
+		if (!all(sapply(names[[i]], \(x) any(grepl(x, names[[1]], fixed = TRUE))))) 
                   stop("Models aren't nested")
                 mf <- model.frame(objects[[i]])
                 X0 <- model.matrix(objects[[i]], mf,contrasts=objects[[i]]$contrasts)
@@ -76,7 +76,7 @@ function (object, ..., test = "Wald", joint = TRUE,
             y <- model.response(mf)
 	    weights <- as.vector(model.weights(mf))
             for (i in 2:nobjects) {
-                if (!all(names[[i]] %in% names[[1]])) 
+		if (!all(sapply(names[[i]], \(x) any(grepl(x, names[[1]], fixed = TRUE))))) 
                   stop("Models aren't nested")
                 nullH <- is.na(match(names[[1]], names[[i]]))
 		X1 <- as.matrix(x1[, nullH])
@@ -96,7 +96,7 @@ function (object, ..., test = "Wald", joint = TRUE,
             V <- lapply(objects, function(x) x$cov)
             coef <- lapply(objects, function(x) coef(x)[,1])
             for (i in 2:nobjects) {
-                if (!all(names[[i]] %in% names[[1]])) 
+		if (!all(sapply(names[[i]], \(x) any(grepl(x, names[[1]], fixed = TRUE))))) 
                   stop("Models aren't nested")
                 nullH <- is.na(match(names[[1]], names[[i]]))
                 ndf[i - 1] <- sum(nullH)

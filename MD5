@@ -1,7 +1,7 @@
-26f0a45d1f058d9636b79f4f96167eb1 *DESCRIPTION
-b31aad9699bc976f4bc777e729944135 *NAMESPACE
+2c866b81f71d0216b12586c2b8c25e0f *DESCRIPTION
+ceeb862c6d781800ac64394554048146 *NAMESPACE
 6c1789eaa459e5175106e2eba12bdbb4 *R/ParetoTest.R
-9b8bcd519f37330271dfda84d9590474 *R/anova.R
+c8b8999d79dbc26115c56483f1638f5e *R/anova.R
 747f2ef04d86470aaf2f8f50bf32e0e1 *R/boot.R
 0f5c733522683d9f88c7487515bc52de *R/combos.R
 a537dd09f743afce7eb302c25058dbb6 *R/crq.R
@@ -11,13 +11,13 @@ a537dd09f743afce7eb302c25058dbb6 *R/crq.R
 d2f509eb6977017d1b77faae7de97a7c *R/lprq.R
 74e57bf2387ac9e764dfc185bec65980 *R/nlrq.R
 23abbfdfe6ab274c1ebe89aaa4d825ef *R/qrisk.R
-67b625ebbaa0d6ce29711984c2033091 *R/quantreg.R
+94e5290daa8c9bcaf8cae649d24b66eb *R/quantreg.R
 b15d5f8f9cfcd557964991e8e519a39d *R/rqss.R
 f7723bc3ed3a21afb5b60417ddc7baa0 *R/sfn.R
 522fc9d16e1ef995877eaaf3972eb29e *R/table.R
 11102c1b9076b53ebaac51cc79b90bfb *R/tools.R
 00f6440dcfd495483f57d543f4918de0 *README
-4f080d7b20a7f01ee950ab517ee2b2e5 *build/vignette.rds
+6a3027f24fa4f20675ed2c3ffa08f2c3 *build/vignette.rds
 56ef7db1af717ba44a86062560b034df *data/Bosco.rda
 403622377f41685bab4f044f2dac7785 *data/CobarOre.rda
 3d69ca4dff26067565dddb340c8d12a3 *data/Mammals.rda
