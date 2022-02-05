@@ -1732,3 +1732,13 @@ the conformal QR vinaigrette.
 lambdahat interval.  And modified rq.fit.lasso to use this as the default 
 lambda selection rule if lambda is not specified.
 
+5.87
+
+1.  At the suggestion of Adelchi Azzalini conquer package was moved to "suggested"
+rather than "imported"  which lightened the dependency graph considerably.
+
+2.  change in anova.rqlist to broaden pattern matching for variable names at
+the suggestion of Max Gordon.  Uses the relatively new \(x) syntax which may
+cause problems for those on old R installations.
+
+

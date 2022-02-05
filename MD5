@@ -1,7 +1,7 @@
-2c866b81f71d0216b12586c2b8c25e0f *DESCRIPTION
+e39738e2036a574ddd741d7083697465 *DESCRIPTION
 ceeb862c6d781800ac64394554048146 *NAMESPACE
 6c1789eaa459e5175106e2eba12bdbb4 *R/ParetoTest.R
-c8b8999d79dbc26115c56483f1638f5e *R/anova.R
+708697bbfb4cbcf4664df9e26380bc66 *R/anova.R
 747f2ef04d86470aaf2f8f50bf32e0e1 *R/boot.R
 0f5c733522683d9f88c7487515bc52de *R/combos.R
 a537dd09f743afce7eb302c25058dbb6 *R/crq.R
@@ -49,7 +49,7 @@ ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 32f68b8e497d02b2cae7cf5f9b83ff52 *demo/rqsslasso.R
 5235d61a73c80e7eb83777d7d923d144 *demo/stack.R
 a582af0bad3d273cb076a346c906cba5 *demo/subset.R
-81a7b0ebdbe011eaeeec53182c8ae20b *inst/ChangeLog
+f0c806860b1b7cc4ccde2398d6b34509 *inst/ChangeLog
 f66010e65bd560dd445575e83da64ec5 *inst/FAQ
 f2732c4ab5eb2f4ca3421239a030f0ee *inst/TODO
 3fb70411ec441d151dcae73d63a5e018 *inst/doc/crq.pdf
