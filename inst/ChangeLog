@@ -1742,3 +1742,26 @@ the suggestion of Max Gordon.  Uses the relatively new \(x) syntax which may
 cause problems for those on old R installations.
 
 
+5.89
+
+1.  removed the anonymous function syntax in 5.87 #2 since it did provoke
+complaints from users.
+
+2.  Fixed bootstrap methods for sparse X matrices for wild and pwy methods
+report by Tom Parker.
+
+a  mcmb is hopeless since it doesnt know about sparse matrices, will add 
+something to man page
+b  pwy problem was annoying in the sense that rbind(X,0) doesnt work in 
+SparseM because 0 isnt sparse! Duh.
+c  wild problem revealed an ecosystem of bugs, even in the non-sparse 
+case there was a bug:  hat(X) was called but should have specified hat(X, 
+intercept = FALSE),  when X is sparse I needed to cook up a special version of hat.
+
+5.91
+
+1.  CRAN is doing more severe checking about installed packages, so several
+changes were made to make calls to suggested packages conditional on their
+loading status.  This is supposed to be checkable by setting the environment
+variable  _R_CHECK_DEPENDS_ONLY_="true" R CMD check ...    but I haven't yet
+gotten this to work.

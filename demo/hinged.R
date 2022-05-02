@@ -1,7 +1,7 @@
 # A Demo of simple bivariate rqss fitting of a hinge function
 
 require(quantreg)
-
+if(requireNamespace("tripack")){
 ## Make sure the demo does not ``die'' when rgl is not available:
 do.rgl <- interactive() && require(rgl)
 
@@ -41,4 +41,5 @@ if(do.rgl) {
 } else {
     if(!interactive()) pdf(file = "hinge-demo.pdf")
     plot(fit)
+}
 }

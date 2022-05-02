@@ -118,7 +118,8 @@ rq(formula, tau=.5, data, subset, weights, na.action,
     \item \code{"lasso"} There are two penalized methods:  \code{"lasso"} 
     and \code{"scad"} that implement the lasso penalty and Fan and Li
     smoothly clipped absolute deviation penalty, respectively.  These
-    methods should probably be regarded as experimental.
+    methods should probably be regarded as experimental.  Note:  weights
+    are ignored when the method is penalized.
     }
   }
   \item{contrasts}{

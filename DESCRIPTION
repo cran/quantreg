@@ -6,7 +6,7 @@ Description: Estimation and inference methods for models of conditional quantile
   censored survival data.  Portfolio selection methods based on expected shortfall
   risk are also now included. See Koenker (2006) <doi:10.1017/CBO9780511754098> and
   Koenker et al. (2017) <doi:10.1201/9781315120256>. 
-Version: 5.88
+Version: 5.93
 Authors@R: c(
     person("Roger", "Koenker",  role = c("cre","aut"), email =  "rkoenker@illinois.edu"),
     person("Stephen", "Portnoy",  role = c("ctb"), 
@@ -34,15 +34,15 @@ Authors@R: c(
 	suggestions and useful advice", email =  "ripley@stats.ox.ac.uk"))
 Maintainer: Roger Koenker <rkoenker@illinois.edu>
 Repository: CRAN
-Depends: R (>= 2.6), stats, SparseM
-Imports: methods, graphics, Matrix, MatrixModels
-Suggests: tripack, akima, MASS, survival, rgl, logspline, nor1mix,
-        Formula, zoo, R.rsp, conquer
+Depends: R (>= 3.5), stats, SparseM
+Imports: methods, graphics, Matrix, MatrixModels, survival, MASS
+Suggests: tripack, akima, rgl, logspline, nor1mix, Formula, zoo, R.rsp,
+        conquer
 License: GPL (>= 2)
 URL: https://www.r-project.org
 NeedsCompilation: yes
 VignetteBuilder: R.rsp
-Packaged: 2022-02-05 11:26:37 UTC; roger
+Packaged: 2022-05-01 12:20:42 UTC; roger
 Author: Roger Koenker [cre, aut],
   Stephen Portnoy [ctb] (Contributions to Censored QR code),
   Pin Tian Ng [ctb] (Contributions to Sparse QR code),
@@ -59,4 +59,4 @@ Author: Roger Koenker [cre, aut],
   Brian D Ripley [trl, ctb] (Initial (2001) R port from S (to my
     everlasting shame -- how could I have been so slow to adopt R!) and
     for numerous other suggestions and useful advice)
-Date/Publication: 2022-02-05 12:10:02 UTC
+Date/Publication: 2022-05-02 17:42:02 UTC

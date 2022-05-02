@@ -15,6 +15,8 @@ importFrom("grDevices", "dev.interactive", "devAskNewPage", "gray",
      "n2mfrow", "terrain.colors")
 importFrom("graphics", "abline", "contour", "lines", "matlines",
      "matplot", "par", "persp", "plot", "points", "polygon", "title")
+importFrom("MASS", "Null")
+importFrom("survival", "Surv")
 importFrom("methods", "as", "hasArg", "new")
 importFrom("utils", "flush.console", "modifyList")
 importFrom("stats", ".checkMFClasses", ".getXlevels", "AIC", "approx",

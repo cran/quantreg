@@ -114,7 +114,7 @@ that class (and no internal \code{NA}s were created by the \code{na.action}).
 ## Dynamic Linear Quantile Regression Models ##
 ###########################
 
-require(zoo)
+if(require(zoo)){
 ## multiplicative median SARIMA(1,0,0)(1,0,0)_12 model fitted to UK seatbelt data
      uk <- log10(UKDriverDeaths)
      dfm <- dynrq(uk ~ L(uk, 1) + L(uk, 12))
@@ -134,6 +134,7 @@ require(zoo)
  ## regression on multiple lags in a single L() call
      dfm3 <- dynrq(uk ~ L(uk, c(1, 11, 12)), start = c(1975, 1), end = c(1982, 12))
      anova(dfm1, dfm3)
+}
 
 ###############################
 ## Time Series Decomposition ##
@@ -156,6 +157,7 @@ plot(sfm)
 ## An Edgeworth (1886) Problem##
 ###############################
 # DGP
+\dontrun{
 fye <- function(n, m = 20){
     a <- rep(0,n)
     s <- sample(0:9, m, replace = TRUE)
@@ -170,7 +172,7 @@ x <- fye(1000)
 f <- dynrq(x ~ L(x,1))
 plot(x,cex = .5, col = "red")
 lines(fitted(f), col = "blue")
-
+}
 }
 
 \keyword{regression}

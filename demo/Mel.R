@@ -1,10 +1,10 @@
 #Analysis of the QAR(1) Melbourne Temperature Example
 require(splines)
-if(require(hdrcde)){
-  if(interactive()){ 
+if(interactive()){ 
     oldpar <- par(ask = TRUE)
-    x <- maxtemp[-3650]
-    y <- maxtemp[-1]
+    data(MelTemp)
+    x <- MelTemp[-3650]
+    y <- MelTemp[-1]
     s <- (x<40)  #Delete a few (influential, ridiculously hot) days
     x <- x[s]
     y <- y[s]
@@ -33,7 +33,6 @@ if(require(hdrcde)){
 		title(paste("Yesterday's Temp", format(round(xs[i]))))
 		}
 	par(oldpar)
-    }
-  else warning("Need hdrcde package to get data for this demo")
-  }
+
+}
 

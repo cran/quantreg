@@ -235,7 +235,7 @@ crq <- function (formula, taus, data, subset, weights, na.action,
 	method = c("Powell","Portnoy","Portnoy2", "PengHuang"), contrasts = NULL, ...)
 {
     if(!requireNamespace("survival", quietly = TRUE))
-	stop("crq requires survival package to be installed")
+	warning("crq requires survival package to be installed")
     #if(method == "Portnoy2") stop("Portnoy2 method not (yet) implemented")
     Surv <- survival::Surv
     call <- match.call()

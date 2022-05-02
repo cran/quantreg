@@ -24,6 +24,7 @@ boot.rq(x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y),
 	method = "pwy" uses the method of Parzen, Wei and Ying (1994)
 	method = "mcmb" uses the Markov chain marginal bootstrap
 	of He and Hu (2002) and Kocherginsky, He and Mu (2003).
+	The "mcmb" method isn't compatible with sparse X matrices.
 	The fourth method = "wxy" uses the generalized bootstrap
 	of Bose and Chatterjee (2003) with unit exponential weights,
 	see also Chamberlain and Imbens (2003).  The fifth method

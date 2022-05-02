@@ -2,6 +2,7 @@
 
 require(quantreg)
 
+if(requireNamespace("tripack")){
 ## Make sure the demo does not ``die'' when rgl is not available:
 do.rgl <- interactive() && require(rgl)
 
@@ -39,4 +40,5 @@ for(i in 1:20) {
     } else {
         plot(fit, zcol = zcol)
     }
+}
 }

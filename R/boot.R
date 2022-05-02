@@ -66,8 +66,11 @@ function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y),
 	if(!length(U)){
 	    U <- matrix(runif(n * R), n, R)
 	}
-	W <- t(x) %*% ((U < tau) - tau)
-        B <- boot.rq.pwy(W, x, y, tau)
+	W <- as.matrix(t(x) %*% ((U < tau) - tau))
+	if(class(x)[1] == "matrix.csr") 
+	    B <- boot.rq.spwy(W, x, y, tau)
+	else
+	    B <- boot.rq.pwy(W, x, y, tau)
     }
     else if (bsmethod == "mcmb") {
         B <- boot.rq.mcmb(x, y, tau = tau, R = R)
@@ -79,11 +82,15 @@ function (x, y, tau = 0.5, R = 200, bsmethod = "xy", mofn = length(y),
         W <- matrix(S,n,R)
         r <- c(fit$resid)
         f0 <- akj(r,z=0)$dens 
-        r <- r + hat(x) * (tau - I(r < 0))/f0 
+	if(inherits(x, "matrix.csr"))
+	    H <- diag(x %*% solve(t(x) %*% x) %*% t(x))
+	else
+	    H <- hat(x, intercept = FALSE) 
+        r <- r + H * (tau - I(r < 0))/f0 
         Y <- c(fitted(fit)) + W * abs(r)
         B <- rqs.fit(x,Y,tau = tau)
     }
-    else stop("your chosen bootstrap method is not allowed")
+    else stop("your bootstrap method is not implemented")
     #cat(paste("Bootstrap standard errors based on ",R," replications"))
     list(B = B, U = U)
 }
@@ -213,7 +220,10 @@ function(U,X, y, tau = 0.5, tol=1e-4)
 	p <- ncol(X)
 	R <- ncol(U)
 	Y <- c(y,length(y)*max(abs(y)))
-	x <- rbind(X,0)
+	if(inherits(X, "matrix.csr"))
+	    x <- rbind(X, t(as.matrix.csr(rep(0, p))))
+	else
+	    x <- rbind(X,0)
 	xu <- t(U)/tau
 	n <- n+1
 	z<-.Fortran("pwy",
