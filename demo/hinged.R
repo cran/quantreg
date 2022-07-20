@@ -1,7 +1,7 @@
 # A Demo of simple bivariate rqss fitting of a hinge function
 
 require(quantreg)
-if(requireNamespace("tripack")){
+if(requireNamespace("interp") && requireNamespace("tripack")){
 ## Make sure the demo does not ``die'' when rgl is not available:
 do.rgl <- interactive() && require(rgl)
 
@@ -35,7 +35,7 @@ if(do.rgl) {
 		fit <- rqss(z ~ qss(cbind(x,y),lambda = lam))
 		rgl.clear()
 		plot(fit, render = "rgl")
-	} else 
+	} else
 		break
 	}
 } else {

@@ -73,7 +73,7 @@ and that no provision is made for automatic selection of the smoothing
 parameter.
 
 For the bivariate case, package \pkg{tripack} (and for plotting also
-\pkg{akima}) are required (automatically, by the \R code).
+\pkg{interp}) are required (automatically, by the \R code).
 }
 \value{
   \item{F}{Fidelity component of the design matrix}

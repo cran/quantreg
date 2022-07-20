@@ -113,20 +113,21 @@ function (formula, tau = 0.5, data, subset, weights, na.action, method = "br",
     if (any(tau == 1)) tau[tau == 1] <- 1 - eps
     Y <- model.response(mf)
     if(method == "sfn"){
-	if(requireNamespace("MatrixModels") && requireNamespace("Matrix")){
+	if(requireNamespace("MatrixModels", quietly = TRUE)
+           && requireNamespace("Matrix", quietly = TRUE)){
 	    X <- MatrixModels::model.Matrix(mt, data, sparse = TRUE)
 	    vnames <- dimnames(X)[[2]]
 	    X <- as(X ,"matrix.csr")
 	    mf$x <- X
 	    }
-    }	
+    }
     else{
 	X <- model.matrix(mt, mf, contrasts)
 	vnames <- dimnames(X)[[2]]
     }
     Rho <- function(u,tau) u * (tau - (u < 0))
     if (length(tau) > 1) {
-      if (any(tau < 0) || any(tau > 1)) 
+      if (any(tau < 0) || any(tau > 1))
         stop("invalid tau:  taus should be >= 0 and <= 1")
       coef <- matrix(0, ncol(X), length(tau))
       rho <- rep(0, length(tau))
@@ -155,20 +156,20 @@ function (formula, tau = 0.5, data, subset, weights, na.action, method = "br",
 	}
       else if(method == "pfnb"){ # Preprocessing in fortran loop
 	  fit <- rq.fit.pfnb(X, Y, tau)
-          class(fit) = "rqs" 
+          class(fit) = "rqs"
           }
-      else if(method == "qfnb"){ # simple fortran loop method 
+      else if(method == "qfnb"){ # simple fortran loop method
 	  fit <- rq.fit.qfnb(X, Y, tau)
-          class(fit) = ifelse(length(tau) == 1,"rq","rqs") 
+          class(fit) = ifelse(length(tau) == 1,"rq","rqs")
           }
       else if(method == "ppro"){ # Preprocessing method in R
 	  fit <- rq.fit.ppro(X, Y, tau, ...)
-          class(fit) = ifelse(length(tau) == 1,"rq","rqs") 
+          class(fit) = ifelse(length(tau) == 1,"rq","rqs")
           }
     }
     else{
       process <- (tau < 0 || tau > 1)
-      if(process && method != "br") 
+      if(process && method != "br")
         stop("when tau not in [0,1] method br must be used")
       fit <- {
         if(length(weights))
@@ -181,7 +182,7 @@ function (formula, tau = 0.5, data, subset, weights, na.action, method = "br",
 	if(length(dim(fit$residuals)))
           dimnames(fit$residuals) <- list(dimnames(X)[[1]],NULL)
           rho <-  sum(Rho(fit$residuals,tau))
-          } 
+          }
 	if(method == "lasso") class(fit) <- c("lassorq","rq")
 	else if(method == "scad") class(fit) <- c("scadrq","rq")
         else class(fit) <- ifelse(process, "rq.process", "rq")
@@ -379,14 +380,14 @@ function (object, newdata, type = "Qhat", stepfun = FALSE, na.action = na.pass, 
    if(stepfun) {
        if(type == "Qhat"){
 	   pred <- rbind(pred[1,],pred)
-          if(M > 1) 
+          if(M > 1)
 	      f <- apply(pred, 2, function(y) stepfun(taus, y))
           else
               f <- stepfun(taus, c(pred[1,1], pred[,1]))
           }
        else if(type == "Fhat"){
 	   taus <- c(taus[1], taus)
-           if(M > 1) 
+           if(M > 1)
 	       f <- apply(pred, 2, function(y) {
                         o <- order(y)
                         stepfun(y[o], taus[c(1,o)])})
@@ -395,7 +396,7 @@ function (object, newdata, type = "Qhat", stepfun = FALSE, na.action = na.pass, 
        }
        else stop("Stepfuns must be either 'Qhat' or 'Fhat'\n")
        return(f)
-   } 
+   }
    else if(type == "fhat"){
 	akjfun <- function(z, p, d = 10, g = 300, ...) {
             mz <- sum(z * p)
@@ -405,7 +406,7 @@ function (object, newdata, type = "Qhat", stepfun = FALSE, na.action = na.pass, 
             approxfun(hz, fz)
         }
         p <- diff(taus)
-        if (M > 1) 
+        if (M > 1)
             f <- apply(pred[-1, ], 2, function(z) akjfun(z, p, ...))
         else akjfun(pred[, 1], p, ...)
         return(f)
@@ -438,7 +439,7 @@ function (object, newdata, type = "Qhat", stepfun = FALSE, na.action = na.pass, 
           }
        else if(type == "Fhat"){
 	  taus <- c(taus[1],taus)
-          if(M > 1) 
+          if(M > 1)
 	      f <- apply(pred,2,function(y) stepfun(y,taus))
           else
               f <- stepfun(pred[,1],taus)
@@ -455,7 +456,7 @@ function (object, newdata, type = "Qhat", stepfun = FALSE, na.action = na.pass, 
            approxfun(hz,fz)
 	}
 	p <- diff(taus)
-        if(M > 1) 
+        if(M > 1)
 	    f <- apply(pred[-1,], 2, function(z) akjfun(z, p, ...))
         else
 	   f = akjfun(pred[,1], p, ...)
@@ -664,15 +665,15 @@ function (x, y, tau = 0.5, alpha = 0.1, ci = FALSE, iid = TRUE,
     }
 }
 
-"rq.fit.conquer" <- function(x, y, tau = 0.5, kernel = c("Gaussian", "uniform", 
-    "parabolic", "triangular"), h = 0,  tol = 1e-04, 
+"rq.fit.conquer" <- function(x, y, tau = 0.5, kernel = c("Gaussian", "uniform",
+    "parabolic", "triangular"), h = 0,  tol = 1e-04,
     iteMax = 5000, ci = FALSE, alpha = 0.05, B = 200)
 {
     if(!requireNamespace("conquer", quietly = TRUE))
             stop("method conquer requires package conquer")
-    fit = conquer::conquer(x[,-1], y, tau = tau, kernel = kernel, h = h, 
+    fit = conquer::conquer(x[,-1], y, tau = tau, kernel = kernel, h = h,
 	tol = tol, iteMax = iteMax, ci = FALSE, alpha = alpha, B = 1000)
-    coefficients = fit$coeff 
+    coefficients = fit$coeff
     names(coefficients) = dimnames(x)[[2]]
     residuals = fit$residual
     list(coefficients = coefficients, tau = tau, residuals = residuals)
@@ -783,7 +784,7 @@ function (x, y, tau = 0.5, alpha = 3.2, lambda = 1, start = "rq", beta = 0.9995,
     	z <- .Fortran("rqfnb", as.integer(N), as.integer(p), a = as.double(t(as.matrix(X))),
         	c = as.double(-Y), vrhs = as.double(vrhs), d = as.double(d),
         	as.double(u), beta = as.double(beta), eps = as.double(eps),
-        	wn = as.double(wn), wp = double((p + 3) * p), 
+        	wn = as.double(wn), wp = double((p + 3) * p),
             	it.count = integer(3), info = integer(1))
 	coef <- -z$wp[1:p]
 	vscad <- c(0,dscad(coef[2:p]) * sign(coef[2:p]))
@@ -830,7 +831,7 @@ function (x, y, tau = 0.5, lambda = NULL, beta = 0.99995, eps = 1e-06)
     z <- .Fortran("rqfnb", as.integer(N), as.integer(p), a = as.double(t(as.matrix(X))),
         c = as.double(-Y), rhs = as.double(rhs), d = as.double(d),
         as.double(u), beta = as.double(beta), eps = as.double(eps),
-        wn = as.double(wn), wp = double((p + 3) * p), 
+        wn = as.double(wn), wp = double((p + 3) * p),
             it.count = integer(3), info = integer(1))
     if (z$info != 0)
         stop(paste("Error info = ", z$info, "in stepy2: singular design"))
@@ -954,7 +955,7 @@ function(x, y, tau = 0.5, weights, method = "br",  ...)
 		sfn = rq.fit.sfn(wx, wy, tau = tau, ...),
 		conquer = rq.fit.conquer(wx, wy, tau = tau, ...),
 		ppro = rq.fit.ppro(wx, wy, tau = tau, ...),
-                pfn = rq.fit.pfn(wx, wy, tau = tau, ...), 
+                pfn = rq.fit.pfn(wx, wy, tau = tau, ...),
                 pfnb = rq.fit.pfnb(wx, wy, tau = tau, ...), {
 			what <- paste("rq.fit.", method, sep = "")
 			if(exists(what, mode = "function"))
@@ -985,14 +986,14 @@ function (object, ...) {
                 xi$tau <- xi$tau[i]
                 class(xi) <- "rq"
                 xsum[[i]] <- summary(xi, U = U, ...)
-                if(i == 1 && length(xsum[[i]]$U)) U <- xsum[[i]]$U 
+                if(i == 1 && length(xsum[[i]]$U)) U <- xsum[[i]]$U
 		if(class(object)[1] == "dynrqs"){
 		    class(xsum[[1]]) <- c("summary.dynrq", "summary.rq")
 	            if(i == 1) xsum[[1]]$model <- object$model
 		    }
                 }
         class(xsum) <- "summary.rqs"
-	if(class(object)[1] == "dynrqs") 
+	if(class(object)[1] == "dynrqs")
 	    class(xsum) <- c("summary.dynrqs", "summary.rqs")
         xsum
         }
@@ -1250,7 +1251,7 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.
     B0 <- boot.rq.pxy(x, y, s, taub, bt, method = method)
     Bm <- boot.rq.pxy(x, y, s, tau = mbe * taub, bmbeb, method = method)
     B <- (mbe - 1) * taub * sqrt(mofn/(taub * (1-taub))) *
-	(B0 - b0)/c((Bm - B0) %*% xbar) 
+	(B0 - b0)/c((Bm - B0) %*% xbar)
     if (tau0 <= 0.5) {
         bbc <- b0 - apply(B, 2, quantile, .5, na.rm = TRUE)/An
         ciL <- b0 - apply(B, 2, quantile, 1 - alpha/2, na.rm = TRUE)/An
@@ -1367,18 +1368,18 @@ function(X, y, int = TRUE)
 }
 
 "rq.fit.hogg" <-
-function (x, y, taus = c(.1,.3,.5), weights = c(.7,.2,.1),  
-	R= NULL, r = NULL, beta = 0.99995, eps = 1e-06) 
+function (x, y, taus = c(.1,.3,.5), weights = c(.7,.2,.1),
+	R= NULL, r = NULL, beta = 0.99995, eps = 1e-06)
 {
     n <- length(y)
     n2 <- NROW(R)
     m <- length(taus)
     p <- ncol(x)+m
-    if (n != nrow(x)) 
+    if (n != nrow(x))
         stop("x and y don't match n")
-    if (m != length(weights)) 
+    if (m != length(weights))
         stop("taus and weights differ in length")
-    if (any(taus < eps) || any(taus > 1 - eps)) 
+    if (any(taus < eps) || any(taus > 1 - eps))
         stop("taus outside (0,1)")
     W <- diag(weights)
     if(m == 1) W <- weights
@@ -1397,31 +1398,31 @@ function (x, y, taus = c(.1,.3,.5), weights = c(.7,.2,.1),
        wn1 <- rep(0, 10 * m*n)
        wn1[1:(m*n)] <- .5
        wn2 <- rep(0,6*n2)
-       wn2[1:n2] <- 1 
-       z <- .Fortran("rqfnc", as.integer(m*n), as.integer(n2), as.integer(p), 
-           a1 = as.double(t(as.matrix(X))), c1 = as.double(-y), 
-           a2 = as.double(t(as.matrix(R))), c2 = as.double(-r), 
-           rhs = as.double(rhs), d1 = double(m*n), d2 = double(n2), 
-           as.double(u), beta = as.double(beta), eps = as.double(eps), 
-           wn1 = as.double(wn1), wn2 = as.double(wn2), wp = double((p + 3) * p), 
+       wn2[1:n2] <- 1
+       z <- .Fortran("rqfnc", as.integer(m*n), as.integer(n2), as.integer(p),
+           a1 = as.double(t(as.matrix(X))), c1 = as.double(-y),
+           a2 = as.double(t(as.matrix(R))), c2 = as.double(-r),
+           rhs = as.double(rhs), d1 = double(m*n), d2 = double(n2),
+           as.double(u), beta = as.double(beta), eps = as.double(eps),
+           wn1 = as.double(wn1), wn2 = as.double(wn2), wp = double((p + 3) * p),
 	   it.count = integer(3), info = integer(1))
 	}
     else{
 	wn <- rep(0, 10 * m*n)
     	wn[1:(m*n)] <- .5
-    	z <- .Fortran("rqfnb", as.integer(m*n), as.integer(p), a = as.double(t(as.matrix(X))), 
-		c = as.double(-y), rhs = as.double(rhs), d = as.double(d), as.double(u), 
-		beta = as.double(beta), eps = as.double(eps), wn = as.double(wn), 
+    	z <- .Fortran("rqfnb", as.integer(m*n), as.integer(p), a = as.double(t(as.matrix(X))),
+		c = as.double(-y), rhs = as.double(rhs), d = as.double(d), as.double(u),
+		beta = as.double(beta), eps = as.double(eps), wn = as.double(wn),
 		wp = double((p + 3) * p), it.count = integer(2), info = integer(1))
 	}
-    if (z$info != 0) 
+    if (z$info != 0)
         warning(paste("Info = ", z$info, "in stepy: singular design: iterations ", z$it.count[1]))
     coefficients <- -z$wp[1:p]
     if(any(is.na(coefficients)))stop("NA coefs:  infeasible problem?")
     list(coefficients = coefficients, nit = z$it.count, flag = z$info)
 }
 #preprocessing for the QR process
-"rq.fit.ppro" <- function (x, y, tau, weights=NULL, Mm.factor = 0.8, eps = 1e-06, ...) 
+"rq.fit.ppro" <- function (x, y, tau, weights=NULL, Mm.factor = 0.8, eps = 1e-06, ...)
 {
   ntau <- length(tau)
   n <- length(y)
@@ -1533,8 +1534,8 @@ rq.fit.qfnb <- function(x,y,tau){
 rq.fit.pfnb <- function (x, y, tau, m0 = NULL, eps = 1e-06) {
     m <- length(tau)
     n <- length(y)
-    if(!is.matrix(x)) dim(x) <- c(n,1) 
-    if (nrow(x) != n) 
+    if(!is.matrix(x)) dim(x) <- c(n,1)
+    if (nrow(x) != n)
         stop("x and y don't match n")
     p <- ncol(x)
     if(!length(m0))

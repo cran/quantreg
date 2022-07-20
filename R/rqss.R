@@ -31,26 +31,26 @@ function (tt, special, order = 1)
 }
 
 "qss" <-
-function (x, constraint = "N", lambda = 1, ndum = 0, dummies = NULL, 
-    Dorder = 1, w = rep(1, length(x))) 
+function (x, constraint = "N", lambda = 1, ndum = 0, dummies = NULL,
+    Dorder = 1, w = rep(1, length(x)))
 {
     if (is.matrix(x)) {
-        if (ncol(x) == 2) 
-            qss <- qss2(x, constraint = constraint, dummies = dummies, 
+        if (ncol(x) == 2)
+            qss <- qss2(x, constraint = constraint, dummies = dummies,
                 lambda = lambda, ndum = ndum, w = w)
-        else if (ncol(x) == 1) 
+        else if (ncol(x) == 1)
             x <- as.vector(x)
         else stop("qss objects must have dimension 1 or 2")
     }
     else if (is.numeric(x)) {
 	if(Dorder == 1)
-	    qss <- qss1(x, constraint = constraint, lambda = lambda, 
+	    qss <- qss1(x, constraint = constraint, lambda = lambda,
 		dummies = dummies, ndum = ndum, w = w)
 	else if(Dorder == 0){
 	    if(!(constraint %in% c("N","I","D")))
 		stop("This constraint not implemented for Dorder = 0")
 	    else
-		qss <- qts1(x, constraint = constraint, lambda = lambda, 
+		qss <- qts1(x, constraint = constraint, lambda = lambda,
 		    dummies = dummies, ndum = ndum, w = w)
 	}
 	else
@@ -100,7 +100,7 @@ function(x, y, constraint = "N", lambda = 1, ndum= 0, dummies = NULL, w=rep(1,le
 #       o  lambda's
 #       o  ...
 #
-   stopifnot(requireNamespace("tripack"))
+   stopifnot(requireNamespace("tripack", quietly = TRUE))
 #
     y <- x[,2]
     x <- x[,1]
@@ -124,8 +124,8 @@ function(x, y, constraint = "N", lambda = 1, ndum= 0, dummies = NULL, w=rep(1,le
         lambda = lambda, A = A[, -1], R = R[, -1], r = r)
 }
 
-qts1 <- function (x, constraint = "N", lambda = 1, dummies = dummies, 
-    ndum = 0, w = rep(1, length(x))) 
+qts1 <- function (x, constraint = "N", lambda = 1, dummies = dummies,
+    ndum = 0, w = rep(1, length(x)))
 { # This is the taut string TV(g) not TV(g') penalty option
     xun <- unique(x[order(x)])
     h <- diff(xun)
@@ -138,18 +138,18 @@ qts1 <- function (x, constraint = "N", lambda = 1, dummies = dummies,
             ia = as.integer(2 * (1:p) - 1), dimension = as.integer(c(p -
                 1, p)))
     }
-    A <- new("matrix.csr", ra = c(rbind(-1/h, 1/h)), ja = as.integer(c(rbind(1:nh, 
-        2:(nh + 1)))), ia = as.integer(2 * (1:(nh + 1)) - 1), 
+    A <- new("matrix.csr", ra = c(rbind(-1/h, 1/h)), ja = as.integer(c(rbind(1:nh,
+        2:(nh + 1)))), ia = as.integer(2 * (1:(nh + 1)) - 1),
         dimension = as.integer(c(nh, nh + 1)))
     if (length(xun) == length(x)) {
-        F <- new("matrix.csr", ra = rep(1, nx), ja = as.integer(rank(x)), 
+        F <- new("matrix.csr", ra = rep(1, nx), ja = as.integer(rank(x)),
             ia = 1:(nx + 1), dimension = as.integer(c(nx, nx)))
     }
     else {
-        F <- new("matrix.csr", ra = rep(1, nx), ja = as.integer(factor(x)), 
+        F <- new("matrix.csr", ra = rep(1, nx), ja = as.integer(factor(x)),
             ia = 1:(nx + 1), dimension = as.integer(c(nx, length(xun))))
     }
-    switch(constraint, 
+    switch(constraint,
 	   I = {R <- makeD(p); r <- rep(0, p-1)},
 	   D = {R <- -makeD(p); r <- rep(0, p-1)},
 	   N = {R <- NULL; r <- NULL})
@@ -255,7 +255,7 @@ function (x, constraint = "N", lambda = 1, dummies = dummies,
 		},
 	N = { R=NULL; r=NULL}
 	)
-   list(x = list(x=xun), F=F[,-1], lambda = lambda, A=A[,-1], 
+   list(x = list(x=xun), F=F[,-1], lambda = lambda, A=A[,-1],
 	Dorder = 1, R=R[,-1], r=r)
 }
 "plot.qss1" <-
@@ -270,13 +270,13 @@ function(x, rug = TRUE, jit = TRUE, add = FALSE, ...)
     }
 }
 "plot.qts1" <-
-function (x, rug = TRUE, jit = TRUE, add = FALSE, ...) 
+function (x, rug = TRUE, jit = TRUE, add = FALSE, ...)
 {
-    if (!add) 
+    if (!add)
         plot(x, type = "S", ...)
     lines(x, type = "S", ...)
     if (rug) {
-        if (jit) 
+        if (jit)
             rug(jitter(x[, 1]))
         else rug(x[, 1])
     }
@@ -284,7 +284,7 @@ function (x, rug = TRUE, jit = TRUE, add = FALSE, ...)
 "plot.qss2" <-
 function (x, render = "contour", ncol = 100, zcol = NULL, ...)
 {
-    stopifnot(requireNamespace("tripack"))
+    stopifnot(requireNamespace("tripack", auietly = TRUE))
     y <- x[, 2]
     z <- x[, 3]
     x <- x[, 1]
@@ -304,29 +304,29 @@ function (x, render = "contour", ncol = 100, zcol = NULL, ...)
         rgl::rgl.triangles(x[s], y[s], z[s], col = colz[s])
     }
     else {
-        stopifnot(requireNamespace("akima"))
+        stopifnot(requireNamespace("interp", quietly = TRUE))
         if(render == "contour"){
                 plot(x, y, type = "n", ...)
-                contour(akima::interp(x, y, z), add = TRUE, frame.plot = TRUE, ...)
+                contour(interp::interp(x, y, z), add = TRUE, frame.plot = TRUE, ...)
                 tripack::convex.hull(tri, plot.it = TRUE, add = TRUE)
                 }
         else if(render == "persp")
-                persp(akima::interp(x, y, z, ), theta = -40, phi = 20, xlab = "x",
+                persp(interp::interp(x, y, z, ), theta = -40, phi = 20, xlab = "x",
                         ylab = "y", zlab = "z", ...)
         else stop(paste("Unable to render: ",render))
     }
 }
 plot.rqss <-
-function (x, rug = TRUE, jit = TRUE, bands = NULL, coverage = 0.95, add = FALSE, 
-	  shade = TRUE, select = NULL, pages = 0, titles = NULL, bcol = NULL, ...) 
+function (x, rug = TRUE, jit = TRUE, bands = NULL, coverage = 0.95, add = FALSE,
+	  shade = TRUE, select = NULL, pages = 0, titles = NULL, bcol = NULL, ...)
 {
     SetLayout <- function(m, p) {
             # Shamelessly cribbed from mgcv
             # m is the number of plots
             # p is the number of pages
-        if (p > m) 
+        if (p > m)
             p <- m
-        if (p < 0) 
+        if (p < 0)
             p <- 0
         if (p != 0) {
             q <- m%/%p
@@ -335,10 +335,10 @@ function (x, rug = TRUE, jit = TRUE, bands = NULL, coverage = 0.95, add = FALSE,
                 while (q * (p - 1) >= m) p <- p - 1
             }
             c <- trunc(sqrt(q))
-            if (c < 1) 
+            if (c < 1)
                 c <- 1
             r <- q%/%c
-            if (r < 1) 
+            if (r < 1)
                 r <- 1
             while (r * c < q) r <- r + 1
             while (r * c - q > c && r > 1) r <- r - 1
@@ -349,18 +349,18 @@ function (x, rug = TRUE, jit = TRUE, bands = NULL, coverage = 0.95, add = FALSE,
         return(oldpar)
     }
     m <- length(x$qss)
-    if (m == 0) 
+    if (m == 0)
         stop("No qss object to plot")
     if(length(select)) {
         if(all(select %in% 1:m))
             oldpar <- SetLayout(length(select), pages)
         else
-            stop(paste("select must be in 1:",m,sep="")) 
+            stop(paste("select must be in 1:",m,sep=""))
         }
     else
         oldpar <- SetLayout(m, pages)
-    if ((pages == 0 && prod(par("mfrow")) < m && dev.interactive()) || 
-        pages > 1 && dev.interactive()) 
+    if ((pages == 0 && prod(par("mfrow")) < m && dev.interactive()) ||
+        pages > 1 && dev.interactive())
         ask <- TRUE
     else ask <- FALSE
     if (ask) {
@@ -377,14 +377,14 @@ function (x, rug = TRUE, jit = TRUE, bands = NULL, coverage = 0.95, add = FALSE,
 	}
     if (length(bands)) {
         rdf <- x$n - x$edf
-        if (any(unlist(lapply(x$qss, function(x) ncol(x$xyz) == 3)))) 
+        if (any(unlist(lapply(x$qss, function(x) ncol(x$xyz) == 3))))
             warning("Can't plot confidence bands in 3D (yet)")
         band <- as.list(rep(NA, m))
         V <- summary(x, cov = TRUE, ...)$Vqss
         "summary.qss1" <- function(object, V, ngrid = 400, ...) {
             x <- object$xyz[, 1]
             eps <- 0.01
-            newd <- data.frame(x = seq(min(x) + eps, max(x) - 
+            newd <- data.frame(x = seq(min(x) + eps, max(x) -
                 eps, length = ngrid))
             G <- predict(object, newd, ...)
             ones <- as.matrix.csr(matrix(1, nrow(G$D), 1))
@@ -405,23 +405,23 @@ function (x, rug = TRUE, jit = TRUE, bands = NULL, coverage = 0.95, add = FALSE,
                 if(bands == "both") cv <- c(cvu,cv)
                 else cv <- cvu
                 }
-            list(pred = data.frame(x = G$x, y = G$y, se = se), 
+            list(pred = data.frame(x = G$x, y = G$y, se = se),
                 cv = cv)
         }
     }
-    if(!length(select)) 
+    if(!length(select))
         select <- 1:m
     for (i in select) {
-	if(!is.null(x$qss[[i]]$Dorder)){ 
+	if(!is.null(x$qss[[i]]$Dorder)){
 	    if(x$qss[[i]]$Dorder == 0){
 		qts <- x$qss[[i]]$xyz
 		qts[, 2] <- x$coef[1] + qts[, 2]
 		plot.qts1(qts, add = add, ...)
 		}
-	    else { 
+	    else {
 		qss <- x$qss[[i]]$xyz
 		if (length(bands)) {
-		    if (is.na(x$coef["(Intercept)"])) 
+		    if (is.na(x$coef["(Intercept)"]))
 			stop("rqss confidence bands require an intercept parameter")
 		    B <- summary(x$qss[[i]], V[[i]], ...)
 		    cv <- B$cv
@@ -429,23 +429,23 @@ function (x, rug = TRUE, jit = TRUE, bands = NULL, coverage = 0.95, add = FALSE,
 		    B$y <- B$y + x$coef["(Intercept)"]
 		    if(!length(bcol)) bcol <- c("grey85","grey65")
 		    for(k in 1:length(cv)){
-			if (add || k > 1) 
+			if (add || k > 1)
 			    if(shade){
 				polygon(c(B$x,rev(B$x)),
 				c(B$y - cv[k] * B$se,rev(B$y + cv[k] * B$se)),
 				col = bcol[k], border = FALSE)
 			    }
 			    else
-				matlines(B$x, cbind(B$y, B$y + cv[k] * cbind(-B$se, 
+				matlines(B$x, cbind(B$y, B$y + cv[k] * cbind(-B$se,
 				B$se)), lty = c(1, 2, 2), col = c("black", "blue", "blue"))
 			else {
-			    matplot(B$x, B$y + cv[k] * cbind(-B$se, B$se), 
+			    matplot(B$x, B$y + cv[k] * cbind(-B$se, B$se),
 				xlab = paste(qssnames[i]), ylab = "Effect", type = "n", ...)
 			    if(shade){
 				polygon(c(B$x,rev(B$x)),
 				    c(B$y - cv[k] * B$se,rev(B$y + cv[k] * B$se)),
 				    col = bcol[k], border = FALSE)
-			    } 
+			    }
 			    else{
 				lines(B$x, B$y + cv * B$se, lty = 2, ...)
 				lines(B$x, B$y - cv * B$se, lty = 2, ...)
@@ -455,14 +455,14 @@ function (x, rug = TRUE, jit = TRUE, bands = NULL, coverage = 0.95, add = FALSE,
 		    }
 		    band[[i]] <- list(x = B$x, blo = B$y - B$se %o% cv, bhi = B$y + B$se %o% cv)
 		    if (rug) {
-			if (jit) 
+			if (jit)
 			    rug(jitter(qss[, 1]))
 			else rug(qss[, 1])
                     }
 		}
 		else {
 		    qss[, 2] <- x$coef[1] + qss[, 2]
-		    plot.qss1(qss, xlab = paste(qssnames[i]), ylab = "Effect", 
+		    plot.qss1(qss, xlab = paste(qssnames[i]), ylab = "Effect",
 		    rug = rug, jit = jit, add = add, ...)
 		}
 	    }
@@ -474,9 +474,9 @@ function (x, rug = TRUE, jit = TRUE, bands = NULL, coverage = 0.95, add = FALSE,
         }
 	title(titles[i])
     }
-    if (pages > 0) 
+    if (pages > 0)
         par(oldpar)
-    if (length(bands)) 
+    if (length(bands))
         class(band) <- "rqssband"
     else
         band <- NULL
@@ -542,7 +542,7 @@ list(x=x,y=y,F=z, dummies = dummies)
     z <- .Fortran("penalty", as.integer(n), as.integer(m), as.integer(q),
         as.double(x), as.double(y), as.integer(bnd),as.integer(tri$tlist),
         as.integer(tri$tlptr), as.integer(tri$tlend), rax = double(m),
-	jax = integer(m), ned = integer(1), as.double(eps), 
+	jax = integer(m), ned = integer(1), as.double(eps),
 	ierr = integer(1))[c("rax", "jax", "iax", "ned", "ierr")]
     if (z$ierr == 1)
         stop("collinearity in ggap")
@@ -555,12 +555,12 @@ list(x=x,y=y,F=z, dummies = dummies)
 }
 
 predict.rqss <-
-function (object, newdata, interval = "none",  level = 0.95, ...) 
+function (object, newdata, interval = "none",  level = 0.95, ...)
 {
     ff <- object$fake.formula
     Terms <- delete.response(terms(object$formula, "qss"))
     Names <- all.vars(parse(text = ff))
-    if (any(!(Names %in% names(newdata)))) 
+    if (any(!(Names %in% names(newdata))))
         stop("newdata doesn't include some model variables")
     #ff <- reformulate(ff)
     nd <- eval(model.frame(ff, data = newdata), parent.frame())
@@ -569,7 +569,7 @@ function (object, newdata, interval = "none",  level = 0.95, ...)
         tmp <- untangle.specials(Terms, "qss")
         dropv <- tmp$terms
         m <- length(dropv)
-        if (length(dropv)) 
+        if (length(dropv))
             PLTerms <- Terms[-dropv]
         attr(PLTerms, "specials") <- tmp$vars
     }
@@ -577,8 +577,9 @@ function (object, newdata, interval = "none",  level = 0.95, ...)
         PLTerms <- Terms
         m <- 0
     }
-    if(requireNamespace("MatrixModels") && requireNamespace("Matrix"))
-        X <- as(MatrixModels::model.Matrix(PLTerms, data = nd, 
+    if(requireNamespace("MatrixModels", quietly = TRUE)
+       && requireNamespace("Matrix", quietly = TRUE))
+        X <- as(MatrixModels::model.Matrix(PLTerms, data = nd,
 		  contrasts = contrasts, sparse = TRUE),"matrix.csr")
     else
         X <- model.matrix(PLTerms, data = nd)
@@ -619,7 +620,7 @@ function (object, newdata, interval = "none",  level = 0.95, ...)
 function (object, newdata, ...)
 {
     x <- object$xyz[, 1]
-    y <- object$xyz[, 2] 
+    y <- object$xyz[, 2]
     if(ncol(newdata)==1)
         newdata <- newdata[,1]
     else
@@ -645,7 +646,7 @@ function (object, newdata, ...)
 function (object, newdata, ...)
 {
     x <- object$xyz[, 1]
-    y <- object$xyz[, 2] 
+    y <- object$xyz[, 2]
     if(ncol(newdata)==1)
         newdata <- newdata[,1]
     else
@@ -668,13 +669,13 @@ function (object, newdata, ...)
     list(x = newdata, y = D %*% y, D = D[, -1])
 }
 
-predict.qss2 <- function (object, newdata, ...) 
+predict.qss2 <- function (object, newdata, ...)
 {
     x <- object[, 1]
     y <- object[, 2]
     z <- object[, 3]
     tri.area <- function(v) {
-        0.5 * ((v[2, 1] - v[1, 1]) * (v[3, 2] - v[1, 2]) - (v[3, 
+        0.5 * ((v[2, 1] - v[1, 1]) * (v[3, 2] - v[1, 2]) - (v[3,
             1] - v[1, 1]) * (v[2, 2] - v[1, 2]))
     }
     barycentric <- function(v) {
@@ -683,7 +684,7 @@ predict.qss2 <- function (object, newdata, ...)
         b[1] <- tri.area(v[c(4, 2, 3), ])/Area
         b[2] <- tri.area(v[c(1, 4, 3), ])/Area
         b[3] <- tri.area(v[c(1, 2, 4), ])/Area
-        if (any(b < 0) || any(b > 1)) 
+        if (any(b < 0) || any(b > 1))
             stop("barycentric snafu")
         b
     }
@@ -695,14 +696,14 @@ predict.qss2 <- function (object, newdata, ...)
 	   }
         else (stop("qss object and newdata frame names conflict"))
         }
-    else if (is.matrix(newdata)) 
+    else if (is.matrix(newdata))
         if (ncol(newdata) == 2) {
             newx <- newdata[, 1]
             newy <- newdata[, 2]
         }
         else (stop("newdata matrix must have 2 columns"))
     tri <- tripack::tri.mesh(x, y)
-    if (!all(tripack::in.convex.hull(tri, newx, newy))) 
+    if (!all(tripack::in.convex.hull(tri, newx, newy)))
         stop("some newdata points outside convex hull")
     p <- length(x)
     m <- length(newx)
@@ -716,7 +717,7 @@ predict.qss2 <- function (object, newdata, ...)
     ra <- c(t(B))
     ja <- as.integer(c(t(V)))
     ia <- as.integer(3 * (0:m) + 1)
-    D <- new("matrix.csr", ra = ra, ja = ja, ia = ia, dimension = c(m, 
+    D <- new("matrix.csr", ra = ra, ja = ja, ia = ia, dimension = c(m,
         p))
     list(x = newx, y = newy, z = c(D %*% z), D = D[,-1])
 }
@@ -724,9 +725,9 @@ predict.qss2 <- function (object, newdata, ...)
 fitted.rqss  <-  function(object, ...) (object$X %*% object$coef)[1:object$n]
 resid.rqss <- function(object, ...) object$resid[1:object$n]
 
-rqss <- function (formula, tau = 0.5, data = parent.frame(), weights, 
-    subset, na.action, method = "sfn", lambda = NULL, contrasts = NULL, 
-    ztol = 1e-05, control = sfn.control(), ...) 
+rqss <- function (formula, tau = 0.5, data = parent.frame(), weights,
+    subset, na.action, method = "sfn", lambda = NULL, contrasts = NULL,
+    ztol = 1e-05, control = sfn.control(), ...)
 {
     call <- match.call()
     m <- match.call(expand.dots = FALSE)
@@ -734,7 +735,7 @@ rqss <- function (formula, tau = 0.5, data = parent.frame(), weights,
     m <- m[match(temp, names(m), nomatch = 0)]
     m[[1]] <- as.name("model.frame")
     special <- "qss"
-    Terms <- if (missing(data)) 
+    Terms <- if (missing(data))
         terms(formula, special)
     else terms(formula, special, data = data)
     qssterms <- attr(Terms, "specials")$qss
@@ -746,15 +747,15 @@ rqss <- function (formula, tau = 0.5, data = parent.frame(), weights,
     if (length(qssterms)) {
         tmpc <- untangle.specials(Terms, "qss")
         ord <- attr(Terms, "order")[tmpc$terms]
-        if (any(ord > 1)) 
+        if (any(ord > 1))
             stop("qss can not be used in an interaction")
         dropx <- tmpc$terms
-        if (length(dropx)) 
+        if (length(dropx))
             Terms <- Terms[-dropx]
         attr(Terms, "specials") <- tmpc$vars
         fnames <- function(x) {
             fy <- all.names(x[[2]])
-            if (fy[1] == "cbind") 
+            if (fy[1] == "cbind")
                 fy <- fy[-1]
             fy
         }
@@ -778,8 +779,9 @@ rqss <- function (formula, tau = 0.5, data = parent.frame(), weights,
     weights <- model.extract(m, weights)
     process <- (tau < 0 || tau > 1)
     Y <- model.extract(m, "response")
-    if (requireNamespace("MatrixModels") && requireNamespace("Matrix")) {
-        X <- MatrixModels::model.Matrix(Terms, m, contrasts.arg = contrasts, 
+    if (requireNamespace("MatrixModels", quietly = TRUE)
+        && requireNamespace("Matrix", quietly = TRUE)) {
+        X <- MatrixModels::model.Matrix(Terms, m, contrasts.arg = contrasts,
             sparse = TRUE)
         vnames <- dimnames(X)[[2]]
         X <- as(X, "matrix.csr")
@@ -792,13 +794,13 @@ rqss <- function (formula, tau = 0.5, data = parent.frame(), weights,
     pf <- environment(formula)
     nrL <- 0
     if (method == "lasso") {
-        if (!length(lambda)) 
+        if (!length(lambda))
             stop("No lambda specified for lasso constraint")
-        if (length(lambda) == 1) 
+        if (length(lambda) == 1)
             lambda <- c(0, rep(lambda, p - 1))
-        if (length(lambda) != p) 
+        if (length(lambda) != p)
             stop("lambda must be either of length p, or length 1")
-        if (any(lambda < 0)) 
+        if (any(lambda < 0))
             stop("negative lambdas disallowed")
         L <- diag(lambda, nrow = length(lambda))
         L <- L[which(lambda != 0), , drop = FALSE]
@@ -818,9 +820,9 @@ rqss <- function (formula, tau = 0.5, data = parent.frame(), weights,
             F <- cbind(F, qss[[i]]$F)
             ncA[i + 1] <- ncol(qss[[i]]$A)
             nrA[i + 1] <- nrow(qss[[i]]$A)
-            nrR[i + 1] <- ifelse(is.null(nrow(qss[[i]]$R)), 0, 
+            nrR[i + 1] <- ifelse(is.null(nrow(qss[[i]]$R)), 0,
                 nrow(qss[[i]]$R))
-            vnames <- c(vnames, paste(qssnames[i], 1:ncA[i + 
+            vnames <- c(vnames, paste(qssnames[i], 1:ncA[i +
                 1], sep = ""))
         }
         A <- as.matrix.csr(0, sum(nrA), sum(ncA))
@@ -836,8 +838,8 @@ rqss <- function (formula, tau = 0.5, data = parent.frame(), weights,
             Arows <- (1 + nrA[i]):nrA[i + 1]
             Acols <- (1 + ncA[i]):ncA[i + 1]
             A[Arows, Acols] <- qss[[i]]$lambda * qss[[i]]$A
-            if (nrR[i] < nrR[i + 1]) 
-                R[(1 + nrR[i]):nrR[i + 1], (1 + ncA[i]):ncA[i + 
+            if (nrR[i] < nrR[i + 1])
+                R[(1 + nrR[i]):nrR[i + 1], (1 + ncA[i]):ncA[i +
                   1]] <- qss[[i]]$R
         }
         A <- cbind(as.matrix.csr(0, nrA[mqss + 1], p), A)
@@ -849,7 +851,7 @@ rqss <- function (formula, tau = 0.5, data = parent.frame(), weights,
             R <- NULL
             r <- NULL
         }
-        if (method == "lasso") 
+        if (method == "lasso")
             A <- rbind(cbind(L, as.matrix.csr(0, nrL, ncol(F) - ncL)), A)
 	if(length(weights)){
 	   F <- F * weights
@@ -860,27 +862,27 @@ rqss <- function (formula, tau = 0.5, data = parent.frame(), weights,
         rhs <- t(rbind((1 - tau) * F, 0.5 * A)) %*% rep(1, nrow(X))
         XpX <- t(X) %*% X
         nnzdmax <- XpX@ia[length(XpX@ia)] - 1
-        if (is.null(control[["nsubmax"]])) 
-            control[["nsubmax"]] <- max(nnzdmax, floor(1000 + 
+        if (is.null(control[["nsubmax"]]))
+            control[["nsubmax"]] <- max(nnzdmax, floor(1000 +
                 exp(-1.6) * nnzdmax^1.2))
-        if (is.null(control[["nnzlmax"]])) 
-            control[["nnzlmax"]] <- floor(2e+05 - 2.8 * nnzdmax + 
+        if (is.null(control[["nnzlmax"]]))
+            control[["nnzlmax"]] <- floor(2e+05 - 2.8 * nnzdmax +
                 7e-04 * nnzdmax^2)
-        if (is.null(control[["tmpmax"]])) 
-            control[["tmpmax"]] <- floor(1e+05 + exp(-12.1) * 
+        if (is.null(control[["tmpmax"]]))
+            control[["tmpmax"]] <- floor(1e+05 + exp(-12.1) *
                 nnzdmax^2.35)
-        fit <- if (length(r) > 0) 
-            rqss.fit(X, Y, tau = tau, rhs = rhs, method = "sfnc", 
+        fit <- if (length(r) > 0)
+            rqss.fit(X, Y, tau = tau, rhs = rhs, method = "sfnc",
                 R = R, r = r, control = control, ...)
-        else rqss.fit(X, Y, tau = tau, rhs = rhs, method = "sfn", 
+        else rqss.fit(X, Y, tau = tau, rhs = rhs, method = "sfn",
             control = control, ...)
         for (i in 1:mqss) {
             ML <- p + 1 + ncA[i]
             MU <- p + ncA[i + 1]
-            qss[[i]] <- list(xyz = cbind(qss[[i]]$x$x, qss[[i]]$x$y, 
-                c(0, fit$coef[ML:MU])), dummies = qss[[i]]$dummies, 
+            qss[[i]] <- list(xyz = cbind(qss[[i]]$x$x, qss[[i]]$x$y,
+                c(0, fit$coef[ML:MU])), dummies = qss[[i]]$dummies,
 			     Dorder = qss[[i]]$Dorder)
-            if (ncol(qss[[i]]$xyz) == 2) 
+            if (ncol(qss[[i]]$xyz) == 2)
                 class(qss[[i]]) <- ifelse(qss[[i]]$Dorder == 1,"qss1", "qts1")
             else class(qss[[i]]) <- "qss2"
         }
@@ -891,30 +893,30 @@ rqss <- function (formula, tau = 0.5, data = parent.frame(), weights,
         X <- as.matrix.csr(X)
         nrA <- 0
         if (method == "lasso") {
-            rhs <- t(rbind((1 - tau) * X, 0.5 * L)) %*% rep(1, 
+            rhs <- t(rbind((1 - tau) * X, 0.5 * L)) %*% rep(1,
                 nrow(X) + nrow(L))
             X <- rbind(X, L)
             Y <- c(Y, rep(0, nrL))
         }
         else rhs <- NULL
         if (length(weights)) {
-            if (any(weights < 0)) 
+            if (any(weights < 0))
                 stop("negative weights not allowed")
             X <- X * weights
             Y <- Y * weights
         }
         XpX <- t(X) %*% X
         nnzdmax <- XpX@ia[length(XpX@ia)] - 1
-        if (is.null(control[["nsubmax"]])) 
-            control[["nsubmax"]] <- max(nnzdmax, floor(1000 + 
+        if (is.null(control[["nsubmax"]]))
+            control[["nsubmax"]] <- max(nnzdmax, floor(1000 +
                 exp(-1.6) * nnzdmax^1.2))
-        if (is.null(control[["nnzlmax"]])) 
-            control[["nnzlmax"]] <- floor(2e+05 - 2.8 * nnzdmax + 
+        if (is.null(control[["nnzlmax"]]))
+            control[["nnzlmax"]] <- floor(2e+05 - 2.8 * nnzdmax +
                 7e-04 * nnzdmax^2)
-        if (is.null(control[["tmpmax"]])) 
-            control[["tmpmax"]] <- floor(1e+05 + exp(-12.1) * 
+        if (is.null(control[["tmpmax"]]))
+            control[["tmpmax"]] <- floor(1e+05 + exp(-12.1) *
                 nnzdmax^2.35)
-        fit <- rqss.fit(X, Y, tau = tau, rhs = rhs, control = control, 
+        fit <- rqss.fit(X, Y, tau = tau, rhs = rhs, control = control,
             method = method, ...)
         fit$nrA <- nrA
     }
@@ -946,13 +948,13 @@ rqss <- function (formula, tau = 0.5, data = parent.frame(), weights,
     class(fit) <- "rqss"
     fit
 }
-"Munge" <- function(formula, ...) { 
+"Munge" <- function(formula, ...) {
     # Recursive substitution {per Gabor Grothendieck}
     if (length(formula) > 1) {
-	if (identical(formula[[2]], as.name(names(list(...))))) 
+	if (identical(formula[[2]], as.name(names(list(...)))))
 	    formula <- eval(formula, list(...))
-	if (length(formula) > 1) 
-	    for (i in 1:length(formula)) 
+	if (length(formula) > 1)
+	    for (i in 1:length(formula))
 		formula[[i]] <- Recall(formula[[i]], ...)
 	}
    formula
@@ -1044,7 +1046,7 @@ rqss <- function (formula, tau = 0.5, data = parent.frame(), weights,
     cat("Quantile fidelity at tau = ", x$tau, "is", sx$fidelity, "\n")
     cat("Estimated Model Dimension is", sx$edf, "\n")
 }
- 
+
 "logLik.rqss" <- function(object, ...){
 	n <- object$n
 	tau <- object$tau
@@ -1056,7 +1058,7 @@ rqss <- function (formula, tau = 0.5, data = parent.frame(), weights,
 	}
 "AIC.rqss" <- function(object, ... , k = 2){
 	v <- logLik(object)
-	if(k < 0) 
+	if(k < 0)
 		k <- log(attr(v,"n"))
 	val <- AIC(logLik(object), k = k)
 	attr(val,"edf") <- attr(v,"df")
@@ -1077,29 +1079,29 @@ rqss <- function (formula, tau = 0.5, data = parent.frame(), weights,
 		stop("invalid type")
 	v
 }
-	
+
 print.summary.rqss <-
-function (x, digits = max(3, getOption("digits") - 3), signif.stars = getOption("show.signif.stars"), 
-    ...) 
+function (x, digits = max(3, getOption("digits") - 3), signif.stars = getOption("show.signif.stars"),
+    ...)
 {
     cat("Formula:\n")
     print(x$formula)
     if (length(x$coef) > 0) {
         cat("\nParametric coefficients:\n")
-        printCoefmat(x$coef, digits = digits, signif.stars = signif.stars, 
+        printCoefmat(x$coef, digits = digits, signif.stars = signif.stars,
             na.print = "NA", ...)
     }
     cat("\n")
     if (length(x$qsstab) > 0) {
         cat("Approximate significance of qss terms:\n")
-        printCoefmat(x$qsstab, digits = digits, signif.stars = signif.stars, 
+        printCoefmat(x$qsstab, digits = digits, signif.stars = signif.stars,
             has.Pvalue = TRUE, na.print = "NA", cs.ind = 1, ...)
     }
     cat("\n")
-    if (length(x$fidelity) > 0) 
-        cat("  Quantile Fidelity at tau = ", x$tau, "  is  ", formatC(x$fidelity, 
+    if (length(x$fidelity) > 0)
+        cat("  Quantile Fidelity at tau = ", x$tau, "  is  ", formatC(x$fidelity,
 		digits = 6, width = 11), "\n", sep = "")
-    cat("  Effective Degrees of Freedom = ", formatC(x$edf, digits = 5, width = 8, 
+    cat("  Effective Degrees of Freedom = ", formatC(x$edf, digits = 5, width = 8,
         flag = "-"), "  Sample Size = ", x$n, "\n", sep = "")
     invisible(x)
 }

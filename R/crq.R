@@ -591,6 +591,7 @@ function (object, taus = 1:4/5, alpha = .05, se = "boot", covariance = TRUE, ...
        return(object)
        }
     else if(method == "Portnoy" || method == "Portnoy2" || method == "PengHuang") {
+	if(length(taus) == 1) taus <- c(taus, taus) # Kludge to avoid dimensional errors
        coef <- as.matrix(coef(object,taus))
        coef <- coef[,apply(coef,2,function(x) any(!is.na(x))),drop = FALSE] # Delete NA columns if any
        if(ctype == "right") taus <- taus[1:ncol(coef)]

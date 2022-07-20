@@ -1,12 +1,13 @@
 Package: quantreg
 Title: Quantile Regression
-Description: Estimation and inference methods for models of conditional quantiles: 
+Description: Estimation and inference methods for models for conditional quantile functions: 
   Linear and nonlinear parametric and non-parametric (total variation penalized) models 
   for conditional quantiles of a univariate response and several methods for handling
   censored survival data.  Portfolio selection methods based on expected shortfall
-  risk are also now included. See Koenker (2006) <doi:10.1017/CBO9780511754098> and
-  Koenker et al. (2017) <doi:10.1201/9781315120256>. 
-Version: 5.93
+  risk are also now included. See Koenker, R. (2005) Quantile Regression, Cambridge U. Press,
+  <doi:10.1017/CBO9780511754098> and Koenker, R. et al. (2017) Handbook of Quantile Regression, 
+  CRC Press, <doi:10.1201/9781315120256>. 
+Version: 5.94
 Authors@R: c(
     person("Roger", "Koenker",  role = c("cre","aut"), email =  "rkoenker@illinois.edu"),
     person("Stephen", "Portnoy",  role = c("ctb"), 
@@ -36,13 +37,13 @@ Maintainer: Roger Koenker <rkoenker@illinois.edu>
 Repository: CRAN
 Depends: R (>= 3.5), stats, SparseM
 Imports: methods, graphics, Matrix, MatrixModels, survival, MASS
-Suggests: tripack, akima, rgl, logspline, nor1mix, Formula, zoo, R.rsp,
-        conquer
+Suggests: tripack, interp, rgl, logspline, nor1mix, Formula, zoo,
+        R.rsp, conquer
 License: GPL (>= 2)
 URL: https://www.r-project.org
 NeedsCompilation: yes
 VignetteBuilder: R.rsp
-Packaged: 2022-05-01 12:20:42 UTC; roger
+Packaged: 2022-07-20 07:16:54 UTC; roger
 Author: Roger Koenker [cre, aut],
   Stephen Portnoy [ctb] (Contributions to Censored QR code),
   Pin Tian Ng [ctb] (Contributions to Sparse QR code),
@@ -59,4 +60,4 @@ Author: Roger Koenker [cre, aut],
   Brian D Ripley [trl, ctb] (Initial (2001) R port from S (to my
     everlasting shame -- how could I have been so slow to adopt R!) and
     for numerous other suggestions and useful advice)
-Date/Publication: 2022-05-02 17:42:02 UTC
+Date/Publication: 2022-07-20 08:40:02 UTC

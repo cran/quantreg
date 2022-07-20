@@ -1,14 +1,14 @@
-dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method = "br", 
-    contrasts = NULL, start = NULL, end = NULL, ...) 
+dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method = "br",
+    contrasts = NULL, start = NULL, end = NULL, ...)
 {
-    stopifnot(requireNamespace("zoo"))
+    stopifnot(requireNamespace("zoo", quietly = TRUE))
     Zenv <- new.env(parent = environment(formula))
-    assign("dynformula", function(x) structure(x, class = unique(c("dynformula", 
+    assign("dynformula", function(x) structure(x, class = unique(c("dynformula",
         oldClass(x)))), envir = Zenv)
     assign("L", function(x, k = 1) {
         if (length(k) > 1) {
             rval <- lapply(k, function(i) lag(x, k = -i))
-            rval <- if (inherits(x, "ts")) 
+            rval <- if (inherits(x, "ts"))
                 do.call("ts.intersect", rval)
             else do.call("zoo::merge.zoo", c(rval, list(all = FALSE)))
             colnames(rval) <- k
@@ -21,27 +21,27 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
     assign("d", function(x, lag = 1) diff(x, lag = lag), envir = Zenv)
     assign("season", function(x, ref = NULL) {
         freq <- frequency(x)
-        stopifnot(freq > 1 && identical(all.equal(freq, round(freq)), 
+        stopifnot(freq > 1 && identical(all.equal(freq, round(freq)),
             TRUE))
         freq <- ofreq <- round(freq)
-        freq <- if (freq == 12) 
+        freq <- if (freq == 12)
             month.abb
-        else if (freq == 4) 
+        else if (freq == 4)
             paste("Q", 1:4, sep = "")
         else 1:freq
         rval <- factor(zoo::coredata(cycle(x)), labels = freq)
-        if (!is.null(ref)) 
+        if (!is.null(ref))
             rval <- relevel(rval, ref = ref)
         rval <- zoo::zoo(rval, zoo::index(x), ofreq)
         return(rval)
     }, envir = Zenv)
     assign("trend", function(x, scale = TRUE) {
-        freq <- ofreq <- if (inherits(x, "ts")) 
+        freq <- ofreq <- if (inherits(x, "ts"))
             frequency(x)
         else attr(x, "frequency")
-        if (is.null(freq) | !scale) 
+        if (is.null(freq) | !scale)
             freq <- 1
-        stopifnot(freq >= 1 && identical(all.equal(freq, round(freq)), 
+        stopifnot(freq >= 1 && identical(all.equal(freq, round(freq)),
             TRUE))
         freq <- round(freq)
         rval <- zoo::zoo(seq_along(zoo::index(x))/freq, zoo::index(x), frequency = ofreq)
@@ -49,7 +49,7 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
     }, envir = Zenv)
     assign("harmon", function(x, order = 1) {
         freq <- frequency(x)
-        stopifnot(freq > 1 && identical(all.equal(freq, round(freq)), 
+        stopifnot(freq > 1 && identical(all.equal(freq, round(freq)),
             TRUE))
         freq <- round(freq)
         order <- round(order)
@@ -60,19 +60,19 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
             c("cos", "sin")
         }
         else {
-            c(paste("cos", 1:order, sep = ""), paste("sin", 1:order, 
+            c(paste("cos", 1:order, sep = ""), paste("sin", 1:order,
                 sep = ""))
         }
-        if ((2 * order) == freq) 
+        if ((2 * order) == freq)
             rval <- rval[, -(2 * order)]
         return(rval)
     }, envir = Zenv)
-    assign("model.frame.dynformula", function(formula, data = NULL, 
-        subset = NULL, na.action = na.omit, drop.unused.levels = FALSE, 
+    assign("model.frame.dynformula", function(formula, data = NULL,
+        subset = NULL, na.action = na.omit, drop.unused.levels = FALSE,
         xlev = NULL, ...) {
-        if (is.null(data)) 
+        if (is.null(data))
             data <- parent.frame()
-        if (!is.list(data)) 
+        if (!is.list(data))
             data <- as.list(data)
         args <- as.list(attr(terms(formula), "variables"))[-1]
         args$retclass <- "list"
@@ -82,10 +82,10 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
         attr(formula, "predvars")[[1]] <- as.name("merge.zoo")
         NextMethod("model.frame", formula = formula)
     }, envir = Zenv)
-    if (missing(data)) 
+    if (missing(data))
         data <- Zenv
-    orig.class <- if (is.data.frame(data) || is.environment(data)) 
-        class(eval(attr(terms(formula), "variables")[[2]], data, 
+    orig.class <- if (is.data.frame(data) || is.environment(data))
+        class(eval(attr(terms(formula), "variables")[[2]], data,
             Zenv))
     else class(data)
     cl <- match.call()
@@ -98,25 +98,25 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
     mf <- eval(mf, envir = Zenv)
     mfna <- attr(mf, "na.action")
     if (length(zoo::index(mf[, 1])) > nrow(mf)) {
-        for (i in 1:NCOL(mf)) attr(mf[, i], "index") <- attr(mf[, 
+        for (i in 1:NCOL(mf)) attr(mf[, i], "index") <- attr(mf[,
             i], "index")[-as.vector(mfna)]
     }
-    is.zoofactor <- function(x) !is.null(attr(x, "oclass")) && 
+    is.zoofactor <- function(x) !is.null(attr(x, "oclass")) &&
         attr(x, "oclass") == "factor"
-    for (i in 1:NCOL(mf)) if (is.zoofactor(mf[, i])) 
+    for (i in 1:NCOL(mf)) if (is.zoofactor(mf[, i]))
         mf[, i] <- zoo::coredata(mf[, i])
     mf1 <- mf[, 1]
-    start <- if (is.null(start)) 
+    start <- if (is.null(start))
         1
     else {
-        if (length(start) > 1) 
+        if (length(start) > 1)
             start <- start[1] + (start[2] - 1)/frequency(mf1)
         start <- min(which(zoo::index(mf1) >= start))
     }
-    end <- if (is.null(end)) 
+    end <- if (is.null(end))
         length(mf1)
     else {
-        if (length(end) > 1) 
+        if (length(end) > 1)
             end <- end[1] + (end[2] - 1)/frequency(mf1)
         end <- max(which(zoo::index(mf1) <= end))
     }
@@ -128,16 +128,16 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
     else {
         mf <- mf[start:end, , drop = FALSE]
         mf1 <- mf1[start:end]
-        if (!is.null(mfna)) 
-            attr(mf, "na.action") <- mfna[as.vector(mfna) >= 
+        if (!is.null(mfna))
+            attr(mf, "na.action") <- mfna[as.vector(mfna) >=
                 start & as.vector(mfna) <= end]
     }
     if ("ts" %in% orig.class && zoo::is.regular(mf1, strict = TRUE)) {
-        for (i in 1:ncol(mf)) if (!is.factor(mf[, i])) 
+        for (i in 1:ncol(mf)) if (!is.factor(mf[, i]))
             mf[, i] <- as.ts(mf[, i])
     }
     if (all(orig.class == "numeric")) {
-        for (i in 1:ncol(mf)) if (!is.factor(mf[, i])) 
+        for (i in 1:ncol(mf)) if (!is.factor(mf[, i]))
             mf[, i] <- as.vector(mf[, i])
     }
     rownames(mf) <- zoo::index2char(zoo::index(mf1), frequency(mf1))
@@ -148,7 +148,7 @@ dynrq <- function (formula, tau = 0.5, data, subset, weights, na.action, method 
     weights <- as.vector(model.weights(mf))
     if (is.empty.model(mt)) {
         X <- NULL
-        rval <- list(coefficients = numeric(0), residuals = Y, 
+        rval <- list(coefficients = numeric(0), residuals = Y,
             fitted.values = 0 * Y, weights = weights, rank = 0, df.residual = length(Y))
     }
     else {

@@ -92,7 +92,7 @@ lines(x[-1], f.CI$coef[1] + f.CI$coef[-(1:2)], col="red")
 
 ## A bivariate example
 if(requireNamespace("tripack")){
-if(requireNamespace("akima")){
+if(requireNamespace("interp")){
 data(CobarOre)
 fCO <- rqss(z ~ qss(cbind(x,y), lambda= .08), data=CobarOre)
 plot(fCO)

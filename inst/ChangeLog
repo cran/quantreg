@@ -1765,3 +1765,31 @@ changes were made to make calls to suggested packages conditional on their
 loading status.  This is supposed to be checkable by setting the environment
 variable  _R_CHECK_DEPENDS_ONLY_="true" R CMD check ...    but I haven't yet
 gotten this to work.
+
+5.93
+
+1.  The problem referenced in 5.91 above was mainly due to the fact that
+packages were put in the system library not my personal library.  This was
+fixed by reinstalling so that now:
+
+Sys.getenv("R_LIBS_USER")
+[1] "/Users/roger/Library/R/x86_64/4.2/library"
+
+and now adding to .Renviron
+
+_R_CHECK_DEPENDS_ONLY_=true
+
+I believe will trigger the checking without the dependencies as required.
+
+5.94
+
+1.  Albrecht Gebhardt has made a translation of the Renka interp functionality
+used for bivariate smoothing by rqss.  This effectively eliminates the need
+for tripack in quantreg, and the code as been modified accordingly, thanks to
+Albrecht for all his efforts on this.  This is all due to the unfortunate ACM
+TOMS licencing policy that is incompatible with R.
+
+2. Brian Ripley noted that the DOI for my CUP book was broken and I have urged
+them to fix this.
+
+3.  Minor bug fix in crq for case that the user specifies a single tau value.

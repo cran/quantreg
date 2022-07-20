@@ -2,7 +2,7 @@
 
 require(quantreg)
 
-if(requireNamespace("tripack")){
+if(requireNamespace("interp") && requireNamespace("tripack")){
 ## Make sure the demo does not ``die'' when rgl is not available:
 do.rgl <- interactive() && require(rgl)
 

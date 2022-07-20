@@ -21,8 +21,8 @@ will be returned if printing is invoked.
   \item{object}{
     An object of class \code{"crq"}  produced by a call to \code{crq()}.
   }
-  \item{taus}{Quantiles to be summarized. Specifying only one value can
-    produce annoying error messages harmful to your mental health.}
+  \item{taus}{Quantiles to be summarized.  This should be a vector of
+      length greater than one.}
   \item{x}{
     An object of class \code{"crq"}  produced by a call to \code{crq()}.
   }
