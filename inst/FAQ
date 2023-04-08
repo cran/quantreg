@@ -191,3 +191,24 @@ The results I get are different from those of your package. Please, could you he
     live with it.  Think of it as not nearly as annoying as loud motorcycles in cities.
 
     
+16.  "It seems a lot of applied people like to bin the data (i.e, based on outcome Y) 
+into quantiles and run regressions and claim to get quantile effects. Is there a reference 
+in the quantile regression literature that looks at the consequence of doing this?"
+
+    Quoting from Koenker and Hallock:  QR: An Introduction (Journal of Economic Perspectives, (2001) 
+
+    We have occasionally encountered the faulty notion that something like quantile re-
+    gression could be achieved by segmenting the response variable into subsets according
+    to its unconditional distribution and then doing least squares  tting on these subsets.
+    Clearly, this form of \truncation on the dependent variable" would yield disastrous
+    results in the present example. In general, such strategies are doomed to failure for
+    all the reasons so carefully laid out in Heckman's (1979) work on sample selection.
+
+    In contrast, segmenting the sample into subsets de ned according to the condi-
+    tioning covariates is always a valid option. Indeed such local  tting underlies all
+    non-parametric quantile regression approaches. In the most extreme cases we have p
+    distinct cells corresponding to di erent settings of the covariate vector, x, and quan-
+    tile regression reduces to simply computing ordinary univariate quantiles for each of
+    these cells. In intermediate cases we may wish to project these cell estimates onto a
+    more parsimonious (linear) model. See e.g. Chamberlain (1994) and Knight, Bassett,
+    and Tam (2000), for examples of this approach.

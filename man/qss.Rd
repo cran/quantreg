@@ -72,7 +72,7 @@ for the fact that fidelity is quantilesque rather than quadratic,
 and that no provision is made for automatic selection of the smoothing 
 parameter.
 
-For the bivariate case, package \pkg{tripack} (and for plotting also
+For the bivariate case, package \pkg{interp} (and for plotting also
 \pkg{interp}) are required (automatically, by the \R code).
 }
 \value{

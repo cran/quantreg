@@ -63,20 +63,20 @@ legend(10,2,c("Increasing","Smooth"),lty = 1, col = c(2,3))
 title("Predicted Median Response at Mean Value of z")
 %%keep objects for inspection : do not rm(x,y,z,xz,fit)
 
-## Bivariate example -- loads pkg "tripack"
-if(requireNamespace("tripack")){
+## Bivariate example -- loads pkg "interp"
+if(requireNamespace("interp")){
 if(requireNamespace("interp")){
 data(CobarOre)
 fit <- rqss(z ~ qss(cbind(x,y), lambda=.08),
             data= CobarOre)
 plot(fit, col="grey",
      main = "CobarOre data -- rqss(z ~ qss(cbind(x,y)))")
-T <- with(CobarOre, tripack::tri.mesh(x, y))
+T <- with(CobarOre, interp::tri.mesh(x, y))
 set.seed(77)
 ndum <- 100
 xd <- with(CobarOre, runif(ndum, min(x), max(x)))
 yd <- with(CobarOre, runif(ndum, min(y), max(y)))
-table(s <- tripack::in.convex.hull(T, xd, yd))
+table(s <- interp::in.convex.hull(T, xd, yd))
 pred <- predict(fit, data.frame(x = xd[s], y = yd[s]))
 contour(interp::interp(xd[s],yd[s], pred),
         col="red", add = TRUE)

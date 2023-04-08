@@ -109,11 +109,12 @@ plot(fCI, col="red")
 %%keep objects for inspection : do not rm(n,x,y,z,fit)
 
 ## A bivariate example
-if(requireNamespace("tripack") && requireNamespace("interp")){
+if(requireNamespace("interp")){
+if(requireNamespace("interp")){
 data(CobarOre)
 fCO <- rqss(z~qss(cbind(x,y),lambda=.08), data = CobarOre)
 plot(fCO)
-}
+}}
 }
 \keyword{regression}
 \keyword{smooth}

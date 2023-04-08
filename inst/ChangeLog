@@ -1793,3 +1793,12 @@ TOMS licencing policy that is incompatible with R.
 them to fix this.
 
 3.  Minor bug fix in crq for case that the user specifies a single tau value.
+
+5.95
+
+1.  modified rqss to use rgl.triangles3d instead of rgl.triangles as suggested
+by Duncan Murdock
+
+2.  modified predict.rq and friends to adapt to na.action as suggested in
+email of ggrothendieck@gmail.com on 5 April 2023.
+

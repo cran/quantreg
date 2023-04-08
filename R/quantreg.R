@@ -284,7 +284,7 @@ function (object, newdata, type = "none", interval = c("none",
     "confidence"), level = 0.95, na.action = na.pass, ...)
 {
     if (missing(newdata))
-        return(object$fitted)
+	return(napredict(object$na.action, object$fitted))
     else {
         tt <- terms(object)
         Terms <- delete.response(tt)
@@ -364,7 +364,8 @@ function (object, newdata, type = "none", interval = c("none",
 function (object, newdata, type = "Qhat", stepfun = FALSE, na.action = na.pass, ...)
 {
    ## with all defaults
-   if(missing(newdata) && !stepfun && (type == "Qhat")) return(object$fitted)
+   if(missing(newdata) && !stepfun && (type == "Qhat")) 
+       return(napredict(object$na.action, object$fitted))
 
    ## otherwise
    tt <- delete.response(terms(object))
@@ -418,7 +419,8 @@ function (object, newdata, type = "Qhat", stepfun = FALSE, na.action = na.pass, 
 "predict.rq.process" <-
 function (object, newdata, type = "Qhat", stepfun = FALSE, na.action = na.pass, ...)
 {
-    if(missing(newdata) && !stepfun && (type == "Qhat")) return(object$fitted)
+    if(missing(newdata) && !stepfun && (type == "Qhat")) 
+	return(napredict(object$na.action, object$fitted))
     tt <- terms(object)
     Terms <- delete.response(tt)
     m <- model.frame(Terms, newdata, na.action = na.action,

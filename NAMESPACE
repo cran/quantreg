@@ -30,7 +30,7 @@ importFrom("stats", ".checkMFClasses", ".getXlevels", "AIC", "approx",
      "optim", "pchisq", "pf", "pnorm", "predict", "printCoefmat",
      "pt", "qnorm", "qt", "quantile", "reformulate", "relevel",
      "resid", "residuals", "rexp", "runif", "setNames", "start",
-     "stepfun", "supsmu", "terms", "uniroot", "var")
+     "stepfun", "supsmu", "terms", "uniroot", "var", "napredict")
 
 S3method(AIC, nlrq)
 S3method(AIC, rq)
