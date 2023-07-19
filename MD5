@@ -1,4 +1,4 @@
-09cdde837df492abbef9e3d173057ff6 *DESCRIPTION
+480ae92611e220d7717a5ca4222b8243 *DESCRIPTION
 59ae171f84eb2be52ee904fe100b1291 *NAMESPACE
 6c1789eaa459e5175106e2eba12bdbb4 *R/ParetoTest.R
 708697bbfb4cbcf4664df9e26380bc66 *R/anova.R
@@ -50,7 +50,7 @@ ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 32f68b8e497d02b2cae7cf5f9b83ff52 *demo/rqsslasso.R
 5235d61a73c80e7eb83777d7d923d144 *demo/stack.R
 a582af0bad3d273cb076a346c906cba5 *demo/subset.R
-ef52e0ad2328df7ff175e69eafb215f3 *inst/ChangeLog
+6ba564f7d5252dd7f31e277627fc400c *inst/ChangeLog
 8266697d263517278ba9c7d5a97ef42a *inst/FAQ
 f2732c4ab5eb2f4ca3421239a030f0ee *inst/TODO
 3fb70411ec441d151dcae73d63a5e018 *inst/doc/crq.pdf
@@ -143,12 +143,11 @@ bb6fb4e8354bba1c16aeaf0cf5f9768e *src/bound.f
 f3a2629172dbce899d97b55d42490e5f *src/boundc.f
 1bcb651bc603316f27c0c6a38f85d70b *src/brute.f
 227e77b85b2278a98a0f434a0106d858 *src/chlfct.f
-9257929d6019540ef9f8d3f2a4867b7d *src/cholesky.f
+9a8bd868bd58c2480c9afb53bb087002 *src/cholesky.f
 344362611adeaf7c79c8c5a5c344aa21 *src/combos.f
 03e35bdabdd1acb443a59e4076ff702d *src/crqf.f
 b804ab3d1bd9b62cb5b201d5f2827668 *src/crqfnb.f
 a22827856f4818d9e202adee29184a11 *src/dsel05.f
-18897488444dcd8f4961107a14ae1cfb *src/etime.f
 2d19097f7cd6cf38a3ed971ebab917f9 *src/extract.f
 2843ca0c6210e382571f62de62ba2fd4 *src/frand.c
 8477411df62550adb9c16c81844f1dfb *src/grexp.f

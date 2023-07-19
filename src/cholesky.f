@@ -2492,14 +2492,16 @@ C       INTEGER     MCLOCK
 C       GTIMER = MCLOCK()/100.0
 C       --------------------------
 C       FOR MOST BERKELEY UNIX ...
-        REAL        ETIME
-        REAL        VEC(2)
-        GTIMER = ETIME(VEC)
+C        REAL        ETIME
+C        REAL        VEC(2)
+C        GTIMER = ETIME(VEC)
 C       --------------------------
 C       FOR CRAY ...
 C       REAL        SECOND
 C       GTIMER = SECOND()
 C       --------------------------
+C       AS RECOMMENDED BY BDR ...
+        GTIMER = 0.0
         RETURN
       END
 C***********************************************************************

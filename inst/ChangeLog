@@ -1802,3 +1802,7 @@ by Duncan Murdock
 2.  modified predict.rq and friends to adapt to na.action as suggested in
 email of ggrothendieck@gmail.com on 5 April 2023.
 
+5.96
+
+1.  Changed gtimer to return 0.0 at suggestion of BDR to facilitate
+compatibility with flang.
