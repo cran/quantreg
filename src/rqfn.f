@@ -110,8 +110,8 @@ C Output from Public domain Ratfor, version 1.05
       g=acomp+deltap*ddot(n,dx,1,z,1)+ deltad*ddot(n,dz,1,x,1)+ deltap*d
      *eltad*ddot(n,dz,1,dx,1)+ deltap*ddot(n,ds,1,w,1)+ deltad*ddot(n,dw
      *,1,s,1)+ deltap*deltad*ddot(n,ds,1,dw,1)
-      mu=acomp/dfloat(2*n)
-      mua=g/dfloat(2*n)
+      mu=acomp/dble(2*n)
+      mua=g/dble(2*n)
       mu=mu*(mua/mu)**3
       do23028 i=1,n
       dz(i)=d(i)*(mu*(1/s(i)-1/x(i))+ dx(i)*dz(i)/x(i)-ds(i)*dw(i)/s(i))

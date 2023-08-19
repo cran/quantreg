@@ -145,7 +145,7 @@ while(gap > eps && nit(1)<maxit) {
 			deltap*ddot(n1,ds,1,w,1)+
 			deltad*ddot(n1,dw,1,s,1) +
 			deltap*deltad*ddot(n1,ds,1,dw,1)
-		mu = mu * ((g/mu)**3) /(dfloat(2*n1)+dfloat(n2))
+		mu = mu * ((g/mu)**3) /(dble(2*n1)+dble(n2))
 		# Compute modified step
 		do i=1,n1{
 			dsdw =  ds(i)*dw(i)

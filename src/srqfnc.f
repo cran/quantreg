@@ -399,7 +399,7 @@ c
      &          + deltap*ddot(n1,w,1,ds,1)
      &          + deltad*ddot(n1,dw,1,s,1) 
      &          + deltad*deltap*ddot(n1,dw,1,ds,1)
-            mu = mu*((g1/mu)**3)/(2.d0*dfloat(n1)+dfloat(n2))
+            mu = mu*((g1/mu)**3)/(2.d0*dble(n1)+dble(n2))
 c
 c Compute dx1dz1, dx2dz2 and dsdw
 c

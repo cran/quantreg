@@ -281,7 +281,7 @@ C
 C  SAVE SOLUTION
 C
  365  DO 380 I = (LSOL-1),N1
-      IF(NSOL.GE.M .OR. TAU .GT. DFLOAT(I)/DFLOAT(N1) - 10*TOL1) THEN
+      IF(NSOL.GE.M .OR. TAU .GT. DBLE(I)/DBLE(N1) - 10*TOL1) THEN
         SOL(1,LSOL) = TAU
         DO 370 J = 1,N
  370    SOL(J+1,LSOL) = WF(J)
@@ -431,7 +431,7 @@ C
       IF(ICEN(I) .EQ. 2) GO TO 620
       IF(C(I) .EQ.1 .AND. TCEN(I) .EQ. ONE) ICEN(I) = 3
  620  CONTINUE
-      V = DFLOAT(MA)
+      V = DBLE(MA)
       DO 650 J = 1,N
       S = ZERO
         DO 640 I = 1,M
@@ -525,7 +525,7 @@ C
       D = D - C
       L = ICEN(H(J))
       IF(L .NE. 0) T = TCEN(H(J))/( ONE - TCEN(H(J)) )
-      S = DFLOAT(L)*(T + ONE) - ONE
+      S = DBLE(L)*(T + ONE) - ONE
       E1 = A + B - D - S
       E2 = A + B - D + ONE
       IF(E1 .GT. ZERO) THEN

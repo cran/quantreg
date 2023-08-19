@@ -132,7 +132,7 @@ C Output from Public domain Ratfor, version 1.05
      *tad*ddot(n2,dz2,1,x2,1)+ deltap*deltad*ddot(n2,dz2,1,dx2,1)+ delta
      *p*ddot(n1,ds,1,w,1)+ deltad*ddot(n1,dw,1,s,1) + deltap*deltad*ddot
      *(n1,ds,1,dw,1)
-      mu = mu * ((g/mu)**3) /(dfloat(2*n1)+dfloat(n2))
+      mu = mu * ((g/mu)**3) /(dble(2*n1)+dble(n2))
       do23036 i=1,n1
       dsdw = ds(i)*dw(i)
       dr1(i)=d1(i)*(mu*(one/s(i)-one/x1(i))+ dx1(i)*dz1(i)/x1(i)-dsdw/s(

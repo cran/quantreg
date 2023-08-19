@@ -24,7 +24,7 @@ while(r>l){
 	if(r-l>mmax){
 		m=r-l+1
 		i=k-l+1
-		fm = dfloat(m)
+		fm = dble(m)
 		z=log(fm)
 		s=cs*exp(2*z/3)
 		d=cd*sqrt(z*s*(m-s)/fm)*sign(1,i-m/2)
