@@ -7,7 +7,7 @@ Description: Estimation and inference methods for models for conditional quantil
   risk are also now included. See Koenker, R. (2005) Quantile Regression, Cambridge U. Press,
   <doi:10.1017/CBO9780511754098> and Koenker, R. et al. (2017) Handbook of Quantile Regression, 
   CRC Press, <doi:10.1201/9781315120256>. 
-Version: 5.97
+Version: 5.98
 Authors@R: c(
     person("Roger", "Koenker",  role = c("cre","aut"), email =  "rkoenker@illinois.edu"),
     person("Stephen", "Portnoy",  role = c("ctb"), 
@@ -42,7 +42,7 @@ License: GPL (>= 2)
 URL: https://www.r-project.org
 NeedsCompilation: yes
 VignetteBuilder: R.rsp
-Packaged: 2023-08-19 12:48:42 UTC; roger
+Packaged: 2024-05-26 10:55:09 UTC; roger
 Author: Roger Koenker [cre, aut],
   Stephen Portnoy [ctb] (Contributions to Censored QR code),
   Pin Tian Ng [ctb] (Contributions to Sparse QR code),
@@ -59,4 +59,4 @@ Author: Roger Koenker [cre, aut],
   Brian D Ripley [trl, ctb] (Initial (2001) R port from S (to my
     everlasting shame -- how could I have been so slow to adopt R!) and
     for numerous other suggestions and useful advice)
-Date/Publication: 2023-08-19 13:50:05 UTC
+Date/Publication: 2024-05-26 12:00:03 UTC

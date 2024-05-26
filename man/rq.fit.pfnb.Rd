@@ -33,16 +33,14 @@ spaced.
 }
 \value{
   returns a list with elements consisting of 
-  \enumerate{
       \item{coefficients}{a matrix of dimension ncol(x) by length(taus)
       }
-      \item{nit} {a 5 by m matrix of iteration counts: first two coordinates
+      \item{nit}{a 5 by m matrix of iteration counts: first two coordinates
 	  of each column are the number of interior point iterations, the third is the 
 	  number of observations in the final globbed sample size, and the last two 
 	  are the number of fixups and bad-fixups respectively.  This is intended to
 	  aid fine tuning of the initial sample size, m0.}
-      \item{info} {an m-vector of convergence flags}
-  }
+      \item{info}{an m-vector of convergence flags}
 }
 \details{
   The details of the Frisch-Newton algorithm are explained in Koenker and Portnoy (1997),

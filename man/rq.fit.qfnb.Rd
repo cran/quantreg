@@ -27,12 +27,10 @@ spaced.
 }
 \value{
   returns a list with elements consisting of 
-  \enumerate{
       \item{coefficients}{a matrix of dimension ncol(x) by length(taus)
       }
-      \item{nit} {a 3-vector of iteration counts}
-      \item{info} {a convergence flag}
-  }
+      \item{nit}{a 3-vector of iteration counts}
+      \item{info}{a convergence flag}
 }
 \details{
   The details of the Frisch-Newton algorithm are explained in Koenker and Portnoy (1997).

@@ -1811,3 +1811,11 @@ compatibility with flang.
 
 5.97
 1.  Changed dfloat  to dble  per BDR's email of 19/08/23
+
+5.98
+
+1.  On the advice of BDR the arithmetic ifs in cholsky.f were modified to
+accord with "modernization" of fortran.  And the Do loops in crqf.f were also
+modified to end with CONTINUE.  
+
+2.  Some syntax issues identified in the new CRAN checks were also made.

@@ -48,11 +48,9 @@ boot.rq.pwxy(x, y, tau, coef, R = 200, m0 = NULL, eps = 1e-06, ...)
 }
 \value{
   returns a list with elements: 
-  \enumerate{
       \item{coefficients}{a matrix of dimension ncol(x) by R}
-      \item{nit} {a 5 by m matrix of iteration counts}
-      \item{info} {an m-vector of convergence flags}
-  }
+      \item{nit}{a 5 by m matrix of iteration counts}
+      \item{info}{an m-vector of convergence flags}
 }
 \references{
     Chernozhukov, V.  I. Fernandez-Val and B. Melly,

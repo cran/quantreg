@@ -13,7 +13,7 @@ in -- this facilitates the comparison of quantile fits particularly.
 For models with a partial linear component or several \code{qss} components
 it may be preferable to plot the output of \code{predict.rqss}.
 Note that these functions are intended to plot \code{rqss} objects only, attempting
-to plot {summary.rqss}  objects just generates a warning message.
+to plot \code{summary.rqss}  objects just generates a warning message.
 }
 \usage{
 \method{plot}{rqss}(x, rug = TRUE, jit = TRUE, bands = NULL, coverage = 0.95,

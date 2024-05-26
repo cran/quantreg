@@ -37,7 +37,14 @@ C***END PROLOGUE  ISWAP
 C***FIRST EXECUTABLE STATEMENT  ISWAP
       IF (N .LE. 0) RETURN
       IF (INCX .NE. INCY) GO TO 5
-      IF (INCX-1) 5,20,60
+C     IF (INCX-1) 5,20,60
+      IF (INCX-1 .LT. 0) THEN
+          GO TO 5
+      ELSE IF (INCX-1 .GT.0) THEN
+          GO TO 60
+      ELSE 
+          GO TO 20
+      ENDIF
 C
 C     Code for unequal or nonpositive increments.
 C

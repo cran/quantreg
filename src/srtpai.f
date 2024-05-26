@@ -16,7 +16,8 @@ C
 C     INITIALIZE P
 C
       DO 10 I = 1, N
- 10     P(1, I) = I
+         P(1, I) = I
+ 10      CONTINUE
 C
 C       CHECK IF DONE WITH SORT
 C

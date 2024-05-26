@@ -212,3 +212,13 @@ in the quantile regression literature that looks at the consequence of doing thi
     these cells. In intermediate cases we may wish to project these cell estimates onto a
     more parsimonious (linear) model. See e.g. Chamberlain (1994) and Knight, Bassett,
     and Tam (2000), for examples of this approach.
+
+17.  When I try to use predict for a model with n=20 and tau = 0.95 I get an error Is there 
+a practical limitation here to using quantile regression? Or a different way to adjust for small sample sizes?
+
+    It is difficult to give good rules of thumb.  Even the usual textbook — 30 observations 
+    are enough to estimate a mean — are pretty much nonsense.  But n = 20 to get the 0.95 
+    quantile is hopeless.  If pushed, I would say that there should be at least 20 observations 
+    PER REGRESSION PARAMETER above and below the the fitted QR hyperplane.  So with two parameters 
+    this would mean that 0.95 would require 40 observations above, and thus 760 below.  So 800 
+    observations in total.

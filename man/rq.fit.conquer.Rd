@@ -19,7 +19,7 @@ rq.fit.conquer (x, y, tau=0.5, kernel = c("Gaussian", "uniform",
           kernel function. Default is "Gaussian". Other choices are
           "uniform", "parabolic" or "triangular".} 
   \item{h}{The bandwidth parameter for kernel smoothing of the QR
-      objective function.  Default is max{((log(n) + p) / n)^0.4, 0.05}. 
+      objective function.  Default is \eqn{max{((log(n) + p) / n)^0.4, 0.05}}. 
       The default is used if the input value is less than 0.05.} 
   \item{tol}{Tolerance level of the gradient descent
           algorithm. The gradient descent algorithm terminates when the

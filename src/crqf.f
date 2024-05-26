@@ -95,8 +95,10 @@ C
         ICEN(I) = 0
         TCEN(I) = ONE
         WB(I) = Y(I)
-        DO 5 J=1,N
-   5    WA(I,J) = X(I,J)
+        DO 4 J=1,N
+        WA(I,J) = X(I,J)
+   4    CONTINUE
+   5    CONTINUE
       MA = M
 C
 C  GET TAU = O SOLUTION
@@ -137,7 +139,8 @@ C
         L = L + 1
         WB(L) = Y(I)
         DO 25 J=1,N
-  25      WA(L,J) = X(I,J)
+          WA(L,J) = X(I,J)
+  25      CONTINUE
   30    CONTINUE
       GO TO 10
   40  CONTINUE
@@ -146,7 +149,8 @@ C  SAVE INITIAL SOLUTION, AND INITIALIZE PIVOTING LOOP
 C
       SOL(1,1) = ZERO
       DO 50 J = 1,N
-  50  SOL(J+1,1) = WF(J)
+      SOL(J+1,1) = WF(J)
+  50  CONTINUE
       NWRQ = 0
       APC = .FALSE.
       LSOL = 2
@@ -162,7 +166,8 @@ C
       DO 70 K = 1,N
         I= H(K)
         DO 60 J = 1,N
-  60    XH(K,J) = X(I,J)
+        XH(K,J) = X(I,J)
+  60    CONTINUE
   70  CONTINUE
 C
 C  GET X(H,) INVERSE
@@ -177,8 +182,10 @@ C
       DO 90 I=1,M
       S = Y(I)
       DO 80 J = 1,N
-  80  S = S - WF(J)*X(I,J)
-  90  WE(I) = S
+      S = S - WF(J)*X(I,J)
+  80  CONTINUE
+      WE(I) = S
+  90  CONTINUE
 C
 C  BEGIN PIVOTING; WD = GRAD UPPER BD, IA = SIGN(GRAD DENOM)
 C
@@ -189,7 +196,8 @@ C
       S = WD(1)
       IF(N .EQ. 1) GO TO 230
       DO 210 J=2,N
- 210  S = DMIN1(WD(J),S)
+      S = DMIN1(WD(J),S)
+ 210  CONTINUE
       DO 220 J=1,N
       IF(WD(J) .GE. S + TOLER) GO TO 220
         KL = KL + 1
@@ -202,7 +210,8 @@ C
       IF(APC) THEN
         SOL(1,LSOL) = DMAX1(S, TAU)
         DO 240 J=1,N
- 240    SOL(J+1,LSOL) = WF(J)
+        SOL(J+1,LSOL) = WF(J)
+ 240    CONTINUE
         GO TO 600
       ENDIF
 C
@@ -223,9 +232,11 @@ C  GET NEW OBSERVATION TO ENTER BASIS
 C  FIRST DEFINE WD = BASIS INDICATOR = 1 IF I IN H(J)
 C
       DO 250 I=1,M
- 250  WD(I) = ZERO
+      WD(I) = ZERO
+ 250  CONTINUE
       DO 260 J=1,N
- 260  WD(H(J)) = ONE
+      WD(H(J)) = ONE
+ 260  CONTINUE
       KN = 0
       D = BIG 
       KIN = 0
@@ -233,7 +244,8 @@ C
       IF(ICEN(I) .EQ. 2) GO TO 300
       S = ZERO
       DO 270 J=1,N
- 270  S = S + X(I,J)*XH(J,KM) 
+      S = S + X(I,J)*XH(J,KM) 
+ 270  CONTINUE
       S = IA(KM)*S
       IF(DABS(S).LT.TOL1 .OR. (C(I).EQ.1 .AND. ICEN(I).NE.1)
      *    .OR. WD(I).EQ.ONE) GO TO 300
@@ -255,8 +267,10 @@ C  GET NEW X(H,)
 C
         DO 310 K = 1,N
         I = H(K)
-        DO 310 J = 1,N
- 310    XH(K,J) = X(I,J)
+        DO 305 J = 1,N
+        XH(K,J) = X(I,J)
+ 305    CONTINUE
+ 310    CONTINUE
 C
 C  GET X(H,) INVERSE
 C
@@ -270,13 +284,17 @@ C
       DO 340 K = 1,N
       S = ZERO
       DO 330 J = 1,N
- 330  S = S + XH(K,J)*Y(H(J))
- 340  WF(K) = S
+      S = S + XH(K,J)*Y(H(J))
+ 330  CONTINUE
+      WF(K) = S
+ 340  CONTINUE
  345  DO 360 I=1,M
       S = Y(I)
       DO 350 J = 1,N
- 350  S = S - WF(J)*X(I,J)
- 360  WE(I) = S
+      S = S - WF(J)*X(I,J)
+ 350  CONTINUE
+      WE(I) = S
+ 360  CONTINUE
 C
 C  SAVE SOLUTION
 C
@@ -284,7 +302,8 @@ C
       IF(NSOL.GE.M .OR. TAU .GT. DBLE(I)/DBLE(N1) - 10*TOL1) THEN
         SOL(1,LSOL) = TAU
         DO 370 J = 1,N
- 370    SOL(J+1,LSOL) = WF(J)
+        SOL(J+1,LSOL) = WF(J)
+ 370    CONTINUE
         LSOL = LSOL + 1
         GO TO 390
       ENDIF
@@ -319,7 +338,7 @@ C      ENDIF
 C  
 C at this point,  Y(I) is a crossed censored obs  (C_i)
 C for the grid method  TAUW = TAU - STEP*(B2-Y(I))/(B2-B1)
-C   where   B1 = x_i' beta_j   and   B2 = x_i' beta_(j+1)
+C where   B1 = x_i' beta_j   and   B2 = x_i' beta_(j+1)
 C otherwise (for pivot), TAUW = TAU
 C
         IF(MAXW.LT.0) THEN
@@ -327,7 +346,8 @@ C
          B2 = ZERO
          DO 396 J=1,N
           B1 = B1 + X(I,J) * SOL(J+1,LSOL - 2)
-396       B2 = B2 + X(I,J) * SOL(J+1,LSOL - 1)
+          B2 = B2 + X(I,J) * SOL(J+1,LSOL - 1)
+ 396      CONTINUE
          A1 = (B2 - Y(I))/(B2-B1)
          TAUW = TAU - A1*STEP
         ELSE
@@ -366,17 +386,20 @@ C
       L = 0
       L1 = 0
       DO 506 J=1,N
- 506  WF(J) = ZERO
+      WF(J) = ZERO
+ 506  CONTINUE
       DO 530 I = 1,M
       IF(ICEN(I) .EQ. 0) THEN
         IF (C(I) .EQ. 0) THEN
           L1 = L1 + 1
           WB(L1) = Y(I)
           DO 510 J=1,N
- 510      WA(L1,J) = X(I,J)
+          WA(L1,J) = X(I,J)
+ 510      CONTINUE
         ELSE
           DO 514 J = 1,N
- 514      WF(J) = WF(J) + X(I,J)
+          WF(J) = WF(J) + X(I,J)
+ 514      CONTINUE
         ENDIF
       ENDIF
       IF(ICEN(I) .EQ. 1) THEN
@@ -386,12 +409,14 @@ C
         WB(L1) = W * Y(I)
         DO 520 J = 1,N
           WA(L1,J) = W * X(I,J)
- 520      WF(J) = WF(J) + (ONE - W) * X(I,J)
+          WF(J) = WF(J) + (ONE - W) * X(I,J)
+ 520      CONTINUE
       ENDIF
  530  CONTINUE
       MAL = L1+1
       DO 534 J=1,N
- 534  WA(MAL,J) = WF(J)
+      WA(MAL,J) = WF(J)
+ 534  CONTINUE
       WB(MAL) = BIG
       CALL RQ1(MAL,N,MPLUS,N2,WA,WB,TAU,TOLER,IFT1,WF,WE,IA,WC,WD)
       DEG = .FALSE.
@@ -410,7 +435,8 @@ C
           IF(K .LE. N) THEN
             H(K) = I
             DO 540 J=1,N
- 540        XH(K,J) = X(I,J)
+            XH(K,J) = X(I,J)
+ 540        CONTINUE
           ENDIF
  550  CONTINUE
       IF(K .LT. N) THEN
@@ -426,7 +452,8 @@ C
  600  H(1) = NWRQ
       L = MIN0(NWRQ,MPLUS)
       DO 610 I=1,L
- 610  WD(I) = SOL(N+2,I)
+      WD(I) = SOL(N+2,I)
+ 610  CONTINUE
       DO 620 I=1,M
       IF(ICEN(I) .EQ. 2) GO TO 620
       IF(C(I) .EQ.1 .AND. TCEN(I) .EQ. ONE) ICEN(I) = 3
@@ -438,12 +465,15 @@ C
           IF(ICEN(I) .EQ. 2) GO TO 640
           S = S + X(I,J)
  640    CONTINUE
- 650  WF(J) = S/V
+      WF(J) = S/V
+ 650  CONTINUE
       DO 670 I = 1,LSOL
       S = ZERO
         DO 660 J = 1,N
- 660    S = S + WF(J) * SOL(J+1,I)
- 670  SOL(N+2,I) = S
+        S = S + WF(J) * SOL(J+1,I)
+ 660    CONTINUE
+      SOL(N+2,I) = S
+ 670  CONTINUE
       RETURN
       END
       SUBROUTINE GRAD(X,M,N,H,ICEN,TCEN,XH,
@@ -484,8 +514,10 @@ C
       DO 70 J = 1,N
       A = ZERO
         DO 60 K = 1,N
-  60    A = A + X(I,K)*XH(K,J)
-  70  WA(I,J) = A
+        A = A + X(I,K)*XH(K,J)
+  60    CONTINUE
+      WA(I,J) = A
+  70  CONTINUE
   80  CONTINUE
   
 C
@@ -494,9 +526,11 @@ C  FIRST SET IFLAG = 1 FOR BASIS INDICES (TEMPORARY)
 C
       T = ZERO
       DO 90 I = 1,M
-  90  IFLAG(I) = 0
+      IFLAG(I) = 0
+  90  CONTINUE
       DO 95 J = 1,N
-  95  IFLAG(H(J)) = 1
+      IFLAG(H(J)) = 1
+  95  CONTINUE
       DO 120 J=1,N
       A = ZERO
       B = ZERO
@@ -541,6 +575,7 @@ C
       GUP(J) = - ONE
  120  CONTINUE
       DO 130 J = 1,N
- 130  IFLAG(J) = IFLAG(J+M)
+      IFLAG(J) = IFLAG(J+M)
+ 130  CONTINUE
       RETURN
       END
