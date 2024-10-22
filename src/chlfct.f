@@ -113,16 +113,20 @@ c
       timbeg = gtimer()
       if (level .eq. 1) then
          call blkfct(m,nsuper,xsuper,snode,split,xlindx,lindx,xlnz,
-     &               lnz,iwsiz,iwork,tmpsiz,tmpvec,ierr,mmpy1,smxpy1)
+     &               lnz,iwsiz,iwork,tmpsiz,tmpvec,ierr,mmpy1,smxpy1,
+     &                  tiny,Large)
       elseif (level .eq. 2) then
          call blkfct(m,nsuper,xsuper,snode,split,xlindx,lindx,xlnz,
-     &               lnz,iwsiz,iwork,tmpsiz,tmpvec,ierr,mmpy2,smxpy2)
+     &               lnz,iwsiz,iwork,tmpsiz,tmpvec,ierr,mmpy2,smxpy2,
+     &                  tiny,Large)
       elseif (level .eq. 4) then
          call blkfct(m,nsuper,xsuper,snode,split,xlindx,lindx,xlnz,
-     &               lnz,iwsiz,iwork,tmpsiz,tmpvec,ierr,mmpy4,smxpy4)
+     &               lnz,iwsiz,iwork,tmpsiz,tmpvec,ierr,mmpy4,smxpy4,
+     &                  tiny,Large)
       elseif (level .eq. 8) then
          call blkfct(m,nsuper,xsuper,snode,split,xlindx,lindx,xlnz,
-     &               lnz,iwsiz,iwork,tmpsiz,tmpvec,ierr,mmpy8,smxpy8)
+     &               lnz,iwsiz,iwork,tmpsiz,tmpvec,ierr,mmpy8,smxpy8,
+     &                  tiny,Large)
       endif
       if (ierr .eq. -1) then
          ierr = 10

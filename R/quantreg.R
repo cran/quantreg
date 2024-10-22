@@ -372,7 +372,7 @@ function (object, newdata, type = "Qhat", stepfun = FALSE, na.action = na.pass, 
    m <- if(missing(newdata)) model.frame(object) else model.frame(tt, newdata,
        na.action = na.action, xlev = object$xlevels)
    if(!is.null(cl <- attr(tt, "dataClasses"))) .checkMFClasses(cl, m)
-   X <- model.matrix(tt, m, contrasts = object$contrasts)
+   X <- model.matrix(tt, m, contrasts.arg = object$contrasts)
    pred <- t(X %*% object$coefficients)
    taus <- object$tau
    M <- NCOL(pred)
@@ -426,7 +426,7 @@ function (object, newdata, type = "Qhat", stepfun = FALSE, na.action = na.pass, 
     m <- model.frame(Terms, newdata, na.action = na.action,
         xlev = object$xlevels)
     if (!is.null(cl <- attr(Terms, "dataClasses"))) .checkMFClasses(cl, m)
-    X <- model.matrix(Terms, m, contrasts = object$contrasts)
+    X <- model.matrix(Terms, m, contrasts.arg = object$contrasts)
     if(!length(X)) X <- rep(1, NROW(object$dsol)) # intercept only hack
     pred <- t(X %*% object$sol[-(1:3),, drop = FALSE])
     taus <- object$sol[1,]
@@ -674,7 +674,7 @@ function (x, y, tau = 0.5, alpha = 0.1, ci = FALSE, iid = TRUE,
     if(!requireNamespace("conquer", quietly = TRUE))
             stop("method conquer requires package conquer")
     fit = conquer::conquer(x[,-1], y, tau = tau, kernel = kernel, h = h,
-	tol = tol, iteMax = iteMax, ci = FALSE, alpha = alpha, B = 1000)
+	tol = tol, iteMax = iteMax, ci = ci, alpha = alpha, B = 1000)
     coefficients = fit$coeff
     names(coefficients) = dimnames(x)[[2]]
     residuals = fit$residual
@@ -1112,7 +1112,7 @@ function (object, se = NULL, covariance = FALSE, hs = TRUE, U = NULL, gamma = 0.
 	ctrl <- object$control
     }
     else{
-	x <- model.matrix(mt, m, contrasts = object$contrasts)
+	x <- model.matrix(mt, m, contrasts.arg = object$contrasts)
 	vnames <- dimnames(x)[[2]]
     }
     wt <- as.vector(model.weights(object$model))

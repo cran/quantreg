@@ -71,7 +71,7 @@ plot.rqs <- function(x, parm = NULL, ols = TRUE,
     mt <- terms(x)
     mf <- model.frame(x)
     y <- model.response(mf)
-    X <- model.matrix(mt, mf, contrasts = x$contrasts)
+    X <- model.matrix(mt, mf, contrasts.arg = x$contrasts)
     olscf <- lm.fit(X, y)$coefficients[parm]
   }
 
@@ -148,7 +148,7 @@ plot.summary.rqs <- function(x, parm = NULL, level = 0.9, ols = TRUE,
     mt <- terms(obj)
     mf <- model.frame(obj)
     y <- model.response(mf)
-    X <- model.matrix(mt, mf, contrasts = obj$contrasts)
+    X <- model.matrix(mt, mf, contrasts.arg = obj$contrasts)
     olscf <- summary(lm(y ~ X))$coefficients
     rownames(olscf) <- rownames(coef(obj))
     olscf <- cbind(olscf[parm,1,drop=FALSE],

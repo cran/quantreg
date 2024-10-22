@@ -1819,3 +1819,13 @@ accord with "modernization" of fortran.  And the Do loops in crqf.f were also
 modified to end with CONTINUE.  
 
 2.  Some syntax issues identified in the new CRAN checks were also made.
+
+5.99
+
+1.  Bug in rq.fit.conquer fixed to allow ci to be passed to conquer::conquer.
+
+2.  cp cholesky.f from SparseM to remove computed gotos in the quantreg
+version
+
+3.  changed several calls to model.matrix to use contrasts.arg = rather than
+contrasts = 

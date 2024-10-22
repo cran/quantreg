@@ -539,7 +539,7 @@ summary.crq <-
 function (object, taus = 1:4/5, alpha = .05, se = "boot", covariance = TRUE, ...) {
     mt <- terms(object)
     m <- model.frame(object)
-    x <- model.matrix(mt, m, contrasts = object$contrasts)
+    x <- model.matrix(mt, m, contrasts.arg = object$contrasts)
     Y <- model.response(m)
     method <- object$method
     ctype <- object$ctype

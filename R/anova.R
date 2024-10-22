@@ -54,7 +54,7 @@ function (object, ..., test = "Wald", joint = TRUE,
         topnote <- paste("Model ", format(1:nobjects), ": ", 
             models, sep = "", collapse = "\n")
         if (test == "anowar") {
-            X1 <- model.matrix(objects[[1]],mf,contrasts=objects[[1]]$contrasts)
+            X1 <- model.matrix(objects[[1]],mf,contrasts.arg=objects[[1]]$contrasts)
             y <- model.response(mf)
 	    weights <- as.vector(model.weights(mf))
             tau <- taus[[1]]
@@ -62,7 +62,7 @@ function (object, ..., test = "Wald", joint = TRUE,
 		if (!all(sapply(names[[i]], function(x) any(grepl(x, names[[1]], fixed = TRUE))))) 
                   stop("Models aren't nested")
                 mf <- model.frame(objects[[i]])
-                X0 <- model.matrix(objects[[i]], mf,contrasts=objects[[i]]$contrasts)
+                X0 <- model.matrix(objects[[i]], mf,contrasts.arg=objects[[i]]$contrasts)
                 Htest <- rq.test.anowar(X0, X1, y, tau = tau, R = R)
                 ndf[i - 1] <- Htest$ndf
                 Tn[i - 1] <- Htest$Tn
@@ -72,7 +72,7 @@ function (object, ..., test = "Wald", joint = TRUE,
     	table <- data.frame(ndf, ddf, Tn, pvalue)
         }
         else if (test == "rank") {
-            x1 <- model.matrix(objects[[1]],mf,contrasts=objects[[1]]$contrasts)
+            x1 <- model.matrix(objects[[1]],mf,contrasts.arg=objects[[1]]$contrasts)
             y <- model.response(mf)
 	    weights <- as.vector(model.weights(mf))
             for (i in 2:nobjects) {
@@ -81,7 +81,7 @@ function (object, ..., test = "Wald", joint = TRUE,
                 nullH <- is.na(match(names[[1]], names[[i]]))
 		X1 <- as.matrix(x1[, nullH])
                 mf <- model.frame(objects[[i]])
-                X0 <- model.matrix(objects[[i]], mf,contrasts=objects[[i]]$contrasts)
+                X0 <- model.matrix(objects[[i]], mf,contrasts.arg=objects[[i]]$contrasts)
 		if(score == "tau") tau <- taus[[1]]
                 Htest <- rq.test.rank(X0, X1, y, score = score, weights = weights, 
 			iid = iid, tau = tau, trim = trim)
