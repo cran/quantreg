@@ -8,12 +8,13 @@ c23456789012345678901234567890123456789012345678901234567890123456789012
       subroutine chlfct(m,xlindx,lindx,invp,perm,iwork,nnzdsub,jdsub,
      &                  colcnt,nsuper,snode,xsuper,nnzlmax,nsubmax,
      &                  xlnz,lnz,id,jd,d,cachsz,tmpmax,level,
-     &                  tmpvec,split,ierr,it,timewd)
+     &                  tmpvec,split,ierr,it,timewd,
+     &                  tiny,Large)
       integer m,ierr,nsub,iwsiz,nnzdsub,nnzl,nsuper,nnzlmax,nsubmax,
      &        tmpsiz,cachsz,tmpmax,level,it,
      &        xlindx(*),lindx(*),invp(*),perm(*),iwork(*),jdsub(*),
      &        colcnt(*),snode(*),xsuper(*),xlnz(*),id(*),jd(*),split(*)
-      double precision d(*),lnz(*),tmpvec(*),timewd(7)
+      double precision d(*),lnz(*),tmpvec(*),timewd(7),tiny,Large
       real gtimer,timbeg,timend
       external smxpy1,smxpy2,smxpy4,smxpy8
       external mmpy1,mmpy2,mmpy4,mmpy8

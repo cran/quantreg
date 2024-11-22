@@ -58,7 +58,7 @@ static const R_FortranMethodDef FortranEntries[] = {
     {"rqs",       (DL_FUNC) &F77_NAME(rqs),       15},
     {"sakj",      (DL_FUNC) &F77_NAME(sakj),      13},
     {"srqfn",     (DL_FUNC) &F77_NAME(srqfn),     45},
-    {"srqfnc",    (DL_FUNC) &F77_NAME(srqfnc),    65},
+    {"srqfnc",    (DL_FUNC) &F77_NAME(srqfnc),    65}, // 65 = MAX_ARGS -- can NOT be increased
     {"wxy",       (DL_FUNC) &F77_NAME(wxy),       18},
     {"xys",       (DL_FUNC) &F77_NAME(xys),       19},
     {NULL, NULL, 0}

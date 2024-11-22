@@ -1,17 +1,18 @@
 c        1         2         3         4         5         6         7
 c23456789012345678901234567890123456789012345678901234567890123456789012
-      subroutine srqfn(n,m,nnza,a,ja,ia,ao,jao,iao,nnzdmax,d,jd,id,
-     &                  dsub,jdsub,nnzemax,e,je,ie,nsubmax,lindx,xlindx,
-     &                  nnzlmax,lnz,xlnz,iw,iwmax,iwork,xsuper,tmpmax,
-     &                  tmpvec,wwm,wwn,cachsz,level,x,s,u,c,y,b,small,
-     &                  ierr,maxit,timewd)
+      subroutine srqfn(n,m,nnza, a,ja,ia, ao,jao,iao, nnzdmax, d,jd,id,  ! 13
+     &                 dsub,jdsub,nnzemax, e,je,ie,nsubmax,lindx,xlindx, ! 22
+     &                 nnzlmax,lnz,xlnz, iw,iwmax,iwork, xsuper,tmpmax,  ! 30
+     &                 tmpvec,wwm,wwn, cachsz,level, x,s,u,c, y,b,       ! 41
+     &                 sm_tn_Lrg, ierr,maxit, timewd)                    ! 45
+
       integer nnza,m,n,nnzdmax,nnzemax,iwmax,
      &        nnzlmax,nsubmax,cachsz,level,tmpmax,ierr,maxit,
      &        ja(nnza),jao(nnza),jdsub(nnzemax+1),jd(nnzdmax),
      &        ia(n+1),iao(m+1),id(m+1),lindx(nsubmax),xlindx(m+1),
      &        iw(m,5),xlnz(m+1),iwork(iwmax),xsuper(m+1),je(nnzemax),
      &        ie(m+1)
-      double precision small,
+      double precision sm_tn_Lrg(3), ! = c(small, tiny, Large)
      &                 a(nnza),ao(nnza),dsub(nnzemax+1),d(nnzdmax),
      &                 lnz(nnzlmax),c(n),y(m),wwm(m,3),tmpvec(tmpmax),
      &                 wwn(n,14),x(n),s(n),u(n),e(nnzemax),b(m)
@@ -23,36 +24,39 @@ c23456789012345678901234567890123456789012345678901234567890123456789012
      &          level,x,s,u,c,y,b,wwn(1,1),wwn(1,2),wwn(1,3),
      &          wwn(1,4),nnzemax,e,je,ie,wwm(1,3),wwn(1,5),wwn(1,6),
      &          wwn(1,7),wwn(1,8),wwn(1,9),wwn(1,10),wwn(1,11),
-     &          wwn(1,12),wwn(1,13),wwn(1,14),wwm(1,1),small,ierr,
-     &          maxit,timewd)
+     &          wwn(1,12),wwn(1,13),wwn(1,14),wwm(1,1),  sm_tn_Lrg(1),
+     &                ierr,maxit, timewd, sm_tn_Lrg(2), sm_tn_Lrg(3))
       return
       end
+
       subroutine slpfn(n,m,nnza,a,ja,ia,ao,jao,iao,nnzdmax,d,jd,id,
      &                dsub,jdsub,nsubmax,lindx,xlindx,nnzlmax,lnz,
      &                xlnz,invp,perm,iwmax,iwork,colcnt,snode,xsuper,
      &                split,tmpmax,tmpvec,newrhs,cachsz,level,x,s,u,
      &                c,y,b,r,z,w,q,nnzemax,e,je,ie,dy,dx,ds,dz,dw,dxdz,
-     &                dsdw,xi,xinv,sinv,ww1,ww2,small,ierr,maxit,timewd)
+     &                dsdw, xi,xinv,sinv ,ww1,ww2, small,
+     &                ierr,maxit, timewd, tiny, Large)
+
 c        1         2         3         4         5         6         7
 c23456789012345678901234567890123456789012345678901234567890123456789012
-c Sparse implentation of LMS's interior point method via 
-c    Ng-Peyton's sparse Cholesky factorization for sparse 
+c Sparse implentation of LMS's interior point method via
+c    Ng-Peyton's sparse Cholesky factorization for sparse
 c    symmetric positive definite
 c INPUT:
 c     n -- the number of row in the coefficient matrix A'
 c     m -- the number of column in the coefficient matrix A'
 c     nnza -- the number of non-zero elements in A'
-c     a -- an nnza-vector of non-zero values of the design 
-c          matrix (A') stored in csr format 
+c     a -- an nnza-vector of non-zero values of the design
+c          matrix (A') stored in csr format
 c     ja -- an nnza-vector of indices of the non-zero elements of
-c           the coefficient matrix 
+c           the coefficient matrix
 c     ia -- an (n+1)-vector of pointers to the begining of each
 c           row in a and ja
 c     ao -- an nnza-vector of work space for the transpose of
-c           the design matrix stored in csr format or the 
+c           the design matrix stored in csr format or the
 c           design matrix stored in csc format
-c     jao -- an nnza-vector of work space for the indices of the 
-c            transpose of the design matrix 
+c     jao -- an nnza-vector of work space for the indices of the
+c            transpose of the design matrix
 c     iao -- an (n+1)-vector of pointers to the begining of each
 c            column in ao and jao
 c     nnzdmax -- upper bound of the non-zero elements in AA'
@@ -63,52 +67,52 @@ c           row in d and jd
 c     dsub -- the values of e excluding the diagonal elements
 c     jdsub -- the indices to dsub
 c     nsubmax -- upper bound of the dimension of lindx
-c     lindx -- an nsub-vector of interger which contains, in 
+c     lindx -- an nsub-vector of interger which contains, in
 c           column major order, the row subscripts of the nonzero
 c           entries in L in a compressed storage format
 c     xlindx -- an (m+1)-vector of integer of pointers for lindx
-c     nnzlmax -- the upper bound of the non-zero entries in 
+c     nnzlmax -- the upper bound of the non-zero entries in
 c                L stored in lnz, including the diagonal entries
 c     lnz -- First contains the non-zero entries of d; later
 c            contains the entries of the Cholesky factor
 c     xlnz -- column pointer for L stored in lnz
-c     invp -- an n-vector of integer of inverse permutation 
+c     invp -- an n-vector of integer of inverse permutation
 c             vector
 c     perm -- an n-vector of integer of permutation vector
 c     iw -- integer work array of length m
-c     iwmax -- upper bound of the general purpose integer 
+c     iwmax -- upper bound of the general purpose integer
 c              working storage iwork; set at 7*m+3
 c     iwork -- an iwsiz-vector of integer as work space
-c     colcnt -- array of length m, containing the number of 
+c     colcnt -- array of length m, containing the number of
 c               non-zeros in each column of the factor, including
 c               the diagonal entries
-c     snode -- array of length m for recording supernode 
+c     snode -- array of length m for recording supernode
 c              membership
 c     xsuper -- array of length m+1 containing the supernode
 c               partitioning
-c     split -- an m-vector with splitting of supernodes so that 
+c     split -- an m-vector with splitting of supernodes so that
 c              they fit into cache
 c     tmpmax -- upper bound of the dimension of tmpvec
 c     tmpvec -- a tmpmax-vector of temporary vector
-c     newrhs -- extra work vector for right-hand side and 
+c     newrhs -- extra work vector for right-hand side and
 c               solution
-c     cachsz -- size of the cache (in kilobytes) on the target 
+c     cachsz -- size of the cache (in kilobytes) on the target
 c               machine
 c     level -- level of loop unrolling while performing numerical
 c              factorization
 c     x -- an n-vector, the initial feasible solution in the primal
 c              that corresponds to the design matrix A'
-c     s -- an n-vector 
+c     s -- an n-vector
 c     u -- an n-vector of upper bound for x
 c     c -- an n-vector, usually the "negative" of
 c          the pseudo response
-c     y -- an m-vector, the initial dual solution 
+c     y -- an m-vector, the initial dual solution
 c     b -- an n-vector, the rhs of the equality constraint
 c          usually X'a = (1-tau)X'e in the rq setting
 c     r -- an n-vector of residuals
 c     z -- an n-vector of the dual slack variable
-c     w -- an n-vector 
-c     q -- an n-vector of work array containing the diagonal 
+c     w -- an n-vector
+c     q -- an n-vector of work array containing the diagonal
 c          elements of the Q^(-1) matrix
 c     nnzemax -- upper bound of the non-zero elements in AA'
 c     e -- an nnzdmax-vector containing the non-zero entries of
@@ -139,11 +143,11 @@ c       6 -- nsub > nsubmax when calling sfinit
 c       7 -- insufficient work space in iwork when calling symfct
 c       8 -- inconsistancy in input when calling symfct
 c       9 -- tmpsiz > tmpmax when calling bfinit; increase tmpmax
-c       10 -- nonpositive diagonal encountered when calling 
+c       10 -- nonpositive diagonal encountered when calling
 c            blkfct, the matrix is not positive definite
-c       11 -- insufficient work storage in tmpvec when calling 
+c       11 -- insufficient work storage in tmpvec when calling
 c            blkfct
-c       12 -- insufficient work storage in iwork when calling 
+c       12 -- insufficient work storage in iwork when calling
 c            blkfct
 c     maxit -- upper limit of the iteration; on return holds the
 c              number of iterations
@@ -167,7 +171,7 @@ c23456789012345678901234567890123456789012345678901234567890123456789012
      &                 e(nnzemax),dy(m),dx(n),ds(n),dz(n),dw(n),
      &                 dxdz(n),dsdw(n),xinv(n),sinv(n),xi(n),
      &                 ww1(n),ww2(m)
-      double precision timewd(7)
+      double precision timewd(7), tiny,Large
       real gtimer,timbeg,timend
       external smxpy1,smxpy2,smxpy4,smxpy8
       external mmpy1,mmpy2,mmpy4,mmpy8
@@ -235,7 +239,7 @@ c
       call chlfct(m,xlindx,lindx,invp,perm,iwork,nnzdsub,jdsub,
      &            colcnt,nsuper,snode,xsuper,nnzlmax,nsubmax,xlnz,lnz,
      &            ie,je,e,cachsz,tmpmax,level,tmpvec,split,ierr,it,
-     &            timewd)
+     &            timewd, tiny,Large)
       if (ierr .ne. 0) go to 100
 c
 c Call blkslv: Numerical solution for the new rhs stored in b

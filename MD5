@@ -1,4 +1,4 @@
-37c2d088aebec596cbbee91d3f86654f *DESCRIPTION
+d4cbfa5a48d1bc69a50a2c38f78e4972 *DESCRIPTION
 59ae171f84eb2be52ee904fe100b1291 *NAMESPACE
 6c1789eaa459e5175106e2eba12bdbb4 *R/ParetoTest.R
 12fc3ee9b6eecda826cff7ed17f25e55 *R/anova.R
@@ -13,11 +13,11 @@ d2f509eb6977017d1b77faae7de97a7c *R/lprq.R
 23abbfdfe6ab274c1ebe89aaa4d825ef *R/qrisk.R
 63c8000c1eb0c126d62a215009245e74 *R/quantreg.R
 a77c6ad37ae6093e30c9d639e27351f0 *R/rqss.R
-f7723bc3ed3a21afb5b60417ddc7baa0 *R/sfn.R
+2dfec3ad6cc67d6024558b3f9a314d55 *R/sfn.R
 8177bc8bd37dd659c3e403f2fa504928 *R/table.R
 11102c1b9076b53ebaac51cc79b90bfb *R/tools.R
 00f6440dcfd495483f57d543f4918de0 *README
-9a494536e7865311fc0c2d15e7e7a410 *build/vignette.rds
+fb1aa25e922a29f7f6e3da91681027e8 *build/vignette.rds
 56ef7db1af717ba44a86062560b034df *data/Bosco.rda
 403622377f41685bab4f044f2dac7785 *data/CobarOre.rda
 3d69ca4dff26067565dddb340c8d12a3 *data/Mammals.rda
@@ -50,12 +50,12 @@ ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 32f68b8e497d02b2cae7cf5f9b83ff52 *demo/rqsslasso.R
 5235d61a73c80e7eb83777d7d923d144 *demo/stack.R
 a582af0bad3d273cb076a346c906cba5 *demo/subset.R
-efd23c63e38a6579b6818e3d99d15768 *inst/ChangeLog
+de7a2746ec618801c4790b614c91acf0 *inst/ChangeLog
 c323f5a63f1fa8a44efe2d32cfab3e20 *inst/FAQ
 f2732c4ab5eb2f4ca3421239a030f0ee *inst/TODO
 3fb70411ec441d151dcae73d63a5e018 *inst/doc/crq.pdf
 48b99baf4f65ac9b9a820769d55a75f0 *inst/doc/crq.pdf.asis
-8d7109abf013b827de1f1cb7a2854a34 *inst/doc/rq.pdf
+0de68334ee7d011f06785bc4926bcdc1 *inst/doc/rq.pdf
 8faba626ac2f6a7ca45473bca52e2e67 *inst/doc/rq.pdf.asis
 64449a66c0d80474c7aefef8907b8f05 *man/Bosco.Rd
 768cf6c848f78a1862b44371c1f3e2a4 *man/CobarOre.Rd
@@ -68,7 +68,7 @@ e0161d8945e1258ff78943b06d7298de *man/MelTemp.Rd
 5e19c6a25ab4ac17d770ee7c24c981e6 *man/ParetoTest.Rd
 1c55b05cfde94862b2503523ccca1998 *man/Peirce.Rd
 114a06055c68efb323cb9dd8a7278050 *man/QTECox.Rd
-9d5c7b53fc04bbbbe5820d2d616e31b5 *man/akj.Rd
+93035639b6851f7246a2cbb98b3abdfc *man/akj.Rd
 a303a4ced70b992220472a10f79fa65c *man/anova.rq.Rd
 742ec68efdfbcf12a2a47e1adcfde3fe *man/bandwidth.rq.Rd
 36991ef697fde62deb19e355974477dd *man/barro.Rd
@@ -129,7 +129,7 @@ c42b5515ccf48527ae43449357b3dfb0 *man/rq.process.object.Rd
 47b5d67bdd5108808d62c0905ab8e58a *man/rqs.fit.Rd
 60adfb48bc8cf2d2728035eb0d19f547 *man/rqss.Rd
 1d5e4c75789a5fac11763df6b7edef03 *man/rqss.object.Rd
-7a198b2a81968dc5da8b7f59ff282714 *man/sfn.control.Rd
+5bee50c05259df5e4da9d55ab9b2fa5b *man/sfn.control.Rd
 2dfb6597245f45ee542f157105db4bc4 *man/srisk.Rd
 cf9fd105c0bd87edbcce9ec4a71780e5 *man/summary.crq.Rd
 3ec599a6f561cd6908bfa5032e59be75 *man/summary.rq.Rd
@@ -142,7 +142,7 @@ bda0ebc1c480b97ce4c9cb3b2ddaf9a9 *src/Makevars
 bb6fb4e8354bba1c16aeaf0cf5f9768e *src/bound.f
 f3a2629172dbce899d97b55d42490e5f *src/boundc.f
 1bcb651bc603316f27c0c6a38f85d70b *src/brute.f
-e897c735aa425937601d47591dbdee1f *src/chlfct.f
+90e2c1e51b9fe243b7d1d03d53694700 *src/chlfct.f
 1662015996d45d980ae598a9e243e760 *src/cholesky.f
 344362611adeaf7c79c8c5a5c344aa21 *src/combos.f
 a812e708aab3cd5e073b4cb0832a07eb *src/crqf.f
@@ -164,7 +164,7 @@ bd02eb1fbf344dd91d0e24a60a1c5269 *src/powell.f
 abef5781d8b3c202a444af9fb291072b *src/pwxy.f
 b8b6da4241edbbf057b398691772e4b0 *src/qfnb.f
 00b5c50c8caa28b22e1434a7436d0bb9 *src/qselect.f
-8e36db97b4d1a23328d5ceba8c882bf7 *src/quantreg_init.c
+11136c6acb68f84acc7813dd5f146ee7 *src/quantreg_init.c
 d2eb1038dddc50e80368118675819272 *src/ratfor/README
 df3e98bf71bf48242ffe8a2939ea98b4 *src/ratfor/boot.r
 abc8e4125098a8ec492c6d56a2e990ed *src/ratfor/brute.r
@@ -195,8 +195,8 @@ cbe8e3c270c3863ecbd3d01ba512b2c4 *src/rqfnc.f
 2e4d138de042e0dc24f5432dea05a7f6 *src/rqs.f
 8420f9a87d703ab5237d1707f25eb3a9 *src/sakj.f
 aef01c414f773d044dc72cb95c8741f4 *src/sparskit2.f
-ec5e92b756a88e077a3de86c8fb7bf86 *src/srqfn.f
-5e11cb4cad5ff02717b26234beae168f *src/srqfnc.f
+50c93379d3a1af3c8d0b5e6ec305e244 *src/srqfn.f
+1ed46340b6a16e19697572e051d160a1 *src/srqfnc.f
 f651f868d227919f2c670255f04fb137 *src/srtpai.f
 a838141113a2049f3ca6b6c5914989bc *tests/panel.R
 62bf15687c35cd5a9fa8d05d94fe28a5 *tests/rq.R

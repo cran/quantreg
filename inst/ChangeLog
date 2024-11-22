@@ -1829,3 +1829,11 @@ version
 
 3.  changed several calls to model.matrix to use contrasts.arg = rather than
 contrasts = 
+
+
+5.100
+
+1. The new `cholesky.f` (from 5.99) needed amendments to correctly pass
+  'tiny, Large' to it e.g., such that package `cobs` tests pass.
+
+2. Most naturally, extend the auxiliary R function  `sfn.control()` accordingly.

@@ -54,7 +54,7 @@ akj(x, z =, p =, h = -1, alpha = 0.5, kappa = 0.9, iker1 = 0)
       main = expression("score " * hat(psi) * "'" * (x)))
 
  if(require("nor1mix")) {
-  m3 <- norMix(mu= c(-4, 0, 3), sig2 = c(1/3^2, 1, 2^2),
+  m3 <- norMix(mu= c(-4, 0, 3), sigma = c(1/3, 1, 2),
                w = c(.1,.5,.4))
   plot(m3, p.norm = FALSE)
   set.seed(11)

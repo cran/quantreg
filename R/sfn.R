@@ -11,10 +11,11 @@
 #
 
 
-sfn.control <- function( nsubmax = NULL, tmpmax = NULL, nnzlmax = NULL, 
-    cachsz = 64, small = 1e-6, maxiter=100, warn.mesg=TRUE)
+sfn.control <- function( nsubmax = NULL, tmpmax = NULL, nnzlmax = NULL,
+    cachsz = 64, small = 1e-6, maxiter=100, tiny = 1e-30, Large = 1e128, warn.mesg=TRUE)
     list(nsubmax = nsubmax, tmpmax = tmpmax, nnzlmax = nnzlmax, cachsz = cachsz,
-        small = small, maxiter = maxiter, warn.mesg = warn.mesg)
+         small = small, maxiter = as.integer(maxiter),
+         tiny = tiny, Large = Large, warn.mesg = warn.mesg)
 
 #################################################################
 # Interface for a sparse implementation of LMS interior point method
@@ -29,34 +30,35 @@ rq.fit.sfn <- function(a,y,tau=.5, rhs = (1-tau)*c(t(a) %*% rep(1,length(y))), c
 {
 	y <- -y
 	n <- length(y)
-	m <- a@dimension[2]
+	m <- as.integer(a@dimension[2])
 	if(n != a@dimension[1])
 	     stop("Dimensions of design matrix and the response vector not compatible")
-	u <- rep(1,length=n)
+	u <- rep(1,      length=n)
 	x <- rep((1-tau),length=n)
-	nnzdmax <- nnza <- a@ia[n+1]-1
+	nnzdmax <- nnza <- a@ia[n+1L] -1L
 	iwmax <- 7*m+3
 	ao <- t(a)
 	e <- ao %*% a
-	nnzemax <- e@ia[m+1]-1
+	nnzemax <- as.integer(e@ia[m+1L]) - 1L
         ctrl <- sfn.control()
         if (!missing(control)) {
              control <- as.list(control)
              ctrl[names(control)] <- control
              }
+        if (is.null(ctrl$nsubmax)) ctrl$nsubmax <- nnzemax
+        if (is.null(ctrl$tmpmax )) ctrl$tmpmax  <- 6L * m
+        if (is.null(ctrl$nnzlmax)) ctrl$nnzlmax <- 4L * nnzdmax
 	nsubmax <- ctrl$nsubmax
-	tmpmax <- ctrl$tmpmax
+	tmpmax  <- ctrl$tmpmax
 	nnzlmax <- ctrl$nnzlmax
-        if (is.null(ctrl$nsubmax)) ctrl$nsubmax <- nsubmax <- nnzemax
-        if (is.null(ctrl$tmpmax)) ctrl$tmpmax <- tmpmax <- 6 * m
-        if (is.null(ctrl$nnzlmax)) ctrl$nnzlmax <- nnzlmax <- 4 * nnzdmax
-	wwm <- vector("numeric",3*m)
 	s <- u - x
-	b1 <- solve(e, ao %*% y, tmpmax=tmpmax,nnzlmax=nnzlmax,nsubmax=nsubmax)
+	b1 <- solve(e, ao %*% y, tmpmax=tmpmax, nnzlmax=nnzlmax, nsubmax=nsubmax)
 	r <- y - a %*% b1
-	z <- ifelse(abs(r)<ctrl$small,(r*(r>0)+ctrl$small),r*(r>0))
+	z <- ifelse(abs(r) <  ctrl$small,
+                    r*(r>0) + ctrl$small,
+                    r*(r>0))
 	w <- z - r
-	wwn <- matrix(0,n,14)
+	wwn <- matrix(0, n, 14L)
 	wwn[,1] <- r
 	wwn[,2] <- z
 	wwn[,3] <- w
@@ -64,50 +66,50 @@ rq.fit.sfn <- function(a,y,tau=.5, rhs = (1-tau)*c(t(a) %*% rep(1,length(y))), c
 		n = as.integer(n),
 		m = as.integer(m),
 		nnza = as.integer(nnza),
-		a = as.double(a@ra),
+		a  = as.double (a@ra),
 		ja = as.integer(a@ja),
 		ia = as.integer(a@ia),
-		ao = as.double(ao@ra),
+		ao  = as.double (ao@ra),
 		jao = as.integer(ao@ja),
 		iao = as.integer(ao@ia),
 		nnzdmax = as.integer(nnzdmax),
 		d = double(nnzdmax),
 		jd = integer(nnzdmax),
-		id = integer(m+1),
-		dsub = double(nnzemax+1),
-		jdsub = integer(nnzemax+1),
+		id = integer(m+1L),
+		dsub = double(nnzemax+1L),
+		jdsub = integer(nnzemax+1L),
 		nnzemax = as.integer(nnzemax),
-		e = as.double(e@ra),
+		e  = as.double (e@ra),
 		je = as.integer(e@ja),
 		ie = as.integer(e@ia),
 		nsubmax = as.integer(nsubmax),
 		lindx = integer(nsubmax),
-		xlindx = integer(m+1),
+		xlindx = integer(m+1L),
 		nnzlmax = as.integer(nnzlmax),
 		lnz = double(nnzlmax),
-		xlnz = integer(m+1),
+		xlnz = integer(m+1L),
 		iw = integer(m*5),
 		iwmax = as.integer(iwmax),
 		iwork = integer(iwmax),
-		xsuper = integer(m+1),
+		xsuper = integer(m+1L),
 		tmpmax = as.integer(tmpmax),
 		tmpvec = double(tmpmax),
-		wwm = as.double(wwm),
+		wwm = double(3*m),
 		wwn = as.double(wwn),
 		cachsz = as.integer(ctrl$cachsz),
-		level = as.integer( 8 ),
+		level = 8L,
 		x = as.double(x),
 		s = as.double(s),
 		u = as.double(u),
 		c = as.double(y),
-		sol = as.double(b1),
-		rhs = as.double(rhs),
-		small = as.double(ctrl$small),
+		rhs = as.double(rhs), # 'y'
+		sol = as.double(b1),  # 'b'
+		sm_tn_Lrg = as.double(ctrl[c("small", "tiny", "Large")]),
 		ierr = integer(1),
 		maxiter = as.integer(ctrl$maxiter),
-		time = double(7))[c("sol","ierr","maxiter","time")]
+		time = double(7) )[c("sol","ierr","maxiter","time")]
         ierr <- fit$ierr
-	if(!(ierr==0) && ctrl$warn.mesg)
+	if(ierr != 0 && ctrl$warn.mesg)
             warning(sfnMessage(ierr))
 	coefficients <- -fit$sol
 	residuals <- -y - a %*% coefficients
@@ -116,7 +118,6 @@ rq.fit.sfn <- function(a,y,tau=.5, rhs = (1-tau)*c(t(a) %*% rep(1,length(y))), c
 	     control = ctrl,
              ierr = ierr,
              it = fit$maxiter)
-
 }
 #------------------------------------------------------------------------------
 #################################################################
@@ -137,8 +138,9 @@ rq.fit.sfnc <- function(x, y, R, r, tau = 0.5,
 	y <- -y
 	r <- -r
 	n1 <- length(y)
-	m <- x@dimension[2]
-	if(n1 != x@dimension[1])
+        xd <- as.integer(x@dimension)
+	m <- xd[2]
+	if(n1 != xd[1])
             stop("The design matrix A1' and response vector y are not compatible")
 	n2 <- length(r)
 	if(n2 != R@dimension[1])
@@ -149,8 +151,8 @@ rq.fit.sfnc <- function(x, y, R, r, tau = 0.5,
 	x2 <- rep(1,length=n2)
 	wwm <- vector("numeric",6*m)
 	wwm[1:m] <- rhs
-	nnzx <- x@ia[x@dimension[1]+1]-1
-	nnzR <- R@ia[R@dimension[1]+1]-1
+	nnzx <- x@ia[xd[1]         +1L] -1L
+	nnzR <- R@ia[R@dimension[1]+1L] -1L
 	nnzdmax <- max(nnzx,nnzR)
 	iwmax <- 7*m+3
 	ao1 <- t(x)
@@ -158,25 +160,27 @@ rq.fit.sfnc <- function(x, y, R, r, tau = 0.5,
 	e <- ao1 %*% x
 	g <- ao2 %*% R
 	h <- e + g
-	nnzemax <- e@ia[e@dimension[1]+1]-1
-	nnzgmax <- g@ia[g@dimension[1]+1]-1
-	nnzhmax <- h@ia[h@dimension[1]+1]-1
+	nnzemax <- e@ia[e@dimension[1]+1L] -1L
+	nnzgmax <- g@ia[g@dimension[1]+1L] -1L
+	nnzhmax <- h@ia[h@dimension[1]+1L] -1L
         ctrl <- sfn.control()
         if (!missing(control)) {
              control <- as.list(control)
              ctrl[names(control)] <- control
              }
+        if (is.null(ctrl$nsubmax)) ctrl$nsubmax <- nnzhmax
+        if (is.null(ctrl$tmpmax )) ctrl$tmpmax  <- 6L * m
+        if (is.null(ctrl$nnzlmax)) ctrl$nnzlmax <- 4L * nnzdmax
 	nsubmax <- ctrl$nsubmax
-	tmpmax <- ctrl$tmpmax
+	tmpmax  <- ctrl$tmpmax
 	nnzlmax <- ctrl$nnzlmax
-        if (is.null(ctrl$nsubmax)) nsubmax <- nnzhmax
-        if (is.null(ctrl$tmpmax)) tmpmax <- 6 * m
-        if (is.null(ctrl$nnzlmax)) nnzlmax <- 4 * nnzdmax
 	s <- u - x1
 	chol.o <- chol(e, tmpmax=tmpmax, nsubmax=nsubmax, nnzlmax=nnzlmax)
 	b <- backsolve(chol.o, ao1 %*% y)
 	r1 <- y - x %*% b
-	z1 <- ifelse(abs(r1) < ctrl$small, (r1*(r1>0)+ctrl$small), r1*(r1>0))
+	z1 <- ifelse(abs(r1)  <  ctrl$small,
+                     r1*(r1>0) + ctrl$small,
+                     r1*(r1>0))
 	w <- z1 - r1
 	z2 <- rep(1,n2)
 	wwn1 <- matrix(0,n1,10)
@@ -205,9 +209,9 @@ rq.fit.sfnc <- function(x, y, R, r, tau = 0.5,
 		nnzdmax = as.integer(nnzdmax),
 		d = double(nnzdmax),
 		jd = integer(nnzdmax),
-		id = integer(m+1),
-		dsub = double(nnzhmax+1),
-		jdsub = integer(nnzhmax+1),
+		id = integer(m+1L),
+		dsub = double(nnzhmax+1L),
+		jdsub = integer(nnzhmax+1L),
 		nnzemax = as.integer(nnzemax),
 		e = as.double(e@ra),
 		je = as.integer(e@ja),
@@ -215,21 +219,21 @@ rq.fit.sfnc <- function(x, y, R, r, tau = 0.5,
 		nnzgmax = as.integer(nnzgmax),
 		g = double(nnzgmax),
 		jg = integer(nnzgmax),
-		ig = integer(m+1),
+		ig = integer(m+1L),
 		nnzhmax = as.integer(nnzhmax),
 		h = double(nnzhmax),
 		jh = integer(nnzhmax),
-		ih = integer(m+1),
+		ih = integer(m+1L),
 		nsubmax = as.integer(nsubmax),
 		lindx = integer(nsubmax),
-		xlindx = integer(m+1),
+		xlindx = integer(m+1L),
 		nnzlmax = as.integer(nnzlmax),
 		lnz = double(nnzlmax),
-		xlnz = integer(m+1),
-		iw = integer(m*5),
+		xlnz = integer(m+1L),
+		iw = integer(m*5L),
 		iwmax = as.integer(iwmax),
 		iwork = integer(iwmax),
-		xsuper = integer(m+1),
+		xsuper = integer(m+1L),
 		tmpmax = as.integer(tmpmax),
 		tmpvec = double(tmpmax),
 		maxn1n2 = as.integer(maxn1n2),
@@ -238,22 +242,23 @@ rq.fit.sfnc <- function(x, y, R, r, tau = 0.5,
 		wwn1 = as.double(wwn1),
 		wwn2 = as.double(wwn2),
 		cachsz = as.integer(ctrl$cachsz),
-		level = as.integer( 8 ),
+		level = 8L,
 		x1 = as.double(x1),
 		x2 = as.double(x2),
-		s = as.double(s),
-		u = as.double(u),
+		s  = as.double(s),
+		u  = as.double(u),
 		c1 = as.double(y),
 		c2 = as.double(r),
+		sm_tn_Lrg = as.double(ctrl[c("small", "tiny", "Large")]),
+                ## output:
 		sol = as.double(b),
-		small = as.double(ctrl$small),
 		ierr = integer(1),
 		maxiter = as.integer(ctrl$maxiter),
-		time = double(7))[c("sol","ierr","maxiter","time")]
+		time = double(7) )[c("sol","ierr","maxiter","time")]
         ierr <- fit$ierr
 	if(ierr == 13)# stop()
             stop("Increase nnzh.factor")
-	if(!(ierr==0) && ctrl$warn.mesg)
+	if(ierr != 0 && ctrl$warn.mesg)
             warning(sfnMessage(ierr))
 	coefficients <- -fit$sol
 	residuals <- -y - x %*% coefficients
