@@ -1,4 +1,4 @@
-d4cbfa5a48d1bc69a50a2c38f78e4972 *DESCRIPTION
+c87940b39a9a15018adde697a897f99f *DESCRIPTION
 59ae171f84eb2be52ee904fe100b1291 *NAMESPACE
 6c1789eaa459e5175106e2eba12bdbb4 *R/ParetoTest.R
 12fc3ee9b6eecda826cff7ed17f25e55 *R/anova.R
@@ -17,7 +17,7 @@ a77c6ad37ae6093e30c9d639e27351f0 *R/rqss.R
 8177bc8bd37dd659c3e403f2fa504928 *R/table.R
 11102c1b9076b53ebaac51cc79b90bfb *R/tools.R
 00f6440dcfd495483f57d543f4918de0 *README
-fb1aa25e922a29f7f6e3da91681027e8 *build/vignette.rds
+9a494536e7865311fc0c2d15e7e7a410 *build/vignette.rds
 56ef7db1af717ba44a86062560b034df *data/Bosco.rda
 403622377f41685bab4f044f2dac7785 *data/CobarOre.rda
 3d69ca4dff26067565dddb340c8d12a3 *data/Mammals.rda
