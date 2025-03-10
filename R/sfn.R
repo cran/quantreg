@@ -102,8 +102,8 @@ rq.fit.sfn <- function(a,y,tau=.5, rhs = (1-tau)*c(t(a) %*% rep(1,length(y))), c
 		s = as.double(s),
 		u = as.double(u),
 		c = as.double(y),
-		rhs = as.double(rhs), # 'y'
 		sol = as.double(b1),  # 'b'
+		rhs = as.double(rhs), # 'y'
 		sm_tn_Lrg = as.double(ctrl[c("small", "tiny", "Large")]),
 		ierr = integer(1),
 		maxiter = as.integer(ctrl$maxiter),

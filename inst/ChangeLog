@@ -1831,9 +1831,21 @@ version
 contrasts = 
 
 
-5.100
+5.99.1
 
 1. The new `cholesky.f` (from 5.99) needed amendments to correctly pass
   'tiny, Large' to it e.g., such that package `cobs` tests pass.
 
 2. Most naturally, extend the auxiliary R function  `sfn.control()` accordingly.
+
+3. This version modified by BDR to fix further fortran anomilies.
+
+6.00
+
+1.  This version should be identical to 5.99.1
+
+6.01
+
+1.  MM presumably unintentionally changed the order of the arguments in the 
+call to srqfn from rqss.  This has now been repaired and rqss again seems to
+work as intended.  This was pointed out by James Craig james.craig@certara.com

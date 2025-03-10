@@ -1,4 +1,4 @@
-c87940b39a9a15018adde697a897f99f *DESCRIPTION
+99edf8d8605a46c9dde32d26d43f32ff *DESCRIPTION
 59ae171f84eb2be52ee904fe100b1291 *NAMESPACE
 6c1789eaa459e5175106e2eba12bdbb4 *R/ParetoTest.R
 12fc3ee9b6eecda826cff7ed17f25e55 *R/anova.R
@@ -13,7 +13,7 @@ d2f509eb6977017d1b77faae7de97a7c *R/lprq.R
 23abbfdfe6ab274c1ebe89aaa4d825ef *R/qrisk.R
 63c8000c1eb0c126d62a215009245e74 *R/quantreg.R
 a77c6ad37ae6093e30c9d639e27351f0 *R/rqss.R
-2dfec3ad6cc67d6024558b3f9a314d55 *R/sfn.R
+35843d9ac1cd5dd5b618525be86398d2 *R/sfn.R
 8177bc8bd37dd659c3e403f2fa504928 *R/table.R
 11102c1b9076b53ebaac51cc79b90bfb *R/tools.R
 00f6440dcfd495483f57d543f4918de0 *README
@@ -50,7 +50,7 @@ ea9c96de3d670a1fa922585cf85789e3 *demo/predemo.R
 32f68b8e497d02b2cae7cf5f9b83ff52 *demo/rqsslasso.R
 5235d61a73c80e7eb83777d7d923d144 *demo/stack.R
 a582af0bad3d273cb076a346c906cba5 *demo/subset.R
-de7a2746ec618801c4790b614c91acf0 *inst/ChangeLog
+c8e66b1a1ba45f6d9755833630deebd4 *inst/ChangeLog
 c323f5a63f1fa8a44efe2d32cfab3e20 *inst/FAQ
 f2732c4ab5eb2f4ca3421239a030f0ee *inst/TODO
 3fb70411ec441d151dcae73d63a5e018 *inst/doc/crq.pdf
